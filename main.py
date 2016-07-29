@@ -16,6 +16,7 @@ import csv
 # import sys
 # sys.setrecursionlimit(10000)
 
+import tour
 
 # SCREEN sera une "surface de dessin"
 LARGEUR = 800
@@ -60,6 +61,7 @@ class Tour():
     """
     Cette classe sert à gérer les tours et canons
     """
+
     def __init__(self,x,y,etat=ETAT_TOUR_CONSTRUIT):
         self.x = x
         self.y = y
@@ -74,6 +76,9 @@ class Tour():
         elif self.etat== ETAT_TOUR_CONSTRUIT:
             #pygame.draw.rect(SCREEN, BLEU, (MARGE_ECRAN+self.x*TAILLE_BLOC,MARGE_ECRAN+self.y*TAILLE_BLOC,TAILLE_BLOC*2,TAILLE_BLOC*2),0)
             SCREEN.blit(TOURELLE_VIDE,(MARGE_ECRAN+self.x*TAILLE_BLOC,MARGE_ECRAN+self.y*TAILLE_BLOC))
+
+
+
 
 # ============================================================
 class Grille():
