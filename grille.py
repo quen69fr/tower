@@ -71,7 +71,7 @@ class Grille():
             print ("")
 
     # ------------------------------------------------
-    def dessine_grille(self,x=0,y=0):
+    def dessine_grille(self):
         SCREEN.fill(0)
         for j in range(GRILLE_LY):
             for i in range(GRILLE_LX):
@@ -91,9 +91,8 @@ class Grille():
                     if nuance>255 :
                         nuance = 255
                     c = (nuance,nuance,nuance)
-                pygame.draw.rect(SCREEN, c, (5+i*20,5+j*20,20,20),0)
-        if x != 0 or y !=0:
-                pygame.draw.rect(SCREEN, JAUNE, (5+x*20,5+ y*20,19,19),1)
+                (x,y) = conversionCoordCasesVersPixels(i,j)
+                pygame.draw.rect(SCREEN, c, (x,y,TAILLE_BLOC,TAILLE_BLOC),0)
 
         for tour in self.listeTours:
             tour.affiche()
@@ -107,7 +106,7 @@ class Grille():
         # TODO : BUG si case de départ occupée par un bloc
 
         #print "Calcul ",x,y
-        #self.dessine_grille(x,y)
+        #self.dessine_grille()
 
         # il faut récupérer les 4 valeurs autour
         vg = self.grille[x-1][y]

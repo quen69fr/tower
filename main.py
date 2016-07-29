@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 __author__ = 'Quentin , Manu et Philippe'
-# 2016-07-29 11:21
 
 from grille import *
 from tour import *
@@ -39,15 +38,18 @@ if __name__=="__main__":
 
             # handle MOUSEBUTTONUP
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-                grille.nouvelle_tour(Tour(int(x_souris/20),int(y_souris/20)))
+                (a,b)=conversionCoordPixelsVersCases(x_souris,y_souris)
+                grille.nouvelle_tour(Tour(a,b))
                 grille.calcule_distance_grille()
 
             if event.type == pygame.MOUSEBUTTONUP and event.button == 3:
-                grille.enleve_tour(int(x_souris/20),int(y_souris/20))
+                (a,b)=conversionCoordPixelsVersCases(x_souris,y_souris)
+                grille.enleve_tour(a,b)
                 grille.calcule_distance_grille()
 
             else:
-                tourBrouillon = Tour(int(x_souris/20),int(y_souris/20),Tour._ETAT_TOUR_BROUILLON)
+                (a,b)=conversionCoordPixelsVersCases(x_souris,y_souris)
+                tourBrouillon = Tour(a,b,Tour._ETAT_TOUR_BROUILLON)
 
         grille.dessine_grille()
         if tourBrouillon:

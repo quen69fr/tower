@@ -45,3 +45,8 @@ MARGE_ECRAN = 5
 # tous les fichiets IMAGES
 IMAGE_TOURELLE_VIDE = pygame.image.load("image/TourelleVide.png")
 
+def conversionCoordCasesVersPixels(i,j):
+    return (MARGE_ECRAN+i*TAILLE_BLOC,MARGE_ECRAN+j*TAILLE_BLOC)
+
+def conversionCoordPixelsVersCases(x,y):
+    return (int((x-MARGE_ECRAN)/TAILLE_BLOC),int((y-MARGE_ECRAN)/TAILLE_BLOC))
