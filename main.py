@@ -10,8 +10,14 @@ from outils import *
 if __name__=="__main__":
 
     grille = Grille()
+
     grille.calcule_distance_grille()
     grille.dessine_grille()
+
+    listeBestioles = []
+    for i in range(10):
+            bestiole = Bestiole()
+            listeBestioles.append(bestiole)
 
     while True:
 
@@ -52,6 +58,10 @@ if __name__=="__main__":
                 tourBrouillon = Tour(a,b,Tour._ETAT_TOUR_BROUILLON)
 
         grille.dessine_grille()
+        for i in range(len(listeBestioles)):
+            listeBestioles[i].deplace(grille)
+            listeBestioles[i].affiche()
+
         if tourBrouillon:
             tourBrouillon.affiche()
 

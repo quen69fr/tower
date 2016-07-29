@@ -21,11 +21,9 @@ class Grille():
             self.grille[0][j]=BLOC_BORD
             self.grille[GRILLE_LX-1][j]=BLOC_BORD
 
-        self.grille[GRILLE_LX-1][GRILLE_PORTE]=BLOC_PORTE
-        self.grille[GRILLE_LX-1][GRILLE_PORTE+1]=BLOC_PORTE
-
-        self.grille[0][GRILLE_PORTE]=BLOC_ENTREE
-        self.grille[0][GRILLE_PORTE+1]=BLOC_ENTREE
+        for k in range(0,TAILLE_PORTE):
+            self.grille[GRILLE_LX-1][GRILLE_PORTE+k]=BLOC_PORTE
+            self.grille[0][GRILLE_PORTE+k]=BLOC_ENTREE
 
     # ------------------------------------------------
     def reset_distance_grille(self):
@@ -88,7 +86,7 @@ class Grille():
                     c=ROUGE
                 if v > 0:
                     nuance = v*3
-                    if nuance>255 :
+                    if nuance > 255:
                         nuance = 255
                     c = (nuance,nuance,nuance)
                 (x,y) = conversionCoordCasesVersPixels(i,j)
@@ -161,3 +159,39 @@ class Grille():
             self.calcule_distance(case[0],case[1])
             if len(self.listeCasesACalculer) > 1000:
                 break
+
+    # ------------------------------------------------
+    def prochaineCase(self,x,y):
+        if x == 0:
+            return (x+1,y)
+        if y == 0:
+            return (x,y+1)
+
+        # il faut récupérer les 4 valeurs autour
+        vg = self.grille[x-1][y]
+        vd = self.grille[x+1][y]
+        vh = self.grille[x][y-1]
+        vb = self.grille[x][y+1]
+
+        liste_valeur = []
+        if vg >= 0:
+            liste_valeur.append(vg)
+        if vd >= 0:
+            liste_valeur.append(vd)
+        if vh >= 0:
+            liste_valeur.append(vh)
+        if vb >= 0:
+            liste_valeur.append(vb)
+        # la plus petite distance deja trouvvee autour
+        mini = min(liste_valeur)
+
+        if vg == mini :
+            return(x-1,y)
+        elif vd == mini :
+            return(x+1,y)
+        elif vh == mini :
+            return(x,y-1)
+        elif vb == mini :
+            return(x,y+1)
+        else:
+            return (x,y)

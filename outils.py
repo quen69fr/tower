@@ -28,7 +28,8 @@ JAUNE = (255, 255,   0)
 
 GRILLE_LX = 28
 GRILLE_LY = 28
-GRILLE_PORTE = 13
+TAILLE_PORTE=4
+GRILLE_PORTE = int((GRILLE_LY-TAILLE_PORTE)/2)
 
 
 BLOC_BORD=-2
@@ -44,6 +45,8 @@ MARGE_ECRAN = 5
 
 # tous les fichiets IMAGES
 IMAGE_TOURELLE_VIDE = pygame.image.load("image/TourelleVide.png")
+IMAGE_BESTIOLE = pygame.image.load("image/BestioleNormale.png")
+
 
 def conversionCoordCasesVersPixels(i,j):
     return (MARGE_ECRAN+i*TAILLE_BLOC,MARGE_ECRAN+j*TAILLE_BLOC)
