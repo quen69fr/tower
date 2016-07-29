@@ -46,7 +46,7 @@ BLOC_ENTREE=-3
 BLOC_INCONNU=-99
 
 FICHIER_DEF_BLOCS = "blocs1.csv"
-TOURELLE_VIDE = pygame.image.load("Image/TourelleVide.png")
+TOURELLE_VIDE = pygame.image.load("image/TourelleVide.png")
 
 ETAT_TOUR_CONSTRUIT = 1
 ETAT_TOUR_BROUILLON = 0
