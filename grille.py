@@ -111,6 +111,10 @@ class Grille():
         vd = self.grille[x+1][y]
         vh = self.grille[x][y-1]
         vb = self.grille[x][y+1]
+        vhg = self.grille[x-1][y-1]
+        vhd = self.grille[x+1][y-1]
+        vbg = self.grille[x-1][y+1]
+        vbd = self.grille[x+1][y+1]
         liste_valeur=[]
         if vg >= 0 :
             liste_valeur.append(vg)
@@ -120,6 +124,14 @@ class Grille():
             liste_valeur.append(vh)
         if vb >=0 :
             liste_valeur.append(vb)
+        if vhg >= 0:
+            liste_valeur.append(vhg)
+        if vhd >= 0:
+            liste_valeur.append(vhd)
+        if vbg >= 0:
+            liste_valeur.append(vbg)
+        if vbd >= 0:
+            liste_valeur.append(vbd)
         # la plus petite distance deja trouvvee autour
         mini = min(liste_valeur)
 
@@ -129,19 +141,19 @@ class Grille():
 
         # si on a changé qq chose, on doit recalculer certaines cases autour, il faut donc les ajouter à la liste à traiter
         # celles qui sont positives ou inconnnues
-        if vg == BLOC_INCONNU and len(self.listeCasesACalculer) < 1000:
+        if vg == BLOC_INCONNU:
             newCase = [x-1,y]
             if newCase not in self.listeCasesACalculer:
                 self.listeCasesACalculer.append(newCase)
-        if vd == BLOC_INCONNU and len(self.listeCasesACalculer) < 1000:
+        if vd == BLOC_INCONNU:
             newCase = [x+1,y]
             if newCase not in self.listeCasesACalculer:
                 self.listeCasesACalculer.append(newCase)
-        if vh == BLOC_INCONNU and len(self.listeCasesACalculer) < 1000:
+        if vh == BLOC_INCONNU:
             newCase = [x,y-1]
             if newCase not in self.listeCasesACalculer:
                 self.listeCasesACalculer.append(newCase)
-        if vb == BLOC_INCONNU and len(self.listeCasesACalculer) < 1000:
+        if vb == BLOC_INCONNU:
             newCase = [x,y+1]
             if newCase not in self.listeCasesACalculer:
                 self.listeCasesACalculer.append(newCase)
@@ -172,26 +184,81 @@ class Grille():
         vd = self.grille[x+1][y]
         vh = self.grille[x][y-1]
         vb = self.grille[x][y+1]
+        vhg = self.grille[x-1][y-1]
+        vhd = self.grille[x+1][y-1]
+        vbg = self.grille[x-1][y+1]
+        vbd = self.grille[x+1][y+1]
 
         liste_valeur = []
         if vg >= 0:
+            if vhg >= 0:
+                liste_valeur.append(vhg)
+            if vbg >= 0:
+                liste_valeur.append(vbg)
             liste_valeur.append(vg)
+
         if vd >= 0:
+            if vhd >= 0:
+                liste_valeur.append(vhd)
+            if vbd >= 0:
+                liste_valeur.append(vbd)
             liste_valeur.append(vd)
+
         if vh >= 0:
+            if vhg >= 0:
+                liste_valeur.append(vhg)
+            if vhd >= 0:
+                liste_valeur.append(vhd)
             liste_valeur.append(vh)
+
         if vb >= 0:
+            if vbg >= 0:
+                liste_valeur.append(vbg)
+            if vbd >= 0:
+                liste_valeur.append(vbd)
             liste_valeur.append(vb)
+
+
+
+
+
+
+        '''if vhg >= 0:
+            liste_valeur.append(vhg)
+        if vhd >= 0:
+            liste_valeur.append(vhd)
+        if vbg >= 0:
+            liste_valeur.append(vbg)
+        if vbd >= 0:
+            liste_valeur.append(vbd)'''
         # la plus petite distance deja trouvvee autour
         mini = min(liste_valeur)
 
+        print("vd : ",vd,"vmin : ",mini)
+
         if vg == mini :
+            print("gauche")
             return(x-1,y)
         elif vd == mini :
+            print("droite")
             return(x+1,y)
         elif vh == mini :
+            print("haut")
             return(x,y-1)
         elif vb == mini :
+            print("bas")
             return(x,y+1)
+        elif vhg == mini :
+            print("haut gauche")
+            return(x-1,y-1)
+        elif vhd == mini :
+            print("haut droite")
+            return(x+1,y-1)
+        elif vbg == mini :
+            print("bas gauche")
+            return(x-1,y+1)
+        elif vbd == mini :
+            print("bas droite")
+            return(x+1,y+1)
         else:
             return (x,y)
