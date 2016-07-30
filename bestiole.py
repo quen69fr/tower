@@ -27,5 +27,6 @@ class Bestiole():
         (case_x,case_y) = conversionCoordPixelsVersCases(self.x,self.y)
         (prochaine_case_x,prochaine_case_y) = grille.prochaineCase(case_x,case_y)
         (direction_x,direction_y) = (prochaine_case_x-case_x,prochaine_case_y-case_y)
+        #print("dirx : ",direction_x,"diry : ",direction_y)
         self.x+=direction_x*self.vitesse
         self.y+=direction_y*self.vitesse
