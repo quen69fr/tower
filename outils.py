@@ -16,8 +16,8 @@ HAUTEUR = 600
 pygame.init()
 SCREEN = pygame.display.set_mode((LARGEUR, HAUTEUR))
 pygame.display.set_caption("tower !")
-FPS = 20                 # nombre d'image par seconde
-DELAY = 10               # vitesse du jeu
+FPS = 800                 # nombre d'image par seconde
+DELAY = 0               # vitesse du jeu
 
 NOIR =  (  0,   0,   0)
 BLANC = (255, 255, 255)
@@ -38,7 +38,7 @@ BLOC_PORTE=0
 BLOC_ENTREE=-3
 BLOC_INCONNU=-99
 
-FICHIER_DEF_BLOCS = "blocs1.csv"
+FICHIER_DEF_BLOCS = "blocs2.csv"
 
 TAILLE_BLOC = 20
 MARGE_ECRAN = 5
@@ -58,6 +58,10 @@ def centreCase(i,j):
     return (MARGE_ECRAN+(i+0.5) * TAILLE_BLOC, MARGE_ECRAN+(j+0.5) * TAILLE_BLOC)
     pass
 
+def anglesCase(i,j):
+    ''' dans l'ordre x1,y1 coin supérieur gauche et x2,y2 coin inférieur droit
+    '''
+    return [MARGE_ECRAN+i*TAILLE_BLOC, MARGE_ECRAN+j*TAILLE_BLOC,MARGE_ECRAN+(i+1)*TAILLE_BLOC, MARGE_ECRAN+(j+1)*TAILLE_BLOC]
 
 def directionCentreCase(px, py):
     (i, j) = conversionCoordCasesVersPixels(px, py)
@@ -67,3 +71,27 @@ def directionCentreCase(px, py):
 
 def depasseHaut(x,y,r):
     ''' renvoie True si l'objet x,y rayon r, depasse le haut de sa case'''
+    (i,j) = conversionCoordPixelsVersCases(x,y)
+    coordAnglesCase = anglesCase(i,j)
+    return (y-r<coordAnglesCase[1])
+
+def depasseBas(x,y,r):
+    ''' renvoie True si l'objet x,y rayon r, depasse le bas de sa case'''
+    (i,j) = conversionCoordPixelsVersCases(x,y)
+    coordAnglesCase = anglesCase(i,j)
+    return (y+r>coordAnglesCase[3])
+
+def depasseGauche(x,y,r):
+    ''' renvoie True si l'objet x,y rayon r, depasse le gauche de sa case'''
+    (i,j) = conversionCoordPixelsVersCases(x,y)
+    coordAnglesCase = anglesCase(i,j)
+    return (x-r<coordAnglesCase[0])
+
+def depasseDroit(x,y,r):
+    ''' renvoie True si l'objet x,y rayon r, depasse le droit de sa case'''
+    (i,j) = conversionCoordPixelsVersCases(x,y)
+    coordAnglesCase = anglesCase(i,j)
+    return (x+r>coordAnglesCase[2])
+
+
+

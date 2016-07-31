@@ -17,8 +17,10 @@ class Bestiole():
         else:
             random.random()
             positionDansPorte = random.randint(0,TAILLE_PORTE-1)
-            y=GRILLE_PORTE+positionDansPorte
+            #y=GRILLE_PORTE+positionDansPorte
+            y=GRILLE_PORTE+int((TAILLE_PORTE-1)/2)
             (self.x,self.y)=conversionCoordCasesVersPixels(0,y)
+            self.y+= -5
 
     def affiche(self):
         SCREEN.blit(IMAGE_BESTIOLE,(self.x-10,self.y-10))
@@ -47,42 +49,116 @@ class Bestiole():
         if best == 'vd':
             # 2 cas : autour est libre, ou pas
             if grille.est_libre(cx+1, cy-1) and grille.est_libre(cx+1,cy+1):
+                # hd et bd sont libres
                 direction = (1,0)
             else :
                 if depasseHaut(self.x,self.y,self.rayon):
                     if grille.est_libre(cx+1,cy-1):
+                        # hd est libre
                         direction = (1,0)
                     else:
                         direction = (0,1)
                 elif depasseBas(self.x,self.y, self.rayon):
                     if grille.est_libre(cx+1,cy+1):
+                        # bd est libre
                         direction = (1,0)
                     else:
                         direction = (0,-1)
                 else:
                     direction = (1,0)
-                # direction centre case dans un premier temps
-                # direction = directionCentreCase(self.x, self.y)
         elif best == 'vb':
             if grille.est_libre(cx+1, cy+1) and grille.est_libre(cx-1,cy+1):
+                # bd et bg sont libres
                 direction = (0,1)
             else :
-                # direction centre case dans un premier temps
-                direction = directionCentreCase(self.x, self.y)
+                if depasseDroit(self.x,self.y,self.rayon):
+                    if grille.est_libre(cx+1,cy+1):
+                        # bd est libre
+                        direction = (0,1)
+                    else:
+                        direction = (-1,0)
+                elif depasseGauche(self.x,self.y, self.rayon):
+                    if grille.est_libre(cx-1,cy+1):
+                        # bg est libre
+                        direction = (0,1)
+                    else:
+                        direction = (1,0)
+                else:
+                    direction = (0,1)
         elif best == 'vg':
-            if grille.est_libre(cx-1, cy+1) and grille.est_libre(cx-1,cy+1):
+            if grille.est_libre(cx-1, cy-1) and grille.est_libre(cx-1,cy+1):
+                # hg et bg sont libres
                 direction = (-1,0)
             else :
-                # direction centre case dans un premier temps
-                direction = directionCentreCase(self.x, self.y)
+                if depasseHaut(self.x,self.y,self.rayon):
+                    if grille.est_libre(cx-1,cy-1):
+                        # hg est libre
+                        direction = (-1,0)
+                    else:
+                        direction = (0,1)
+                elif depasseBas(self.x,self.y, self.rayon):
+                    if grille.est_libre(cx-1,cy+1):
+                        # bg est libre
+                        direction = (-1,0)
+                    else:
+                        direction = (0,-1)
+                else:
+                    direction = (-1,0)
         elif best == 'vh':
             if grille.est_libre(cx - 1, cy - 1) and grille.est_libre(cx + 1, cy - 1):
+                # hg et hd sont libres
                 direction = (0, -1)
             else:
-                # direction centre case dans un premier temps
-                direction = directionCentreCase(self.x, self.y)
+                if depasseGauche(self.x,self.y,self.rayon):
+                    if grille.est_libre(cx-1,cy-1):
+                        # hg est libre
+                        direction = (0,-1)
+                    else:
+                        direction = (1,0)
+                elif depasseDroit(self.x,self.y, self.rayon):
+                    if grille.est_libre(cx-1,cy+1):
+                        # hd est libre
+                        direction = (0,-1)
+                    else:
+                        direction = (-1,0)
+                else:
+                    direction = (0,-1)
         else:
-            direction = ( pcx - cx, pcy - cy)
+            print("***********DIAG**********")
+            if not (depasseHaut(self.x,self.y,self.rayon) or depasseDroit(self.x,self.y,self.rayon) or depasseGauche(self.x,self.y,self.rayon) or depasseBas(self.x,self.y,self.rayon)):
+                # on ne dépasse pas, on fonce !
+                direction = ( pcx - cx, pcy - cy)
+            else:
+                if best == 'vhd':
+                    if depasseHaut(self.x, self.y,self.rayon) and not grille.est_libre(cx,cy-1):
+                        direction = (1,0)
+                    elif depasseDroit(self.x, self.y,self.rayon) and not grille.est_libre(cx+1,cy):
+                        direction = (0,-1)
+                    else:
+                        direction = (1,-1)
+                elif best == 'vhg':
+                    if depasseHaut(self.x, self.y,self.rayon) and not grille.est_libre(cx,cy-1):
+                        direction = (-1,0)
+                    elif depasseGauche(self.x, self.y,self.rayon) and not grille.est_libre(cx-1,cy):
+                        direction = (0,-1)
+                    else:
+                        direction = (-1,-1)
+                elif best == 'vbg':
+                    if depasseBas(self.x, self.y,self.rayon) and not grille.est_libre(cx,cy+1):
+                        direction = (-1,0)
+                    elif depasseGauche(self.x, self.y,self.rayon) and not grille.est_libre(cx-1,cy):
+                        direction = (0,1)
+                    else:
+                        direction = (-1,1)
+                elif best == 'vbd':
+                    if depasseBas(self.x, self.y,self.rayon) and not grille.est_libre(cx,cy+1):
+                        direction = (1,0)
+                    elif depasseDroit(self.x, self.y,self.rayon) and not grille.est_libre(cx+1,cy):
+                        direction = (0,1)
+                    else:
+                        direction = (1,1)
+                else :
+                    direction = ( pcx - cx, pcy - cy)
 
         print("direction :", direction)
 

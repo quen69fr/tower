@@ -61,11 +61,11 @@ class Grille():
 
     # ------------------------------------------------
     def affiche_grille(self):
-        # print "------------------"
+        # log "------------------"
         for j in range(GRILLE_LY):
             print (j, ':',)
             for i in range(GRILLE_LX):
-                print (self.grille[i][j],)
+                print(self.grille[i][j],)
             print ("")
 
     # ------------------------------------------------
@@ -104,7 +104,7 @@ class Grille():
 
         # TODO : BUG si case de départ occupée par un bloc
 
-        #print "Calcul ",x,y
+        #log "Calcul ",x,y
         #self.dessine_grille()
 
         # il faut récupérer les 4 valeurs autour
@@ -213,18 +213,18 @@ class Grille():
         if vb > 0:
             dico['vb'] = vb
         # diag
-        # if vhg > 0 and (vh > 0 or vg > 0):
-        #     dico['vhg']=vhg * 1.414
-        # if vhd > 0 and (vh > 0 or vd > 0):
-        #     dico['vhd']=vhd * 1.414
-        # if vbg > 0 and (vb > 0 or vg > 0):
-        #     dico['vbg']=vbg * 1.414
-        # if vbd > 0 and ( vb > 0 or vd > 0):
-        #     dico['vbd'] = vbd * 1.414
+        if vhg > 0 and (vh > 0 or vg > 0):
+            dico['vhg']=vhg
+        if vhd > 0 and (vh > 0 or vd > 0):
+            dico['vhd']=vhd
+        if vbg > 0 and (vb > 0 or vg > 0):
+            dico['vbg']=vbg
+        if vbd > 0 and ( vb > 0 or vd > 0):
+            dico['vbd']=vbd
 
-        # print ("dico:",dico)
+        #print ("dico:",dico)
         best = min(dico, key=dico.get)
-        # print ("x,y, best, vbest, v :", x,y,best, dico[best], v)
+        #print ("x,y, best, vbest, v :", x,y,best, dico[best], v)
 
         if best == 'vg':
             return (best, x-1,y)
