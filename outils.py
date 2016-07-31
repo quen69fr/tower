@@ -53,3 +53,17 @@ def conversionCoordCasesVersPixels(i,j):
 
 def conversionCoordPixelsVersCases(x,y):
     return (int((x-MARGE_ECRAN)/TAILLE_BLOC),int((y-MARGE_ECRAN)/TAILLE_BLOC))
+
+def centreCase(i,j):
+    return (MARGE_ECRAN+(i+0.5) * TAILLE_BLOC, MARGE_ECRAN+(j+0.5) * TAILLE_BLOC)
+    pass
+
+
+def directionCentreCase(px, py):
+    (i, j) = conversionCoordCasesVersPixels(px, py)
+    (px2, py2) = centreCase(i, j)
+    hypo = math.sqrt((px2-px)**2 + (py2-py)**2)
+    return ((px2-px)/hypo, (py2-py)/hypo)
+
+def depasseHaut(x,y,r):
+    ''' renvoie True si l'objet x,y rayon r, depasse le haut de sa case'''

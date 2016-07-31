@@ -183,9 +183,11 @@ class Grille():
 
         # cas des portes d'entrée
         if x == 0:
-            return (x + 1, y)
+            return ('vd',x + 1, y)
         if y == 0:
-            return (x, y + 1)
+            return ('vb',x, y + 1)
+
+        # TODO : cas des portes de sortie
 
         # une case nondiagonale est accessible si libre
         # une case diagonale est accessible si non entourrée de 2 cases nondiag
@@ -211,35 +213,35 @@ class Grille():
         if vb > 0:
             dico['vb'] = vb
         # diag
-        if vhg > 0 and (vh > 0 or vg > 0):
-            dico['vhg']=vhg
-        if vhd > 0 and (vh > 0 or vd > 0):
-            dico['vhd']=vhd
-        if vbg > 0 and (vb > 0 or vg > 0):
-            dico['vbg']=vbg
-        if vbd > 0 and ( vb > 0 or vd > 0):
-            dico['vbd'] = vbd
+        # if vhg > 0 and (vh > 0 or vg > 0):
+        #     dico['vhg']=vhg * 1.414
+        # if vhd > 0 and (vh > 0 or vd > 0):
+        #     dico['vhd']=vhd * 1.414
+        # if vbg > 0 and (vb > 0 or vg > 0):
+        #     dico['vbg']=vbg * 1.414
+        # if vbd > 0 and ( vb > 0 or vd > 0):
+        #     dico['vbd'] = vbd * 1.414
 
         # print ("dico:",dico)
         best = min(dico, key=dico.get)
         # print ("x,y, best, vbest, v :", x,y,best, dico[best], v)
 
         if best == 'vg':
-            return (x-1,y)
+            return (best, x-1,y)
         if best == 'vd':
-            return (x+1,y)
+            return (best, x+1,y)
         if best == 'vh':
-            return (x,y-1)
+            return (best, x,y-1)
         if best == 'vb':
-            return (x,y+1)
+            return (best, x,y+1)
         if best == 'vhg':
-            return (x-1,y-1)
+            return (best, x-1,y-1)
         if best == 'vhd':
-            return (x+1,y-1)
+            return (best, x+1,y-1)
         if best == 'vbg':
-            return (x-1,y+1)
+            return (best, x-1,y+1)
         if best == 'vbd':
-            return (x+1,y+1)
+            return (best, x+1,y+1)
 
     # ------------------------------------------------
     def prochaineCase(self,x,y):
@@ -326,4 +328,13 @@ class Grille():
             return(x+1,y+1)
         else:
             return (x,y)
+
+    # -------------------------------------------------
+    def est_libre(self, cx,cy):
+        ''' renvoie True/False selon que la case cx,cy est libre (pas de tour)'''
+        if self.grille[cx][cy] >= 0:
+            return True
+        else:
+            return False
+
 
