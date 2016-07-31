@@ -16,7 +16,7 @@ HAUTEUR = 600
 pygame.init()
 SCREEN = pygame.display.set_mode((LARGEUR, HAUTEUR))
 pygame.display.set_caption("tower !")
-FPS = 10                 # nombre d'image par seconde
+FPS = 20                 # nombre d'image par seconde
 DELAY = 10               # vitesse du jeu
 
 NOIR =  (  0,   0,   0)

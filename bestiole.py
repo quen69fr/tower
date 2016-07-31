@@ -20,14 +20,19 @@ class Bestiole():
             (self.x,self.y)=conversionCoordCasesVersPixels(0,y)
 
     def affiche(self):
-        SCREEN.blit(IMAGE_BESTIOLE,(self.x,self.y))
+        SCREEN.blit(IMAGE_BESTIOLE,(self.x-10,self.y-10))
 
     def deplace(self,grille):
+
         # on regarde dans quelle case on est
         (case_x,case_y) = conversionCoordPixelsVersCases(self.x,self.y)
+
         # (prochaine_case_x,prochaine_case_y) = grille.prochaineCase(case_x,case_y)
         (prochaine_case_x, prochaine_case_y) = grille.prochaineCase2(case_x, case_y)
+
+        # A revoir
         (direction_x,direction_y) = (prochaine_case_x-case_x,prochaine_case_y-case_y)
+
         #print("dirx : ",direction_x,"diry : ",direction_y)
         self.x+=direction_x*self.vitesse
         self.y+=direction_y*self.vitesse

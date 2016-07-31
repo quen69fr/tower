@@ -90,7 +90,8 @@ class Grille():
                         nuance = 255
                     c = (nuance,nuance,nuance)
                 (x,y) = conversionCoordCasesVersPixels(i,j)
-                pygame.draw.rect(SCREEN, c, (x,y,TAILLE_BLOC,TAILLE_BLOC),0)
+                # pygame.draw.rect(SCREEN, c, (x,y,TAILLE_BLOC,TAILLE_BLOC),0)
+                pygame.draw.rect(SCREEN, c, (x, y, TAILLE_BLOC, TAILLE_BLOC), 0)
 
         for tour in self.listeTours:
             tour.affiche()
@@ -201,22 +202,22 @@ class Grille():
 
         dico = {}
 
-        if vg > 0 and vg <= v:
+        if vg > 0:
             dico['vg']=vg
-        if vd > 0 and vd <= v:
+        if vd > 0:
             dico['vd']=vd
-        if vh > 0 and vh <= v:
+        if vh > 0:
             dico['vh']=vh
-        if vb > 0 and vb <= v:
+        if vb > 0:
             dico['vb'] = vb
         # diag
-        if vhg > 0 and vhg <= v and (vh > 0 or vg > 0):
+        if vhg > 0 and (vh > 0 or vg > 0):
             dico['vhg']=vhg
-        if vhd > 0 and vhd <= v and (vh > 0 or vd > 0):
+        if vhd > 0 and (vh > 0 or vd > 0):
             dico['vhd']=vhd
-        if vbg > 0 and vbg <= v and (vb > 0 or vg > 0):
+        if vbg > 0 and (vb > 0 or vg > 0):
             dico['vbg']=vbg
-        if vbd > 0 and vbd <= v and ( vb > 0 or vd > 0):
+        if vbd > 0 and ( vb > 0 or vd > 0):
             dico['vbd'] = vbd
 
         print ("dico:",dico)
