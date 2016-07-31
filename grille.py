@@ -220,9 +220,9 @@ class Grille():
         if vbd > 0 and ( vb > 0 or vd > 0):
             dico['vbd'] = vbd
 
-        print ("dico:",dico)
+        # print ("dico:",dico)
         best = min(dico, key=dico.get)
-        print ("x,y, best, vbest, v :", x,y,best, dico[best], v)
+        # print ("x,y, best, vbest, v :", x,y,best, dico[best], v)
 
         if best == 'vg':
             return (x-1,y)
@@ -287,11 +287,6 @@ class Grille():
                 liste_valeur.append(vbd)
             liste_valeur.append(vb)
 
-
-
-
-
-
         '''if vhg >= 0:
             liste_valeur.append(vhg)
         if vhd >= 0:
@@ -331,3 +326,4 @@ class Grille():
             return(x+1,y+1)
         else:
             return (x,y)
+

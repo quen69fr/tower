@@ -30,7 +30,16 @@ class Bestiole():
         # (prochaine_case_x,prochaine_case_y) = grille.prochaineCase(case_x,case_y)
         (prochaine_case_x, prochaine_case_y) = grille.prochaineCase2(case_x, case_y)
 
-        # A revoir
+        # TOODO / à améliorer
+        # si on va dans une case orthogonale (ex. : d ) :
+        #   - si les deux cases autour sont vides (ex. hd, bd) : direction simple (ex. d)
+        #   - si  une ou deux autour sont occupées, vérifier si ca passe en largeur
+        #           - si oui : direction simple (d)
+        #           - si non : direction centre de la case actuelle (à améliorer)
+        # si on va dans une case diagonale (ex. bd)
+        #   - si les deux cases autour sont vides (b,d), direction centre de la case diagonale
+        #   - si une des deux cases autour est vide (ex.b) : direction ortho (ex. b) : A AMELIORER (b + 45degré)
+        #   - si deux cases autour occupées, pas possible, déjà éliminé par ProchaineCase2()
         (direction_x,direction_y) = (prochaine_case_x-case_x,prochaine_case_y-case_y)
 
         #print("dirx : ",direction_x,"diry : ",direction_y)
