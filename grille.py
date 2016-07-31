@@ -40,7 +40,7 @@ class Grille():
         x = tour.x
         y = tour.y
 
-        if self.grille[x][y] > 0 and self.grille[x+1][y] > 0 and self.grille[x][y+1] > 0 and self.grille[x+1][y+1] > 0:
+        if (self.grille[x][y] == BLOC_INCONNU) or (self.grille[x][y] > 0 and self.grille[x+1][y] > 0 and self.grille[x][y+1] > 0 and self.grille[x+1][y+1] > 0):
             self.listeTours.append(tour)
             self.grille[x][y]=BLOC_TOUR
             self.grille[x+1][y]=BLOC_TOUR
@@ -124,14 +124,14 @@ class Grille():
             liste_valeur.append(vh)
         if vb >=0 :
             liste_valeur.append(vb)
-        if vhg >= 0:
-            liste_valeur.append(vhg)
-        if vhd >= 0:
-            liste_valeur.append(vhd)
-        if vbg >= 0:
-            liste_valeur.append(vbg)
-        if vbd >= 0:
-            liste_valeur.append(vbd)
+        # if vhg >= 0:
+        #     liste_valeur.append(vhg)
+        # if vhd >= 0:
+        #     liste_valeur.append(vhd)
+        # if vbg >= 0:
+        #     liste_valeur.append(vbg)
+        # if vbd >= 0:
+        #     liste_valeur.append(vbd)
         # la plus petite distance deja trouvvee autour
         mini = min(liste_valeur)
 
@@ -171,6 +171,74 @@ class Grille():
             self.calcule_distance(case[0],case[1])
             if len(self.listeCasesACalculer) > 1000:
                 break
+
+    # ------------------------------------------------
+    # Essai Phil
+    def prochaineCase2(self, x, y):
+
+        # 1 - Trouver lesquelles des 8 cases adjacentes sont eligibles
+        # 2 - selectionner celle / l'une de celle qui a la distance mini
+        # Une autre fonction  vérifiera la trajectoire pixel optimale
+
+        # cas des portes d'entrée
+        if x == 0:
+            return (x + 1, y)
+        if y == 0:
+            return (x, y + 1)
+
+        # une case nondiagonale est accessible si libre
+        # une case diagonale est accessible si non entourrée de 2 cases nondiag
+
+        v = self.grille[x][y]
+        vg = self.grille[x - 1][y]
+        vd = self.grille[x + 1][y]
+        vh = self.grille[x][y - 1]
+        vb = self.grille[x][y + 1]
+        vhg = self.grille[x - 1][y - 1]
+        vhd = self.grille[x + 1][y - 1]
+        vbg = self.grille[x - 1][y + 1]
+        vbd = self.grille[x + 1][y + 1]
+
+        dico = {}
+
+        if vg > 0 and vg <= v:
+            dico['vg']=vg
+        if vd > 0 and vd <= v:
+            dico['vd']=vd
+        if vh > 0 and vh <= v:
+            dico['vh']=vh
+        if vb > 0 and vb <= v:
+            dico['vb'] = vb
+        # diag
+        if vhg > 0 and vhg <= v and (vh > 0 or vg > 0):
+            dico['vhg']=vhg
+        if vhd > 0 and vhd <= v and (vh > 0 or vd > 0):
+            dico['vhd']=vhd
+        if vbg > 0 and vbg <= v and (vb > 0 or vg > 0):
+            dico['vbg']=vbg
+        if vbd > 0 and vbd <= v and ( vb > 0 or vd > 0):
+            dico['vbd'] = vbd
+
+        print ("dico:",dico)
+        best = min(dico, key=dico.get)
+        print ("x,y, best, vbest, v :", x,y,best, dico[best], v)
+
+        if best == 'vg':
+            return (x-1,y)
+        if best == 'vd':
+            return (x+1,y)
+        if best == 'vh':
+            return (x,y-1)
+        if best == 'vb':
+            return (x,y+1)
+        if best == 'vhg':
+            return (x-1,y-1)
+        if best == 'vhd':
+            return (x+1,y-1)
+        if best == 'vbg':
+            return (x-1,y+1)
+        if best == 'vbd':
+            return (x+1,y+1)
 
     # ------------------------------------------------
     def prochaineCase(self,x,y):

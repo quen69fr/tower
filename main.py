@@ -28,9 +28,11 @@ if __name__=="__main__":
     grille.dessine_grille()
 
     listeBestioles = []
-    for i in range(10):
-            bestiole = Bestiole()
-            listeBestioles.append(bestiole)
+    # for i in range(10):
+    #         bestiole = Bestiole()
+    #         listeBestioles.append(bestiole)
+    bestiole = Bestiole()
+    listeBestioles.append(bestiole)
 
     while True:
 
