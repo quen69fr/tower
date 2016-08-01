@@ -70,7 +70,9 @@ class Grille():
 
     # ------------------------------------------------
     def dessine_grille(self):
-        SCREEN.fill(0)
+        # SCREEN.fill(0)
+
+        # les cases distances
         for j in range(GRILLE_LY):
             for i in range(GRILLE_LX):
                 v=self.grille[i][j]
@@ -93,16 +95,17 @@ class Grille():
                 # pygame.draw.rect(SCREEN, c, (x,y,TAILLE_BLOC,TAILLE_BLOC),0)
                 pygame.draw.rect(SCREEN, c, (x, y, TAILLE_BLOC, TAILLE_BLOC), 0)
 
+        # les tours
         for tour in self.listeTours:
             tour.affiche()
 
-        pygame.display.update()
+        # pygame.display.update()
         #pygame.time.delay(DELAY )
 
     # ------------------------------------------------
     def calcule_distance(self,x,y):
 
-        # TODO : BUG si case de départ occupée par un bloc
+        # TODO BUG si case de départ occupée par un bloc
 
         #log "Calcul ",x,y
         #self.dessine_grille()
@@ -186,7 +189,7 @@ class Grille():
         if y == 0:
             return ('vb',x, y + 1)
 
-        # TODO : cas des portes de sortie
+        # TODO bug des portes de sortie
 
         # une case nondiagonale est accessible si libre
         # une case diagonale est accessible si non entourrée de 2 cases nondiag
@@ -335,4 +338,5 @@ class Grille():
             return True
         else:
             return False
+
 

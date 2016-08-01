@@ -48,6 +48,8 @@ IMAGE_TOURELLE_VIDE = pygame.image.load("image/TourelleVide.png")
 IMAGE_BESTIOLE = pygame.image.load("image/BestioleNormale.png")
 
 
+
+
 def conversionCoordCasesVersPixels(i,j):
     return (MARGE_ECRAN+i*TAILLE_BLOC,MARGE_ECRAN+j*TAILLE_BLOC)
 

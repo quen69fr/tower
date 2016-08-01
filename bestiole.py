@@ -9,6 +9,7 @@ from outils import *
 class Bestiole():
 
     def __init__(self,x=-1,y=-1):
+        ''' x et y en pixels'''
         self.vitesse = 0.5
         self.rayon = IMAGE_BESTIOLE.get_width()/2
 
@@ -28,7 +29,7 @@ class Bestiole():
 
     # -------------------------------------------------
     def affiche(self):
-        SCREEN.blit(self.rot_center(IMAGE_BESTIOLE,90),(self.x-self.rayon,self.y-self.rayon))
+        SCREEN.blit(self.rot_center(IMAGE_BESTIOLE,45),(self.x-self.rayon,self.y-self.rayon))
 
     # -------------------------------------------------
     def deplace(self,grille):
@@ -176,7 +177,13 @@ class Bestiole():
 
     # -------------------------------------------------
     def rot_center(self, image, angle):
+
         """rotate an image while keeping its center and size"""
+
+        # TODO : plus simple, à vérifier ?
+        # mon_image2 = pygame.transform.rotate(mon_image, 30)
+        return pygame.transform.rotate(image,angle)
+
         orig_rect = image.get_rect()
         rot_image = pygame.transform.rotate(image, angle)
         rot_rect = orig_rect.copy()
