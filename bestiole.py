@@ -12,7 +12,7 @@ class Bestiole():
         ''' x et y en pixels'''
 
         self.vitesse = 1
-        self.vie = 30        # nombre de points de vie de la bestiole
+        self.vie = 10        # nombre de points de vie de la bestiole
 
         self.rayon = IMAGE_BESTIOLE.get_width()/2
 
@@ -32,6 +32,7 @@ class Bestiole():
     # -------------------------------------------------
     def affiche(self):
         SCREEN.blit(self.rot_center(IMAGE_BESTIOLE,45),(self.x-self.rayon,self.y-self.rayon))
+        print(self.vie)
 
     # -------------------------------------------------
     def deplace(self,grille):
@@ -42,7 +43,7 @@ class Bestiole():
         # (prochaine_case_x,prochaine_case_y) = grille.prochaineCase(case_x,case_y)
         (best, pcx, pcy) = grille.prochaineCase(cx, cy)
 
-        print ("cx:{},cy:{}, x:{} ,y:{}, best:{}, pcx:{}, pcy:{}". format(cx,cy,self.x,self.y,best, pcx,pcy))
+        #print ("cx:{},cy:{}, x:{} ,y:{}, best:{}, pcx:{}, pcy:{}". format(cx,cy,self.x,self.y,best, pcx,pcy))
         # TOODO / à améliorer
         # si on va dans une case orthogonale (ex. : d ) :
         #   - si les deux cases autour sont vides (ex. hd, bd) : direction simple (ex. d)

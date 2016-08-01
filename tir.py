@@ -25,7 +25,7 @@ class Tir():
 
     def affiche(self):
         # SCREEN.blit(self.rot_center(IMAGE_BESTIOLE,45),(self.x-self.rayon,self.y-self.rayon))
-        pygame.draw.circle(SCREEN, BLEU, [int(self.x), int(self.y)], 6, 0)
+        pygame.draw.circle(SCREEN, BLEU, [int(self.x), int(self.y)], 3, 0)
         pass
 
     def deplace(self, grille):

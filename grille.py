@@ -80,8 +80,8 @@ class Grille():
                 c=NOIR
                 if v == BLOC_BORD:
                     c=BLEU
-                if v == BLOC_ENTREE:
-                    c=BLANC
+                #if v == BLOC_ENTREE:
+                #    c=BLANC
                 if v == BLOC_INCONNU:
                     c=ROUGE
                 if v > 0:
@@ -98,12 +98,16 @@ class Grille():
             tour.affiche()
 
     # ------------------------------------------------
-    def dessine_porte(self):
+    def dessine_portes(self):
 
         for j in range(GRILLE_LY):
-            v = self.grille[GRILLE_LX-1][j]
-            if v == BLOC_PORTE:
+
+            if self.grille[GRILLE_LX-1][j] == BLOC_PORTE:
                 (x, y) = conversionCoordCasesVersPixels(GRILLE_LX-1, j)
+                pygame.draw.rect(SCREEN, JAUNE, (x, y, TAILLE_BLOC, TAILLE_BLOC), 0)
+
+            if self.grille[0][j] == BLOC_ENTREE:
+                (x, y) = conversionCoordCasesVersPixels(0, j)
                 pygame.draw.rect(SCREEN, JAUNE, (x, y, TAILLE_BLOC, TAILLE_BLOC), 0)
 
     # ------------------------------------------------
@@ -237,9 +241,9 @@ class Grille():
         if vbd >= 0 and ( vb >= 0 or vd >= 0):
             dico['vbd']=vbd+0.414
 
-        print ("ProchaineCase2 - dico:",dico)
+        #print ("ProchaineCase2 - dico:",dico)
         best = min(dico, key=dico.get)
-        print ("ProchaineCase2 - x,y, best, vbest, v :", x,y,best, dico[best], v)
+        #print ("ProchaineCase2 - x,y, best, vbest, v :", x,y,best, dico[best], v)
 
         if best == 'vg':
             return (best, x-1,y)

@@ -45,7 +45,7 @@ MARGE_ECRAN = 5
 IMAGE_TOURELLE_VIDE = pygame.image.load("image/TourelleVide.png")
 IMAGE_BESTIOLE = pygame.image.load("image/BestioleNormale.png")
 
-NOMBRE_BESTIOLE = 5
+NOMBRE_BESTIOLE = 10
 TIR_ACTIF = True
 AFFICHE_PERIMETRE_TIR = True
 VITESSE_TIR = 8
@@ -82,7 +82,6 @@ def anglesCase(i,j):
     ''' dans l'ordre x1,y1 coin supérieur gauche et x2,y2 coin inférieur droit
     '''
     return [MARGE_ECRAN+i*TAILLE_BLOC, MARGE_ECRAN+j*TAILLE_BLOC,MARGE_ECRAN+(i+1)*TAILLE_BLOC, MARGE_ECRAN+(j+1)*TAILLE_BLOC]
-
 
 def directionCentreCase(px, py):
     (i, j) = conversionCoordCasesVersPixels(px, py)

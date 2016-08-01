@@ -56,7 +56,7 @@ if __name__=="__main__":
 
     while True:
 
-        print ("Tours : {} ; Betes : {} ;  Tirs : {}".format(len(grille.listeTours), len(listeBestioles), len(listeTirs)))
+        #print ("Tours : {} ; Betes : {} ;  Tirs : {}".format(len(grille.listeTours), len(listeBestioles), len(listeTirs)))
 
         # Les événements clavier / souris
         for event in pygame.event.get():
@@ -130,7 +130,7 @@ if __name__=="__main__":
         if tourBrouillon:
             tourBrouillon.affiche()
 
-        grille.dessine_porte()
+        grille.dessine_portes()
 
         pygame.display.update()
         pygame.time.Clock().tick(FPS)
