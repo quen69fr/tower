@@ -49,15 +49,10 @@ if __name__=="__main__":
     grille.calcule_distance_grille()
     grille.dessine_grille()
 
-    for i in range(5):
+    for i in range(NOMBRE_BESTIOLE):
         bestiole = Bestiole()
         listeBestioles.append(bestiole)
-        #bestiole = Bestiole()
-        listeBestioles.append(bestiole)
 
-    # listeTirs = []
-    # listeTirs.append(Tir(x=300,y=100))
-    # from outils
 
     while True:
 
@@ -107,6 +102,8 @@ if __name__=="__main__":
         for bete in listeBestioles:
             bete.deplace(grille)
             bete.affiche()
+            if bete.vie <= 0:
+                listeBestioles.remove(bete)
 
         # gestion des tours
         for tour in grille.listeTours:

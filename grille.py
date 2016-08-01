@@ -206,22 +206,22 @@ class Grille():
 
         dico = {}
 
-        if vg > 0:
+        if vg >= 0:
             dico['vg']=vg
-        if vd > 0:
+        if vd >= 0:
             dico['vd']=vd
-        if vh > 0:
+        if vh >= 0:
             dico['vh']=vh
-        if vb > 0:
+        if vb >= 0:
             dico['vb'] = vb
         # diag
-        if vhg > 0 and (vh > 0 or vg > 0):
+        if vhg >= 0 and (vh >= 0 or vg >= 0):
             dico['vhg']=vhg+0.414
-        if vhd > 0 and (vh > 0 or vd > 0):
+        if vhd >= 0 and (vh >= 0 or vd >= 0):
             dico['vhd']=vhd+0.414
-        if vbg > 0 and (vb > 0 or vg > 0):
+        if vbg >= 0 and (vb >= 0 or vg >= 0):
             dico['vbg']=vbg+0.414
-        if vbd > 0 and ( vb > 0 or vd > 0):
+        if vbd >= 0 and ( vb >= 0 or vd >= 0):
             dico['vbd']=vbd+0.414
 
         #print ("dico:",dico)
@@ -244,92 +244,6 @@ class Grille():
             return (best, x-1,y+1)
         if best == 'vbd':
             return (best, x+1,y+1)
-
-    # ------------------------------------------------
-    def prochaineCase(self,x,y):
-        if x == 0:
-            return (x+1,y)
-        if y == 0:
-            return (x,y+1)
-
-        # il faut récupérer les 4 valeurs autour
-        vg = self.grille[x-1][y]
-        vd = self.grille[x+1][y]
-        vh = self.grille[x][y-1]
-        vb = self.grille[x][y+1]
-        vhg = self.grille[x-1][y-1]
-        vhd = self.grille[x+1][y-1]
-        vbg = self.grille[x-1][y+1]
-        vbd = self.grille[x+1][y+1]
-
-        liste_valeur = []
-        if vg >= 0:
-            if vhg >= 0:
-                liste_valeur.append(vhg)
-            if vbg >= 0:
-                liste_valeur.append(vbg)
-            liste_valeur.append(vg)
-
-        if vd >= 0:
-            if vhd >= 0:
-                liste_valeur.append(vhd)
-            if vbd >= 0:
-                liste_valeur.append(vbd)
-            liste_valeur.append(vd)
-
-        if vh >= 0:
-            if vhg >= 0:
-                liste_valeur.append(vhg)
-            if vhd >= 0:
-                liste_valeur.append(vhd)
-            liste_valeur.append(vh)
-
-        if vb >= 0:
-            if vbg >= 0:
-                liste_valeur.append(vbg)
-            if vbd >= 0:
-                liste_valeur.append(vbd)
-            liste_valeur.append(vb)
-
-        '''if vhg >= 0:
-            liste_valeur.append(vhg)
-        if vhd >= 0:
-            liste_valeur.append(vhd)
-        if vbg >= 0:
-            liste_valeur.append(vbg)
-        if vbd >= 0:
-            liste_valeur.append(vbd)'''
-        # la plus petite distance deja trouvvee autour
-        mini = min(liste_valeur)
-
-        print("vd : ",vd,"vmin : ",mini)
-
-        if vg == mini :
-            print("gauche")
-            return(x-1,y)
-        elif vd == mini :
-            print("droite")
-            return(x+1,y)
-        elif vh == mini :
-            print("haut")
-            return(x,y-1)
-        elif vb == mini :
-            print("bas")
-            return(x,y+1)
-        elif vhg == mini :
-            print("haut gauche")
-            return(x-1,y-1)
-        elif vhd == mini :
-            print("haut droite")
-            return(x+1,y-1)
-        elif vbg == mini :
-            print("bas gauche")
-            return(x-1,y+1)
-        elif vbd == mini :
-            print("bas droite")
-            return(x+1,y+1)
-        else:
-            return (x,y)
 
     # -------------------------------------------------
     def est_libre(self, cx,cy):
