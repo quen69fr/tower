@@ -46,8 +46,12 @@ IMAGE_TOURELLE_VIDE = pygame.image.load("image/TourelleVide.png")
 IMAGE_BESTIOLE = pygame.image.load("image/BestioleNormale.png")
 
 NOMBRE_BESTIOLE = 5
-TIR_ACTIF = False
-AFFICHE_PERIMETRE_TIR = False
+TIR_ACTIF = True
+AFFICHE_PERIMETRE_TIR = True
+VITESSE_TIR = 8
+DISTANCE_TIR = 200
+DELAI_TIR = 20
+
 AFFICHE_CSV = False
 FICHIER_DEF_BLOCS = "blocs2.csv"
 

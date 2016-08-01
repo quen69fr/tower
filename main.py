@@ -10,14 +10,14 @@ from tir import *
 
 # TODO général
 # - DONE - les Tirs
-# - mort des bestioles
+# - DONE mort des bestioles
 # - corriger les bugs
-#     clic hors grille (DONE)
 #     affichage tour construction hors grille (TODO => Quentin)
 #     case fermée
-#     porte de sortie
-#     fermeture porte d'entrée
 #     ne pas créer une case sur une bestiole
+#     DONE - porte de sortie
+#     DONE - fermeture porte d'entrée
+#     DONE - clic hors grille
 # - gestion de partie : debut, séries de bestioles
 # - score / vies
 

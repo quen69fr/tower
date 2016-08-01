@@ -18,8 +18,8 @@ class Tour():
         self.x = x
         self.y = y
         self.etat = etat
-        self.distance_tir = 100  # en pixels
-        self.delai_initial = 30
+        self.distance_tir = DISTANCE_TIR  # en pixels
+        self.delai_initial = DELAI_TIR
         self.delai = 0
     # ------------------------------------------------
     def affiche(self):

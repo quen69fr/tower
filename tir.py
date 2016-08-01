@@ -19,7 +19,7 @@ class Tir():
         self.x = x             # pixel abscisse
         self.y = y             # ordonnéee
         self.bete = bete       # cible du tir
-        self.vitesse = 8
+        self.vitesse = VITESSE_TIR
         self.impact = False    # le tir a-t-il atteint sa cible ?
         self.force = 3         # force du tir (diminution de vie de la bestiole touchee)
 
