@@ -53,6 +53,9 @@ class Tour():
         retourne un tir si un tir a été créé, sinon rend NULL
         '''
 
+        if TIR_ACTIF is False:
+            return
+
         # delai de tir OK ? (autre stratégie : nombre de tirs simultanés maxi)
         if self.delai != 0:
             self.delai -= 1

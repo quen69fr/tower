@@ -26,17 +26,17 @@ VERT =  (  0, 255,   0)
 ROUGE = (255,   0,   0)
 JAUNE = (255, 255,   0)
 
-GRILLE_LX = 28
-GRILLE_LY = 28
-TAILLE_PORTE=4
-GRILLE_PORTE = int((GRILLE_LY-TAILLE_PORTE)/2)
-
-
 BLOC_BORD=-2
 BLOC_TOUR=-1
 BLOC_PORTE=0
-BLOC_ENTREE=-3
+BLOC_ENTREE=9999
 BLOC_INCONNU=-99
+
+GRILLE_LX = 28
+GRILLE_LY = 28
+Y_PORTE = 12 # ordonnée plus haute case de porte
+TAILLE_PORTE=4
+
 
 TAILLE_BLOC = 20
 MARGE_ECRAN = 5
@@ -45,10 +45,9 @@ MARGE_ECRAN = 5
 IMAGE_TOURELLE_VIDE = pygame.image.load("image/TourelleVide.png")
 IMAGE_BESTIOLE = pygame.image.load("image/BestioleNormale.png")
 
-NOMBRE_BESTIOLE = 1
-
-AFFICHE_PERIMETRE_TIR = True
-
+NOMBRE_BESTIOLE = 5
+TIR_ACTIF = False
+AFFICHE_PERIMETRE_TIR = False
 AFFICHE_CSV = False
 FICHIER_DEF_BLOCS = "blocs2.csv"
 

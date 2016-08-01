@@ -102,9 +102,13 @@ if __name__=="__main__":
         for bete in listeBestioles:
             bete.deplace(grille)
             bete.affiche()
+            (i,j)=conversionCoordPixelsVersCases(bete.x,bete.y)
+            if i == GRILLE_LX-1:
+                listeBestioles.remove(bete)
+                next
             if bete.vie <= 0:
                 listeBestioles.remove(bete)
-
+                next
         # gestion des tours
         for tour in grille.listeTours:
             tour.gere_construction()
@@ -125,6 +129,8 @@ if __name__=="__main__":
         # le curseur / tour en construction
         if tourBrouillon:
             tourBrouillon.affiche()
+
+        grille.dessine_porte()
 
         pygame.display.update()
         pygame.time.Clock().tick(FPS)

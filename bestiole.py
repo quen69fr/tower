@@ -21,9 +21,8 @@ class Bestiole():
             self.y=y
         else:
             random.random()
-            positionDansPorte = random.randint(0,TAILLE_PORTE-1)
-            y=GRILLE_PORTE+positionDansPorte
-            #y=GRILLE_PORTE+int((TAILLE_PORTE-1)/2)
+            positionDansPorte = random.randint(1,TAILLE_PORTE-2)
+            y=Y_PORTE+positionDansPorte
             (self.x,self.y)=conversionCoordCasesVersPixels(0,y)
             y_pixel = random.randint(0,TAILLE_BLOC)
             self.y+=y_pixel
@@ -41,7 +40,7 @@ class Bestiole():
         (cx,cy) = conversionCoordPixelsVersCases(self.x,self.y)
 
         # (prochaine_case_x,prochaine_case_y) = grille.prochaineCase(case_x,case_y)
-        (best, pcx, pcy) = grille.prochaineCase2(cx, cy)
+        (best, pcx, pcy) = grille.prochaineCase(cx, cy)
 
         print ("cx:{},cy:{}, x:{} ,y:{}, best:{}, pcx:{}, pcy:{}". format(cx,cy,self.x,self.y,best, pcx,pcy))
         # TOODO / à améliorer

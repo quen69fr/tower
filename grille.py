@@ -22,8 +22,8 @@ class Grille():
             self.grille[GRILLE_LX-1][j]=BLOC_BORD
 
         for k in range(0,TAILLE_PORTE):
-            self.grille[GRILLE_LX-1][GRILLE_PORTE+k]=BLOC_PORTE
-            self.grille[0][GRILLE_PORTE+k]=BLOC_ENTREE
+            self.grille[0][Y_PORTE+k]=BLOC_ENTREE
+            self.grille[GRILLE_LX-1][Y_PORTE+k]=BLOC_PORTE
 
     # ------------------------------------------------
     def reset_distance_grille(self):
@@ -80,8 +80,6 @@ class Grille():
                 c=NOIR
                 if v == BLOC_BORD:
                     c=BLEU
-                if v == BLOC_PORTE:
-                    c=NOIR
                 if v == BLOC_ENTREE:
                     c=BLANC
                 if v == BLOC_INCONNU:
@@ -99,8 +97,14 @@ class Grille():
         for tour in self.listeTours:
             tour.affiche()
 
-        # pygame.display.update()
-        #pygame.time.delay(DELAY )
+    # ------------------------------------------------
+    def dessine_porte(self):
+
+        for j in range(GRILLE_LY):
+            v = self.grille[GRILLE_LX-1][j]
+            if v == BLOC_PORTE:
+                (x, y) = conversionCoordCasesVersPixels(GRILLE_LX-1, j)
+                pygame.draw.rect(SCREEN, JAUNE, (x, y, TAILLE_BLOC, TAILLE_BLOC), 0)
 
     # ------------------------------------------------
     def calcule_distance(self,x,y):
@@ -167,8 +171,8 @@ class Grille():
         self.reset_distance_grille()
         self.listeCasesACalculer=[]
 
-        self.listeCasesACalculer.append([GRILLE_LX-2,GRILLE_PORTE])
-        self.listeCasesACalculer.append([GRILLE_LX-2,GRILLE_PORTE+1])
+        self.listeCasesACalculer.append([GRILLE_LX-2,Y_PORTE])
+        self.listeCasesACalculer.append([GRILLE_LX-2,Y_PORTE+1])
 
         for case in self.listeCasesACalculer:
             #print("liste : ",len(self.listeCasesACalculer) ,self.listeCasesACalculer)
@@ -177,32 +181,41 @@ class Grille():
                 break
 
     # ------------------------------------------------
-    def prochaineCase2(self, x, y):
+    def prochaineCase(self, x, y):
 
         # 1 - Trouver lesquelles des 8 cases adjacentes sont eligibles
         # 2 - selectionner celle / l'une de celle qui a la distance mini
         # Une autre fonction  vérifiera la trajectoire pixel optimale
 
-        # cas des portes d'entrée
-        if x == 0:
-            return ('vd',x + 1, y)
-        if y == 0:
-            return ('vb',x, y + 1)
+        # portes d'entrée
+        # if x == 0:
+        #     return ('vd',x + 1, y)
 
-        # TODO bug des portes de sortie
-
+        if x == 0:   # porte d'entrée
+            v = self.grille[x][y]
+            vg = 9999
+            vd = self.grille[x + 1][y]
+            vh = self.grille[x][y - 1]
+            vb = self.grille[x][y + 1]
+            vhg = 9999
+            vhd = self.grille[x + 1][y - 1]
+            vbg = 9999
+            vbd = self.grille[x + 1][y + 1]
+        elif x == GRILLE_LX - 1:  # porte de sortie
+            return ('vd', x+1, y)
+        else :
         # une case nondiagonale est accessible si libre
         # une case diagonale est accessible si non entourrée de 2 cases nondiag
 
-        v = self.grille[x][y]
-        vg = self.grille[x - 1][y]
-        vd = self.grille[x + 1][y]
-        vh = self.grille[x][y - 1]
-        vb = self.grille[x][y + 1]
-        vhg = self.grille[x - 1][y - 1]
-        vhd = self.grille[x + 1][y - 1]
-        vbg = self.grille[x - 1][y + 1]
-        vbd = self.grille[x + 1][y + 1]
+            v = self.grille[x][y]
+            vg = self.grille[x - 1][y]
+            vd = self.grille[x + 1][y]
+            vh = self.grille[x][y - 1]
+            vb = self.grille[x][y + 1]
+            vhg = self.grille[x - 1][y - 1]
+            vhd = self.grille[x + 1][y - 1]
+            vbg = self.grille[x - 1][y + 1]
+            vbd = self.grille[x + 1][y + 1]
 
         dico = {}
 
@@ -224,9 +237,9 @@ class Grille():
         if vbd >= 0 and ( vb >= 0 or vd >= 0):
             dico['vbd']=vbd+0.414
 
-        #print ("dico:",dico)
+        print ("ProchaineCase2 - dico:",dico)
         best = min(dico, key=dico.get)
-        #print ("x,y, best, vbest, v :", x,y,best, dico[best], v)
+        print ("ProchaineCase2 - x,y, best, vbest, v :", x,y,best, dico[best], v)
 
         if best == 'vg':
             return (best, x-1,y)
@@ -246,9 +259,9 @@ class Grille():
             return (best, x+1,y+1)
 
     # -------------------------------------------------
-    def est_libre(self, cx,cy):
-        ''' renvoie True/False selon que la case cx,cy est libre (pas de tour)'''
-        if self.grille[cx][cy] >= 0:
+    def est_libre(self, i,j):
+        ''' renvoie True/False selon que la case i,j est libre (pas de tour)'''
+        if self.grille[i][j] >= 0:
             return True
         else:
             return False
