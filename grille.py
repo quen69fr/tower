@@ -177,6 +177,8 @@ class Grille():
 
         self.listeCasesACalculer.append([GRILLE_LX-2,Y_PORTE])
         self.listeCasesACalculer.append([GRILLE_LX-2,Y_PORTE+1])
+        self.listeCasesACalculer.append([GRILLE_LX-2,Y_PORTE+2])
+        self.listeCasesACalculer.append([GRILLE_LX-2,Y_PORTE+3])
 
         for case in self.listeCasesACalculer:
             #print("liste : ",len(self.listeCasesACalculer) ,self.listeCasesACalculer)

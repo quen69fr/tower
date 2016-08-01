@@ -21,6 +21,8 @@ from tir import *
 # - gestion de partie : debut, séries de bestioles
 # - score / vies
 
+# - eloigner les bestioles (trop superposées)
+# - faire tourner les yeux des bestioles
 # - gestion de l'argent
 # - plusieurs sortes de Bestioles
 # - plusieurs sortes de Tours

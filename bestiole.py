@@ -24,6 +24,8 @@ class Bestiole():
             positionDansPorte = random.randint(1,TAILLE_PORTE-2)
             y=Y_PORTE+positionDansPorte
             (self.x,self.y)=conversionCoordCasesVersPixels(0,y)
+            x_pixel = random.randint(0,TAILLE_BLOC)
+            self.x += x_pixel
             y_pixel = random.randint(0,TAILLE_BLOC)
             self.y+=y_pixel
 
