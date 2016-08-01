@@ -16,7 +16,7 @@ HAUTEUR = 600
 pygame.init()
 SCREEN = pygame.display.set_mode((LARGEUR, HAUTEUR))
 pygame.display.set_caption("tower !")
-FPS = 800                 # nombre d'image par seconde
+FPS = 60                 # nombre d'image par seconde
 DELAY = 0               # vitesse du jeu
 
 NOIR =  (  0,   0,   0)
@@ -92,6 +92,5 @@ def depasseDroit(x,y,r):
     (i,j) = conversionCoordPixelsVersCases(x,y)
     coordAnglesCase = anglesCase(i,j)
     return (x+r>coordAnglesCase[2])
-
 
 

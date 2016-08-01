@@ -174,7 +174,6 @@ class Grille():
                 break
 
     # ------------------------------------------------
-    # Essai Phil
     def prochaineCase2(self, x, y):
 
         # 1 - Trouver lesquelles des 8 cases adjacentes sont eligibles
@@ -214,13 +213,13 @@ class Grille():
             dico['vb'] = vb
         # diag
         if vhg > 0 and (vh > 0 or vg > 0):
-            dico['vhg']=vhg
+            dico['vhg']=vhg+0.414
         if vhd > 0 and (vh > 0 or vd > 0):
-            dico['vhd']=vhd
+            dico['vhd']=vhd+0.414
         if vbg > 0 and (vb > 0 or vg > 0):
-            dico['vbg']=vbg
+            dico['vbg']=vbg+0.414
         if vbd > 0 and ( vb > 0 or vd > 0):
-            dico['vbd']=vbd
+            dico['vbd']=vbd+0.414
 
         #print ("dico:",dico)
         best = min(dico, key=dico.get)
@@ -336,5 +335,4 @@ class Grille():
             return True
         else:
             return False
-
 

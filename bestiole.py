@@ -10,21 +10,27 @@ class Bestiole():
 
     def __init__(self,x=-1,y=-1):
         self.vitesse = 0.5
-        self.rayon = 10
+        self.rayon = IMAGE_BESTIOLE.get_width()/2
+
         if x!=-1 and y!=-1:
             self.x=x
             self.y=y
         else:
             random.random()
             positionDansPorte = random.randint(0,TAILLE_PORTE-1)
-            #y=GRILLE_PORTE+positionDansPorte
-            y=GRILLE_PORTE+int((TAILLE_PORTE-1)/2)
+            y=GRILLE_PORTE+positionDansPorte
+            #y=GRILLE_PORTE+int((TAILLE_PORTE-1)/2)
             (self.x,self.y)=conversionCoordCasesVersPixels(0,y)
+            y_pixel = random.randint(0,TAILLE_BLOC)
+            self.y+=y_pixel
+
             self.y+= -5
 
+    # -------------------------------------------------
     def affiche(self):
-        SCREEN.blit(IMAGE_BESTIOLE,(self.x-10,self.y-10))
+        SCREEN.blit(self.rot_center(IMAGE_BESTIOLE,90),(self.x-self.rayon,self.y-self.rayon))
 
+    # -------------------------------------------------
     def deplace(self,grille):
 
         # on regarde dans quelle case on est
@@ -33,7 +39,7 @@ class Bestiole():
         # (prochaine_case_x,prochaine_case_y) = grille.prochaineCase(case_x,case_y)
         (best, pcx, pcy) = grille.prochaineCase2(cx, cy)
 
-        print ("cx:{},cy:{}, x:{} ,y:{}, best:{}, pcx:{}, pcy:{}". format(cx,cy,self.x,self.y,best, pcx,pcy))
+        #print ("cx:{},cy:{}, x:{} ,y:{}, best:{}, pcx:{}, pcy:{}". format(cx,cy,self.x,self.y,best, pcx,pcy))
         # TOODO / à améliorer
         # si on va dans une case orthogonale (ex. : d ) :
         #   - si les deux cases autour sont vides (ex. hd, bd) : direction simple (ex. d)
@@ -124,7 +130,7 @@ class Bestiole():
                 else:
                     direction = (0,-1)
         else:
-            print("***********DIAG**********")
+            #print("***********DIAG**********")
             if not (depasseHaut(self.x,self.y,self.rayon) or depasseDroit(self.x,self.y,self.rayon) or depasseGauche(self.x,self.y,self.rayon) or depasseBas(self.x,self.y,self.rayon)):
                 # on ne dépasse pas, on fonce !
                 direction = ( pcx - cx, pcy - cy)
@@ -160,10 +166,20 @@ class Bestiole():
                 else :
                     direction = ( pcx - cx, pcy - cy)
 
-        print("direction :", direction)
+        #print("direction :", direction)
 
         dx = direction[0]
         dy = direction[1]
         #print("dirx : ",direction_x,"diry : ",direction_y)
         self.x+=dx*self.vitesse
         self.y+=dy*self.vitesse
+
+    # -------------------------------------------------
+    def rot_center(self, image, angle):
+        """rotate an image while keeping its center and size"""
+        orig_rect = image.get_rect()
+        rot_image = pygame.transform.rotate(image, angle)
+        rot_rect = orig_rect.copy()
+        rot_rect.center = rot_image.get_rect().center
+        rot_image = rot_image.subsurface(rot_rect).copy()
+        return rot_image
