@@ -10,7 +10,10 @@ class Bestiole():
 
     def __init__(self,x=-1,y=-1):
         ''' x et y en pixels'''
-        self.vitesse = 0.5
+
+        self.vitesse = 0.1
+        self.vie = 30        # nombre de points de vie de la bestiole
+
         self.rayon = IMAGE_BESTIOLE.get_width()/2
 
         if x!=-1 and y!=-1:

@@ -47,8 +47,8 @@ MARGE_ECRAN = 5
 IMAGE_TOURELLE_VIDE = pygame.image.load("image/TourelleVide.png")
 IMAGE_BESTIOLE = pygame.image.load("image/BestioleNormale.png")
 
-
-
+AFFICHE_PERIMETRE_TIR = True
+AFFICHE_CSV = False
 
 def conversionCoordCasesVersPixels(i,j):
     return (MARGE_ECRAN+i*TAILLE_BLOC,MARGE_ECRAN+j*TAILLE_BLOC)
@@ -57,13 +57,27 @@ def conversionCoordPixelsVersCases(x,y):
     return (int((x-MARGE_ECRAN)/TAILLE_BLOC),int((y-MARGE_ECRAN)/TAILLE_BLOC))
 
 def centreCase(i,j):
+    '''
+    Donne le pixel (px,py) du centre d'une case (i,j)
+    :param i: abscisse de la case dans la grille 0 .. N-1
+    :param j: ordonnée
+    :return: un tupple de coordonnées pixel
+    '''
     return (MARGE_ECRAN+(i+0.5) * TAILLE_BLOC, MARGE_ECRAN+(j+0.5) * TAILLE_BLOC)
     pass
+
+def centreTour(i,j):
+    ''' une tour occupe 4 cases
+    rend le pixel du centre des 4 cases,
+    c'est à dire le coin haut-gauche de la case i+1, j+1
+    '''
+    return conversionCoordCasesVersPixels(i+1,j+1)
 
 def anglesCase(i,j):
     ''' dans l'ordre x1,y1 coin supérieur gauche et x2,y2 coin inférieur droit
     '''
     return [MARGE_ECRAN+i*TAILLE_BLOC, MARGE_ECRAN+j*TAILLE_BLOC,MARGE_ECRAN+(i+1)*TAILLE_BLOC, MARGE_ECRAN+(j+1)*TAILLE_BLOC]
+
 
 def directionCentreCase(px, py):
     (i, j) = conversionCoordCasesVersPixels(px, py)

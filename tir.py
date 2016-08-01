@@ -15,12 +15,13 @@ from outils import *
 
 class Tir():
 
-    def __init__(self,x = 100 ,y=100):
-        self.x = x
-        self.y = y
-        self.dirx = 2
-        self.diry = 1
-
+    def __init__(self, bete, x = 100 ,y=100):
+        self.x = x             # pixel abscisse
+        self.y = y             # ordonnéee
+        self.bete = bete       # cible du tir
+        self.vitesse = 8
+        self.impact = False    # le tir a-t-il atteint sa cible ?
+        self.force = 3         # force du tir (diminution de vie de la bestiole touchee)
 
     def affiche(self):
         # SCREEN.blit(self.rot_center(IMAGE_BESTIOLE,45),(self.x-self.rayon,self.y-self.rayon))
@@ -29,9 +30,25 @@ class Tir():
 
     def deplace(self, grille):
         # print (type(self.x), type(self.dirx))
-        self.x = self.x + self.dirx
-        self.y += self.diry
+        # TODO : prendre le centre de la bestiole et pas le coin pixel haut-gauche
+        dirx = self.bete.x - self.x
+        diry = self.bete.y - self.y
+        distance = math.sqrt(dirx ** 2 + diry **2)
 
-    def verifie_impact(self):
-        pass
+        # impact
+        if distance < 5:
+            self.impact = True
+            return
+
+        # sinon deplace
+        dirx = dirx / distance
+        diry = diry / distance
+
+        self.x = int(self.x + dirx * self.vitesse )
+        self.y = int(self.y + diry * self.vitesse )
+
+    def traite_impact(self):
+        # on diminue la vie de la bestiole selon la force du tir
+        self.bete.vie -= self.force
+
 

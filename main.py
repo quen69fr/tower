@@ -9,14 +9,22 @@ from tir import *
 
 
 # TODO général
-# - plusieurs sortes de Tours
-# - plusieurs sortes de Bestioles
-# - les Tirs
-# - les upgrades (améliorations) de Tours
-# - corriger les bugs de case qui plantent (porte, hors grille, labyrinthe fermé, ...)
-# - gestion de l'argent
+# - DONE - les Tirs
+# - mort des bestioles
+# - corriger les bugs
+#     clic hors grille (DONE)
+#     affichage tour construction hors grille (TODO => Quentin)
+#     case fermée
+#     porte de sortie
+#     fermeture porte d'entrée
+#     ne pas créer une case sur une bestiole
 # - gestion de partie : debut, séries de bestioles
 # - score / vies
+
+# - gestion de l'argent
+# - plusieurs sortes de Bestioles
+# - plusieurs sortes de Tours
+# - les upgrades (améliorations) de Tours
 # - l'orientation des bestioles (rotations)
 # - les sons
 
@@ -27,9 +35,8 @@ if __name__=="__main__":
     listeBestioles = []
     listeTirs = []
 
-    csv = 0
     # TODO : mettre le chargement csv, dans une methode de grille()  [ou outil à voir]
-    if csv == 1:
+    if AFFICHE_CSV:
         fichierDefBlocs = csv.reader(open(FICHIER_DEF_BLOCS,"r"),delimiter=';')
         numLigne = 0
         for ligne in fichierDefBlocs:
@@ -48,11 +55,13 @@ if __name__=="__main__":
         #bestiole = Bestiole()
         listeBestioles.append(bestiole)
 
-    #listeTirs = []
+    # listeTirs = []
     # listeTirs.append(Tir(x=300,y=100))
     # from outils
 
     while True:
+
+        print ("Tours : {} ; Betes : {} ;  Tirs : {}".format(len(grille.listeTours), len(listeBestioles), len(listeTirs)))
 
         # Les événements clavier / souris
         for event in pygame.event.get():
@@ -77,9 +86,10 @@ if __name__=="__main__":
 
             # handle MOUSEBUTTONUP
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-                (a,b)=conversionCoordPixelsVersCases(x_souris,y_souris)
-                grille.nouvelle_tour(Tour(a,b))
-                grille.calcule_distance_grille()
+                (i,j)=conversionCoordPixelsVersCases(x_souris,y_souris)
+                if i >= 1 and i < GRILLE_LX-1 and j >= 1 and j < GRILLE_LY-1:
+                    grille.nouvelle_tour(Tour(i,j))
+                    grille.calcule_distance_grille()
 
             if event.type == pygame.MOUSEBUTTONUP and event.button == 3:
                 (a,b)=conversionCoordPixelsVersCases(x_souris,y_souris)
@@ -91,27 +101,29 @@ if __name__=="__main__":
                 tourBrouillon = Tour(a,b,Tour._ETAT_TOUR_BROUILLON)
 
         SCREEN.fill(0)
-
         grille.dessine_grille()
 
         # les bestioles
-        for i in range(len(listeBestioles)):
-            listeBestioles[i].deplace(grille)
-            listeBestioles[i].affiche()
+        for bete in listeBestioles:
+            bete.deplace(grille)
+            bete.affiche()
 
         # gestion des tours
-        for i in range(len(grille.listeTours)):
-            grille.listeTours[i].gere_construction()
-            grille.listeTours[i].gere_deconstruction()
-            t=grille.listeTours[i].cree_tir(listeBestioles)
+        for tour in grille.listeTours:
+            tour.gere_construction()
+            tour.gere_deconstruction()
+            t=tour.cree_tir(listeBestioles)
             if t is not None :
                 listeTirs.append(t)
 
         # les tirs
-        for i in range(len(listeTirs)):
-            listeTirs[i].deplace(grille)
-            listeTirs[i].verifie_impact()
-            listeTirs[i].affiche()
+        for tir in listeTirs:
+            tir.deplace(grille)
+            if tir.impact == True:
+                tir.traite_impact()
+                listeTirs.remove(tir)
+                next
+            tir.affiche()
 
         # le curseur / tour en construction
         if tourBrouillon:

@@ -18,21 +18,21 @@ class Tour():
         self.x = x
         self.y = y
         self.etat = etat
-        self.a_tire = False
-        self.distance_tir = 200  # en pixels
-        self.delay_depart = 100
-        self.delay = 0
+        self.distance_tir = 100  # en pixels
+        self.delai_initial = 30
+        self.delai = 0
     # ------------------------------------------------
     def affiche(self):
         if self.etat == Tour._ETAT_TOUR_BROUILLON:
             recttransparent = pygame.Surface((40,40), pygame.SRCALPHA, 32)
             recttransparent.fill((0,0,255, 50))
             SCREEN.blit(recttransparent, conversionCoordCasesVersPixels(self.x,self.y))
+            if AFFICHE_PERIMETRE_TIR:
+               pygame.draw.circle(SCREEN, VERT, centreTour(self.x, self.y), self.distance_tir, 1)
 
         elif self.etat== Tour._ETAT_TOUR_CONSTRUIT:
             SCREEN.blit(IMAGE_TOURELLE_VIDE,conversionCoordCasesVersPixels(self.x,self.y))
-            (cx,cy)=centreCase(self.x,self.y)
-            pygame.draw.circle(SCREEN,VERT, (int(cx),int(cy)) ,self.distance_tir, 1)
+
 
     # ------------------------------------------------
     def gere_construction(self):
@@ -52,28 +52,25 @@ class Tour():
         determine s'il faut tirer, et si oui, crée un tir, trouve la cible ...
         retourne un tir si un tir a été créé, sinon rend NULL
         '''
-        # TODO : frequence de tir, presence cible, viser cible
 
-        #if self.a_tire is False:
-            # Frequence ?
-            # todo
-            # Présence cible en vue ?
-            # ...
-        if self.delay == 0:
-            for b in listeBestioles:
-                # distance entre : self.centreCase() et (b.x, b.y)
-                (cx,cy) = centreCase(self.x,self.y)
-                dist = math.sqrt ( (cx-b.x)**2 + (cy-b.y)**2 )
-                if dist <= self.distance_tir:
-                    # Si oui, calculer direction
-                    #self.a_tire = True
-                    self.delay = self.delay_depart
-                    c = centreCase(self.x, self.y)
-                    return Tir(c[0], c[1])
+        # delai de tir OK ? (autre stratégie : nombre de tirs simultanés maxi)
+        if self.delai != 0:
+            self.delai -= 1
+            return
 
-        else:
-            self.delay -= 1
+        # Recherche cible ?
+        # La premiere de la liste qui est à bonne distance
+        # TODO : autre stratégie : la plus proche de la sortie, la plus proche de la tour, ...
+        for b in listeBestioles:
+            # distance entre : self.centreCase() et (b.x, b.y)
+            (cx,cy) = centreCase(self.x,self.y)
+            dist = math.sqrt ( (cx-b.x)**2 + (cy-b.y)**2 )
+            if dist <= self.distance_tir:
+                # Si oui, calculer direction
+                self.delai = self.delai_initial
+                c = centreTour(self.x, self.y)
+                return Tir(b, c[0], c[1])
 
-        print(self.delay)
+        # print(self.delai)
         # sinon pas de tir
         return
