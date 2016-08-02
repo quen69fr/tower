@@ -58,12 +58,21 @@ if __name__=="__main__":
 
     while True:
 
-        print ("etat_partie={} ; nombre_pertes={} argent={}".format(etat_partie, nombre_bestioles_sorties, argent))
+        #print(argent)
+        #print(len(grille.listeTours))
+        #print ("etat_partie={} ; nombre_pertes={} argent={}".format(etat_partie, nombre_bestioles_sorties, argent))
+        #print ("Tours : {} ; Betes : {} ;  Tirs : {}".format(len(grille.listeTours), len(listeBestioles), len(listeTirs)))
+
         pygame.display.update()
         pygame.time.Clock().tick(FPS)
         # pygame.time.delay(DELAY )
 
-        #print ("Tours : {} ; Betes : {} ;  Tirs : {}".format(len(grille.listeTours), len(listeBestioles), len(listeTirs)))
+        souris = pygame.mouse.get_pos()
+        #print(souris)
+        x_souris = souris[0]
+        y_souris = souris[1]
+        ev_clicgauche=False
+        ev_clic_droit=False
 
         # Les événements clavier / souris
         for event in pygame.event.get():
@@ -81,12 +90,13 @@ if __name__=="__main__":
                     pygame.quit()
                     exit(0)
 
-            souris = pygame.mouse.get_pos()
-            #print(souris)
-            x_souris = souris[0]
-            y_souris = souris[1]
+            if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+                ev_clicgauche = True
+                continue
 
-
+        if event.type == pygame.MOUSEBUTTONUP and event.button == 3:
+                ev_clic_droit = True
+                continue
 
         SCREEN.fill(0)
 
@@ -120,7 +130,8 @@ if __name__=="__main__":
             listeBestioles.append(bestiole)
 
         # handle MOUSEBUTTONUP
-        if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+        if ev_clicgauche:
+            # print ("event mousebuttonup and button 1")
             (i, j) = conversionCoordPixelsVersCases(x_souris, y_souris)
             if i >= 1 and i < GRILLE_LX - 1 and j >= 1 and j < GRILLE_LY - 1:
                 # assez d'argent ?
@@ -139,10 +150,12 @@ if __name__=="__main__":
                         if grille2_ok == False:
                             break
                     if grille2_ok == True:
-                        grille=copy.deepcopy(grille2)
                         argent -= PRIX_TOUR
+                        # print(argent)
+                        grille=copy.deepcopy(grille2)
+                        pygame.event.clear()
 
-        if event.type == pygame.MOUSEBUTTONUP and event.button == 3:
+        if ev_clic_droit:
             (a, b) = conversionCoordPixelsVersCases(x_souris, y_souris)
             grille.enleve_tour(a, b)
             grille.calcule_distance_grille()

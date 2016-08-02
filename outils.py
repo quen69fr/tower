@@ -49,7 +49,7 @@ IMAGE_BESTIOLE = pygame.image.load("image/BestioleNormale.png")
 # NOMBRE_BESTIOLE = 10
 VITESSE_BESTIOLE = 1
 VIE_BESTIOLE = 10
-FREQUENCE_BESTIOLE = 20 # (random 1 sur / freqence)
+FREQUENCE_BESTIOLE = 80 # (random 1 sur / freqence)
 NOMBRE_BESTIOLES_SORTIE_MAX = 5  # avant perte de partie
 GAIN_BESTIOLE = 10
 
