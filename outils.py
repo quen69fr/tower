@@ -8,6 +8,7 @@ from pygame.locals import *
 import random
 import math
 import csv
+import copy # pour copier les objets Grille*
 
 # SCREEN sera une "surface de dessin"
 LARGEUR = 800
@@ -45,7 +46,13 @@ MARGE_ECRAN = 5
 IMAGE_TOURELLE_VIDE = pygame.image.load("image/TourelleVide.png")
 IMAGE_BESTIOLE = pygame.image.load("image/BestioleNormale.png")
 
-NOMBRE_BESTIOLE = 10
+# NOMBRE_BESTIOLE = 10
+VITESSE_BESTIOLE = 1
+VIE_BESTIOLE = 10
+FREQUENCE_BESTIOLE = 20 # (random 1 sur / freqence)
+NOMBRE_BESTIOLES_SORTIE_MAX = 5  # avant perte de partie
+GAIN_BESTIOLE = 10
+
 TIR_ACTIF = True
 AFFICHE_PERIMETRE_TIR = True
 VITESSE_TIR = 8

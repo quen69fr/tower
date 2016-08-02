@@ -6,14 +6,16 @@ __author__ = 'Quentin'
 from grille import *
 from outils import *
 
+
 class Bestiole():
 
     def __init__(self,x=-1,y=-1):
         ''' x et y en pixels'''
 
-        self.vitesse = 1
-        self.vie = 10        # nombre de points de vie de la bestiole
 
+        self.vitesse = VITESSE_BESTIOLE
+        self.vie = VIE_BESTIOLE        # nombre de points de vie de la bestiole
+        self.gain = GAIN_BESTIOLE      # argent rapporté
         self.rayon = IMAGE_BESTIOLE.get_width()/2
 
         if x!=-1 and y!=-1:
@@ -34,7 +36,7 @@ class Bestiole():
     # -------------------------------------------------
     def affiche(self):
         SCREEN.blit(self.rot_center(IMAGE_BESTIOLE,45),(self.x-self.rayon,self.y-self.rayon))
-        print(self.vie)
+        # print(self.vie)
 
     # -------------------------------------------------
     def deplace(self,grille):

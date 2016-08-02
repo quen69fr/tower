@@ -10,28 +10,38 @@ from tir import *
 
 # TODO général
 # - DONE - les Tirs
-# - DONE mort des bestioles
+# - DONE - création, sortie, et mort des bestioles
 # - corriger les bugs
-#     affichage tour construction hors grille (TODO => Quentin)
-#     case fermée
 #     ne pas créer une case sur une bestiole
-#     DONE - porte de sortie
+#     cases devant porte de sortie porte de sortie
+#     DONE - affichage tour brouillon hors grille
 #     DONE - fermeture porte d'entrée
 #     DONE - clic hors grille
-# - gestion de partie : debut, séries de bestioles
-# - score / vies
+#     DONE - pas de case fermée
+# - DONE : gestion de partie : debut, séries de bestioles
+# - vies  : calculer (DONE) , afficher (QUENTIN)
+# - argent : calculer, afficher
 
+# - dessiner la vie restante au dessus de chaque bestiole
 # - eloigner les bestioles (trop superposées)
-# - faire tourner les yeux des bestioles
-# - gestion de l'argent
 # - plusieurs sortes de Bestioles
 # - plusieurs sortes de Tours
 # - les upgrades (améliorations) de Tours
 # - l'orientation des bestioles (rotations)
 # - les sons
 
+ETAT_PARTIE_ACCUEIL = 1   # on construit, pas de betes, on quitte quand on clic sur DEMARRER
+ETAT_PARTIE_JEU = 2       # les betes arrivent, on construit
+ETAT_PARTIE_PERDU = 4     # on fige le jeu ; on affiche la grille, les betes, et des boutons "ENCORE / QUITTER"
+ETAT_PARTIE_GAGNE = 5     # on fige le jeu ; on affiche la grille, les betes, et des boutons "ENCORE / QUITTER"
 
 if __name__=="__main__":
+
+    etat_partie = ETAT_PARTIE_ACCUEIL
+    argent = 100
+
+
+    nombre_bestioles_sorties = 0
 
     grille = Grille()
     listeBestioles = []
@@ -51,12 +61,15 @@ if __name__=="__main__":
     grille.calcule_distance_grille()
     grille.dessine_grille()
 
-    for i in range(NOMBRE_BESTIOLE):
-        bestiole = Bestiole()
-        listeBestioles.append(bestiole)
+
 
 
     while True:
+
+        print ("etat_partie={} ; nombre_pertes={}".format(etat_partie, nombre_bestioles_sorties))
+        pygame.display.update()
+        pygame.time.Clock().tick(FPS)
+        # pygame.time.delay(DELAY )
 
         #print ("Tours : {} ; Betes : {} ;  Tirs : {}".format(len(grille.listeTours), len(listeBestioles), len(listeTirs)))
 
@@ -70,7 +83,7 @@ if __name__=="__main__":
                     exit(0)
 
             if event.type==pygame.KEYDOWN:
-                #print(event.key)
+                # print(event.key)
                 # Q
                 if event.key==97:
                     pygame.quit()
@@ -81,24 +94,69 @@ if __name__=="__main__":
             x_souris = souris[0]
             y_souris = souris[1]
 
-            # handle MOUSEBUTTONUP
-            if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-                (i,j)=conversionCoordPixelsVersCases(x_souris,y_souris)
-                if i >= 1 and i < GRILLE_LX-1 and j >= 1 and j < GRILLE_LY-1:
-                    grille.nouvelle_tour(Tour(i,j))
-                    grille.calcule_distance_grille()
 
-            if event.type == pygame.MOUSEBUTTONUP and event.button == 3:
-                (a,b)=conversionCoordPixelsVersCases(x_souris,y_souris)
-                grille.enleve_tour(a,b)
-                grille.calcule_distance_grille()
-
-            else:
-                (a,b)=conversionCoordPixelsVersCases(x_souris,y_souris)
-                tourBrouillon = Tour(a,b,Tour._ETAT_TOUR_BROUILLON)
 
         SCREEN.fill(0)
+
+        # -----------------------------
+        if etat_partie == ETAT_PARTIE_ACCUEIL:
+            grille.dessine_grille()
+            grille.dessine_portes()
+            if event.type==pygame.KEYDOWN:
+                # S (start):  if event.key==115:
+                etat_partie = ETAT_PARTIE_JEU
+            continue
+
+        # -----------------------------
+        if etat_partie == ETAT_PARTIE_PERDU:
+            grille.dessine_grille()
+            grille.dessine_portes()
+            for bete in listeBestioles:
+                bete.affiche()
+            for tir in listeTirs:
+                tir.affiche()
+            continue
+        # -----------------------------
+        # etat_partie_JEU
+
         grille.dessine_grille()
+
+        # ajout de bestiole ?
+        # (todo : une par une, par vague, de differentes sortes ... ; faire une methode )
+        if random.randint(0,FREQUENCE_BESTIOLE) == 1:
+            bestiole = Bestiole()
+            listeBestioles.append(bestiole)
+
+        # handle MOUSEBUTTONUP
+        if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+            (i, j) = conversionCoordPixelsVersCases(x_souris, y_souris)
+            if i >= 1 and i < GRILLE_LX - 1 and j >= 1 and j < GRILLE_LY - 1:
+                grille2 = copy.deepcopy(grille)
+                grille2.nouvelle_tour(Tour(i, j))
+                grille2.calcule_distance_grille()
+                # verifie s'il y a des cases non calculées ?
+                grille2_ok = True
+                for i in range(GRILLE_LX):
+                    for j in range (GRILLE_LY):
+                        if grille2.grille[i][j]==BLOC_INCONNU:
+                            grille2_ok = False
+                            break
+                    if grille2_ok == False:
+                        break
+                if grille2_ok == True:
+                    grille=copy.deepcopy(grille2)
+
+        if event.type == pygame.MOUSEBUTTONUP and event.button == 3:
+            (a, b) = conversionCoordPixelsVersCases(x_souris, y_souris)
+            grille.enleve_tour(a, b)
+            grille.calcule_distance_grille()
+
+        else:
+            (a, b) = conversionCoordPixelsVersCases(x_souris, y_souris)
+            if a >= 1 and a <= GRILLE_LX-3 and b >=1 and b <= GRILLE_LY - 3:
+                tourBrouillon = Tour(a, b, Tour._ETAT_TOUR_BROUILLON)
+            else:
+                tourBrouillon = None
 
         # les bestioles
         for bete in listeBestioles:
@@ -106,11 +164,16 @@ if __name__=="__main__":
             bete.affiche()
             (i,j)=conversionCoordPixelsVersCases(bete.x,bete.y)
             if i == GRILLE_LX-1:
+                # une besstiole est sortie
                 listeBestioles.remove(bete)
-                next
+                nombre_bestioles_sorties += 1
+                if nombre_bestioles_sorties >= NOMBRE_BESTIOLES_SORTIE_MAX:
+                    etat_partie = ETAT_PARTIE_PERDU
+                continue
             if bete.vie <= 0:
                 listeBestioles.remove(bete)
-                next
+                continue
+
         # gestion des tours
         for tour in grille.listeTours:
             tour.gere_construction()
@@ -134,9 +197,7 @@ if __name__=="__main__":
 
         grille.dessine_portes()
 
-        pygame.display.update()
-        pygame.time.Clock().tick(FPS)
-        # pygame.time.delay(DELAY )
+
 
 
 
