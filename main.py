@@ -9,16 +9,9 @@ from tir import *
 
 
 # TODO général
-# - DONE - les Tirs
-# - DONE - création, sortie, et mort des bestioles
 # - corriger les bugs
-#     ne pas créer une case sur une bestiole
+#     ne pas créer une case sur une bestiole ?
 #     cases devant porte de sortie porte de sortie
-#     DONE - affichage tour brouillon hors grille
-#     DONE - fermeture porte d'entrée
-#     DONE - clic hors grille
-#     DONE - pas de case fermée
-# - DONE : gestion de partie : debut, séries de bestioles
 # - vies  : calculer (DONE) , afficher (QUENTIN)
 # - argent : calculer, afficher
 
@@ -39,7 +32,6 @@ if __name__=="__main__":
 
     etat_partie = ETAT_PARTIE_ACCUEIL
     argent = 100
-
 
     nombre_bestioles_sorties = 0
 
@@ -66,7 +58,7 @@ if __name__=="__main__":
 
     while True:
 
-        print ("etat_partie={} ; nombre_pertes={}".format(etat_partie, nombre_bestioles_sorties))
+        print ("etat_partie={} ; nombre_pertes={} argent={}".format(etat_partie, nombre_bestioles_sorties, argent))
         pygame.display.update()
         pygame.time.Clock().tick(FPS)
         # pygame.time.delay(DELAY )
@@ -131,20 +123,24 @@ if __name__=="__main__":
         if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             (i, j) = conversionCoordPixelsVersCases(x_souris, y_souris)
             if i >= 1 and i < GRILLE_LX - 1 and j >= 1 and j < GRILLE_LY - 1:
-                grille2 = copy.deepcopy(grille)
-                grille2.nouvelle_tour(Tour(i, j))
-                grille2.calcule_distance_grille()
-                # verifie s'il y a des cases non calculées ?
-                grille2_ok = True
-                for i in range(GRILLE_LX):
-                    for j in range (GRILLE_LY):
-                        if grille2.grille[i][j]==BLOC_INCONNU:
-                            grille2_ok = False
+                # assez d'argent ?
+                if argent >= PRIX_TOUR:
+                    # emplacement autorisé ?
+                    grille2 = copy.deepcopy(grille)
+                    grille2.nouvelle_tour(Tour(i, j))
+                    grille2.calcule_distance_grille()
+                    # verifie s'il y a des cases non calculées ?
+                    grille2_ok = True
+                    for i in range(GRILLE_LX):
+                        for j in range (GRILLE_LY):
+                            if grille2.grille[i][j]==BLOC_INCONNU:
+                                grille2_ok = False
+                                break
+                        if grille2_ok == False:
                             break
-                    if grille2_ok == False:
-                        break
-                if grille2_ok == True:
-                    grille=copy.deepcopy(grille2)
+                    if grille2_ok == True:
+                        grille=copy.deepcopy(grille2)
+                        argent -= PRIX_TOUR
 
         if event.type == pygame.MOUSEBUTTONUP and event.button == 3:
             (a, b) = conversionCoordPixelsVersCases(x_souris, y_souris)
