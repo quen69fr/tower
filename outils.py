@@ -70,12 +70,12 @@ AFFICHE_CSV = False
 FICHIER_DEF_BLOCS = "blocs2.csv"
 
 
-# LEs types et caractéristiques des différentes bestioles
+# Les types et caractéristiques des différentes bestioles
 
 TABLE_BESTIOLE = {}
-TABLE_BESTIOLE['normale']    = { 'fichier':'image/BestioleNormale.png', 'vie':10, 'gain': 2, 'vitesse':1.0}
-TABLE_BESTIOLE['rapide']     = {'fichier':"image/BestioleVolant.png", 'vie':10, 'gain': 3, 'vitesse':3.0 }
-TABLE_BESTIOLE['immortelle'] = {'fichier':"image/BestioleNormale.png", 'vie':10000000, 'gain': 300, 'vitesse':8.0 }
+TABLE_BESTIOLE['normale']    = {'image':pygame.image.load("image/BestioleNormale.png"), 'vie':10, 'gain': 2, 'vitesse':1.0}
+TABLE_BESTIOLE['rapide']     = {'image':pygame.image.load("image/BestioleVolant.png"), 'vie':10, 'gain': 300, 'vitesse':1.5 }
+TABLE_BESTIOLE['immortelle'] = {'image':pygame.image.load("image/BestioleNormale.png"), 'vie':10000000, 'gain':77 , 'vitesse':1.0 }
 
 # TABLE_BESTIOLE['normale']['vie'] => la vie de la bestiole normale
 #
@@ -85,11 +85,12 @@ TABLE_BESTIOLE['immortelle'] = {'fichier':"image/BestioleNormale.png", 'vie':100
 # idées : coef multi de gain, de vie, etalement de l'arrivée
 
 INTERVALLE_BESTIOLE = 15 # (random 1 sur / intervalle)
-DELAI_ENTRE_VAGUE = 500  # délai en secondes entre deux vagues ; constant pour toute la partie
+DELAI_ENTRE_VAGUE = 200  # délai en secondes entre deux vagues ; constant pour toute la partie
 
 TABLE_VAGUE = ( {'type':'normale', 'quantite':3},
                 {'type':'rapide','quantite':5},
                 {'type':'normale','quantite':30},
+                {'type':'rapide','quantite':70},
                 {'type':'immortelle','quantite':2},
                 )
 

@@ -9,13 +9,14 @@ from outils import *
 
 class Bestiole():
 
-    def __init__(self,x=-1,y=-1):
+    def __init__(self,x=-1,y=-1, type='normale'):
         ''' x et y en pixels'''
 
-
-        self.vitesse = VITESSE_BESTIOLE
-        self.vie = VIE_BESTIOLE        # nombre de points de vie de la bestiole
-        self.rayon = IMAGE_BESTIOLE.get_width()/2
+        self.type = type
+        self.vitesse = TABLE_BESTIOLE[type]['vitesse']
+        self.vie = TABLE_BESTIOLE[type]['vie']
+        self.rayon = TABLE_BESTIOLE[type]['image'].get_width()/2
+        self.image = TABLE_BESTIOLE[type]['image']
 
         if x!=-1 and y!=-1:
             self.x=x
@@ -34,7 +35,7 @@ class Bestiole():
 
     # -------------------------------------------------
     def affiche(self):
-        SCREEN.blit(IMAGE_BESTIOLE,(self.x-self.rayon,self.y-self.rayon))
+        SCREEN.blit(self.image,(self.x-self.rayon,self.y-self.rayon))
         # print(self.vie)
 
     # -------------------------------------------------

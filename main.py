@@ -64,14 +64,19 @@ if __name__=="__main__":
 
         #texte.affiche_ARGENT(ARGENT)
         #texte.affiche_vie(nombre_vie)
-        texte_argent="Argent : {} €".format(ARGENT)
-        surface = FONT.render(texte_argent, True, JAUNE)
+        texte="Argent : {} €".format(ARGENT)
+        surface = FONT.render(texte, True, JAUNE)
         rect = surface.get_rect(topleft=(MARGE_ECRAN+410, 10))
         SCREEN.blit(surface, rect)
 
-        texte_argent="Nombre de vie : {}".format(nombre_vie)
-        surface = FONT.render(texte_argent, True, BLANC)
+        texte="Nombre de vie : {}".format(nombre_vie)
+        surface = FONT.render(texte, True, BLANC)
         rect = surface.get_rect(topleft=(MARGE_ECRAN+5, 10))
+        SCREEN.blit(surface, rect)
+
+        texte="Vague : {:02d}".format(vague)
+        surface = FONT.render(texte, True, BLEU)
+        rect = surface.get_rect(topleft=(MARGE_ECRAN+245, 10))
         SCREEN.blit(surface, rect)
 
         #print(VIE_BESTIOLE)
@@ -152,7 +157,8 @@ if __name__=="__main__":
         if vague_compteur < TABLE_VAGUE[vague]['quantite']:
             # non, il faut envoyer une nouvelle bestiole de la vague en cours
             if random.randint(0,INTERVALLE_BESTIOLE) == 1:
-                bestiole = Bestiole() # TODO : mettre ici les caractéristiques de la bete à créer
+                t=TABLE_VAGUE[vague]['type']
+                bestiole = Bestiole(type=t) # TODO : mettre ici les caractéristiques de la bete à créer
                 listeBestioles.append(bestiole)
                 vague_compteur += 1
         else:
@@ -225,7 +231,8 @@ if __name__=="__main__":
                     etat_partie = ETAT_PARTIE_PERDU
                 continue
             if bete.vie <= 0:
-                ARGENT += ARGENT_BESTIOLE
+                # ARGENT += ARGENT_BESTIOLE
+                ARGENT += TABLE_BESTIOLE[bete.type]['gain']
                 listeBestioles.remove(bete)
                 continue
 
