@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 __author__ = 'Quentin , Manu et Philippe'
 
+from texte import *
 from grille import *
 from tour import *
 from bestiole import *
-from outils import *
 from tir import *
+from outils import *
+
 
 
 # TODO général
@@ -30,12 +32,14 @@ ETAT_PARTIE_GAGNE = 5     # on fige le jeu ; on affiche la grille, les betes, et
 
 if __name__=="__main__":
 
+    vague_bestioles = 10
     etat_partie = ETAT_PARTIE_ACCUEIL
-    argent = 100
+    ARGENT = 100
 
-    nombre_bestioles_sorties = 0
+    nombre_vie = NOMBRE_BESTIOLES_SORTIE_MAX
 
     grille = Grille()
+    texte = Text
     listeBestioles = []
     listeTirs = []
 
@@ -58,9 +62,23 @@ if __name__=="__main__":
 
     while True:
 
-        #print(argent)
+        #texte.affiche_ARGENT(ARGENT)
+        #texte.affiche_vie(nombre_vie)
+        texte_argent="Argent : {} €".format(ARGENT)
+        surface = FONT.render(texte_argent, True, JAUNE)
+        rect = surface.get_rect(topleft=(MARGE_ECRAN+410, 10))
+        SCREEN.blit(surface, rect)
+
+        texte_argent="Nombre de vie : {}".format(nombre_vie)
+        surface = FONT.render(texte_argent, True, BLANC)
+        rect = surface.get_rect(topleft=(MARGE_ECRAN+5, 10))
+        SCREEN.blit(surface, rect)
+
+        #print(VIE_BESTIOLE)
+        #print(vague_bestioles)
+        #print(ARGENT)
         #print(len(grille.listeTours))
-        #print ("etat_partie={} ; nombre_pertes={} argent={}".format(etat_partie, nombre_bestioles_sorties, argent))
+        #print ("etat_partie={} ; nombre_pertes={} ARGENT={}".format(etat_partie, nombre_vie, ARGENT))
         #print ("Tours : {} ; Betes : {} ;  Tirs : {}".format(len(grille.listeTours), len(listeBestioles), len(listeTirs)))
 
         pygame.display.update()
@@ -94,7 +112,7 @@ if __name__=="__main__":
                 ev_clicgauche = True
                 continue
 
-        if event.type == pygame.MOUSEBUTTONUP and event.button == 3:
+            if event.type == pygame.MOUSEBUTTONUP and event.button == 3:
                 ev_clic_droit = True
                 continue
 
@@ -124,10 +142,21 @@ if __name__=="__main__":
         grille.dessine_grille()
 
         # ajout de bestiole ?
-        # (todo : une par une, par vague, de differentes sortes ... ; faire une methode )
-        if random.randint(0,FREQUENCE_BESTIOLE) == 1:
-            bestiole = Bestiole()
-            listeBestioles.append(bestiole)
+        # (todo : de differentes sortes ... ; faire une methode )
+
+        if vague_bestioles <= 0:
+            if vague_bestioles == -500:
+                vague_bestioles = 10
+                VIE_BESTIOLE += 10
+                ARGENT_BESTIOLE += 1
+            else:
+                vague_bestioles -= 1
+
+        else:
+            if random.randint(0,FREQUENCE_BESTIOLE) == 1:
+                vague_bestioles -= 1
+                bestiole = Bestiole()
+                listeBestioles.append(bestiole)
 
         # handle MOUSEBUTTONUP
         if ev_clicgauche:
@@ -135,7 +164,7 @@ if __name__=="__main__":
             (i, j) = conversionCoordPixelsVersCases(x_souris, y_souris)
             if i >= 1 and i < GRILLE_LX - 1 and j >= 1 and j < GRILLE_LY - 1:
                 # assez d'argent ?
-                if argent >= PRIX_TOUR:
+                if ARGENT >= PRIX_TOUR:
                     # emplacement autorisé ?
                     grille2 = copy.deepcopy(grille)
                     grille2.nouvelle_tour(Tour(i, j))
@@ -150,15 +179,10 @@ if __name__=="__main__":
                         if grille2_ok == False:
                             break
                     if grille2_ok == True:
-                        argent -= PRIX_TOUR
-                        # print(argent)
+                        ARGENT -= PRIX_TOUR
+                        # print(ARGENT)
                         grille=copy.deepcopy(grille2)
                         pygame.event.clear()
-
-        if ev_clic_droit:
-            (a, b) = conversionCoordPixelsVersCases(x_souris, y_souris)
-            grille.enleve_tour(a, b)
-            grille.calcule_distance_grille()
 
         else:
             (a, b) = conversionCoordPixelsVersCases(x_souris, y_souris)
@@ -166,6 +190,15 @@ if __name__=="__main__":
                 tourBrouillon = Tour(a, b, Tour._ETAT_TOUR_BROUILLON)
             else:
                 tourBrouillon = None
+
+        if ev_clic_droit:
+            (a, b) = conversionCoordPixelsVersCases(x_souris, y_souris)
+            if grille.grille[a][b] == BLOC_TOUR and grille.grille[a+1][b] == BLOC_TOUR and grille.grille[a][b+1] == BLOC_TOUR and grille.grille[a+1][b+1] == BLOC_TOUR:
+                grille.enleve_tour(a, b)
+                grille.calcule_distance_grille()
+                ARGENT += int(PRIX_TOUR/2)
+
+
 
         # les bestioles
         for bete in listeBestioles:
@@ -175,11 +208,12 @@ if __name__=="__main__":
             if i == GRILLE_LX-1:
                 # une besstiole est sortie
                 listeBestioles.remove(bete)
-                nombre_bestioles_sorties += 1
-                if nombre_bestioles_sorties >= NOMBRE_BESTIOLES_SORTIE_MAX:
+                nombre_vie -= 1
+                if nombre_vie == 0:
                     etat_partie = ETAT_PARTIE_PERDU
                 continue
             if bete.vie <= 0:
+                ARGENT += ARGENT_BESTIOLE
                 listeBestioles.remove(bete)
                 continue
 

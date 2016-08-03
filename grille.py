@@ -50,14 +50,13 @@ class Grille():
     # ------------------------------------------------
     def enleve_tour(self,x,y):
 
-        if self.grille[x][y] == BLOC_TOUR and self.grille[x+1][y] == BLOC_TOUR and self.grille[x][y+1] == BLOC_TOUR and self.grille[x+1][y+1] == BLOC_TOUR:
-            for t in self.listeTours:
-                if t.x == x and t.y == y:
-                    self.listeTours.remove(t)
-                    self.grille[x][y]=BLOC_INCONNU
-                    self.grille[x+1][y]=BLOC_INCONNU
-                    self.grille[x][y+1]=BLOC_INCONNU
-                    self.grille[x+1][y+1]=BLOC_INCONNU
+        for t in self.listeTours:
+            if t.x == x and t.y == y:
+                self.listeTours.remove(t)
+                self.grille[x][y]=BLOC_INCONNU
+                self.grille[x+1][y]=BLOC_INCONNU
+                self.grille[x][y+1]=BLOC_INCONNU
+                self.grille[x+1][y+1]=BLOC_INCONNU
 
     # ------------------------------------------------
     def affiche_grille(self):

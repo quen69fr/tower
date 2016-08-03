@@ -10,9 +10,11 @@ import math
 import csv
 import copy # pour copier les objets Grille*
 
+
+
 # SCREEN sera une "surface de dessin"
-LARGEUR = 800
-HAUTEUR = 600
+LARGEUR = 1000
+HAUTEUR = 650
 
 pygame.init()
 SCREEN = pygame.display.set_mode((LARGEUR, HAUTEUR))
@@ -40,7 +42,11 @@ TAILLE_PORTE=4
 
 
 TAILLE_BLOC = 20
-MARGE_ECRAN = 5
+MARGE_ECRAN = 40
+
+ARGENT = 100
+ARGENT_BESTIOLE = 2
+PRIX_TOUR = 10
 
 # tous les fichiets IMAGES
 IMAGE_TOURELLE_VIDE = pygame.image.load("image/TourelleVide.png")
@@ -49,19 +55,19 @@ IMAGE_BESTIOLE = pygame.image.load("image/BestioleNormale.png")
 # NOMBRE_BESTIOLE = 10
 VITESSE_BESTIOLE = 1
 VIE_BESTIOLE = 10
-FREQUENCE_BESTIOLE = 80 # (random 1 sur / freqence)
+FREQUENCE_BESTIOLE = 10 # (random 1 sur / freqence)
 NOMBRE_BESTIOLES_SORTIE_MAX = 5  # avant perte de partie
-GAIN_BESTIOLE = 10
 
 TIR_ACTIF = True
 AFFICHE_PERIMETRE_TIR = True
 VITESSE_TIR = 8
-DISTANCE_TIR = 200
+DISTANCE_TIR = 50
 DELAI_TIR = 20
 
-PRIX_TOUR = 10
 
-AFFICHE_CSV = False
+FONT = pygame.font.Font(None,30)
+
+AFFICHE_CSV = True
 FICHIER_DEF_BLOCS = "blocs2.csv"
 
 def conversionCoordCasesVersPixels(i,j):

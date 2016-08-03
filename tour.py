@@ -21,6 +21,7 @@ class Tour():
         self.distance_tir = DISTANCE_TIR  # en pixels
         self.delai_initial = DELAI_TIR
         self.delai = 0
+
     # ------------------------------------------------
     def affiche(self):
         if self.etat == Tour._ETAT_TOUR_BROUILLON:
@@ -32,7 +33,6 @@ class Tour():
 
         elif self.etat== Tour._ETAT_TOUR_CONSTRUIT:
             SCREEN.blit(IMAGE_TOURELLE_VIDE,conversionCoordCasesVersPixels(self.x,self.y))
-
 
     # ------------------------------------------------
     def gere_construction(self):
