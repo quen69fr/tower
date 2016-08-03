@@ -32,7 +32,10 @@ ETAT_PARTIE_GAGNE = 5     # on fige le jeu ; on affiche la grille, les betes, et
 
 if __name__=="__main__":
 
-    vague_bestioles = 10
+    vague=0
+    vague_compteur=0  # nombre de betes deja envoyees dans la vague en cours
+    vague_attente = 0 # attente entre deux vagues
+
     etat_partie = ETAT_PARTIE_ACCUEIL
     ARGENT = 100
 
@@ -56,9 +59,6 @@ if __name__=="__main__":
 
     grille.calcule_distance_grille()
     grille.dessine_grille()
-
-
-
 
     while True:
 
@@ -141,22 +141,34 @@ if __name__=="__main__":
 
         grille.dessine_grille()
 
-        # ajout de bestiole ?
-        # (todo : de differentes sortes ... ; faire une methode )
+        # Algo d'envoi des bestioles et vagues
+        # une vague à la fois , on tire au hasard l'entrée de chaque bete de la vague
+        # quand la vague est complete, on attend un peu
+        # et on passe à la vague d'apres s'il en reste
 
-        if vague_bestioles <= 0:
-            if vague_bestioles == -500:
-                vague_bestioles = 10
-                VIE_BESTIOLE += 10
-                ARGENT_BESTIOLE += 1
-            else:
-                vague_bestioles -= 1
+        print ('Vague {} ; compteur {} ; attente {}'.format(vague,vague_compteur, vague_attente))
 
-        else:
-            if random.randint(0,FREQUENCE_BESTIOLE) == 1:
-                vague_bestioles -= 1
-                bestiole = Bestiole()
+        # vague en cours finie ?
+        if vague_compteur < TABLE_VAGUE[vague]['quantite']:
+            # non, il faut envoyer une nouvelle bestiole de la vague en cours
+            if random.randint(0,INTERVALLE_BESTIOLE) == 1:
+                bestiole = Bestiole() # TODO : mettre ici les caractéristiques de la bete à créer
                 listeBestioles.append(bestiole)
+                vague_compteur += 1
+        else:
+            # oui la vague est finie,
+            # j'attends ?
+            if vague_attente < DELAI_ENTRE_VAGUE:
+                # oui
+                vague_attente += 1
+            else:
+                # non, je change de vague s'il y a encore des vagues à envoyer
+                if vague < len(TABLE_VAGUE)-1:
+                    vague += 1
+                    vague_compteur = 0
+                    vague_attente = 0
+
+
 
         # handle MOUSEBUTTONUP
         if ev_clicgauche:

@@ -55,7 +55,6 @@ IMAGE_BESTIOLE = pygame.image.load("image/BestioleNormale.png")
 # NOMBRE_BESTIOLE = 10
 VITESSE_BESTIOLE = 1
 VIE_BESTIOLE = 10
-FREQUENCE_BESTIOLE = 10 # (random 1 sur / freqence)
 NOMBRE_BESTIOLES_SORTIE_MAX = 5  # avant perte de partie
 
 TIR_ACTIF = True
@@ -67,8 +66,32 @@ DELAI_TIR = 20
 
 FONT = pygame.font.Font(None,30)
 
-AFFICHE_CSV = True
+AFFICHE_CSV = False
 FICHIER_DEF_BLOCS = "blocs2.csv"
+
+
+# LEs types et caractéristiques des différentes bestioles
+
+TABLE_BESTIOLE = {}
+TABLE_BESTIOLE['normale']    = { 'fichier':'image/BestioleNormale.png', 'vie':10, 'gain': 2, 'vitesse':1.0}
+TABLE_BESTIOLE['rapide']     = {'fichier':"image/BestioleVolant.png", 'vie':10, 'gain': 3, 'vitesse':3.0 }
+TABLE_BESTIOLE['immortelle'] = {'fichier':"image/BestioleNormale.png", 'vie':10000000, 'gain': 300, 'vitesse':8.0 }
+
+# TABLE_BESTIOLE['normale']['vie'] => la vie de la bestiole normale
+#
+# La composition des vagues de bestioles
+# type de bestiole
+# quantité
+# idées : coef multi de gain, de vie, etalement de l'arrivée
+
+INTERVALLE_BESTIOLE = 15 # (random 1 sur / intervalle)
+DELAI_ENTRE_VAGUE = 500  # délai en secondes entre deux vagues ; constant pour toute la partie
+
+TABLE_VAGUE = ( {'type':'normale', 'quantite':3},
+                {'type':'rapide','quantite':5},
+                {'type':'normale','quantite':30},
+                {'type':'immortelle','quantite':2},
+                )
 
 def conversionCoordCasesVersPixels(i,j):
     return (MARGE_ECRAN+i*TAILLE_BLOC,MARGE_ECRAN+j*TAILLE_BLOC)
@@ -127,5 +150,7 @@ def depasseDroit(x,y,r):
     (i,j) = conversionCoordPixelsVersCases(x,y)
     coordAnglesCase = anglesCase(i,j)
     return (x+r>coordAnglesCase[2])
+
+
 
 
