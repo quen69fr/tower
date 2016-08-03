@@ -127,7 +127,11 @@ if __name__=="__main__":
         if etat_partie == ETAT_PARTIE_ACCUEIL:
             grille.dessine_grille()
             grille.dessine_portes()
-            if event.type==pygame.KEYDOWN:
+            texte="Une touche pour commencer ..."
+            surface = FONT.render(texte, True, BLANC)
+            rect = surface.get_rect(topleft=(180, 220))
+            SCREEN.blit(surface, rect)
+            if event.type==pygame.KEYDOWN or event.type==pygame.MOUSEBUTTONUP:
                 # S (start):  if event.key==115:
                 etat_partie = ETAT_PARTIE_JEU
             continue
