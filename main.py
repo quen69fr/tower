@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 __author__ = 'Quentin , Manu et Philippe'
 
-from texte import *
+
 from grille import *
 from tour import *
 from bestiole import *
@@ -42,7 +42,7 @@ if __name__=="__main__":
     nombre_vie = NOMBRE_BESTIOLES_SORTIE_MAX
 
     grille = Grille()
-    texte = Text
+
     listeBestioles = []
     listeTirs = []
 
