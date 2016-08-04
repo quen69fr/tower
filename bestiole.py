@@ -33,6 +33,19 @@ class Bestiole():
 
             self.y+= -5
 
+    def verifie_bestiole_dans_case(self,i,j):
+        '''
+        Verifie si la bete est dans la case i,j
+        :param i: abscisse case
+        :param j: ordonnée case
+        :return:  True/False si cette bete est dans la case i,j
+        '''
+        (i2,j2)=conversionCoordPixelsVersCases(self.x, self.y)
+        if i == i2 and j == j2:
+            return True
+        else:
+            return False
+
     # -------------------------------------------------
     def affiche(self):
         SCREEN.blit(self.image,(self.x-self.rayon,self.y-self.rayon))

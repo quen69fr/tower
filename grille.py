@@ -40,7 +40,9 @@ class Grille():
         x = tour.x
         y = tour.y
 
-        if (self.grille[x][y] == BLOC_INCONNU) or (self.grille[x][y] > 0 and self.grille[x+1][y] > 0 and self.grille[x][y+1] > 0 and self.grille[x+1][y+1] > 0):
+        if (self.grille[x][y] == BLOC_INCONNU) or \
+                    (self.grille[x][y] > 0 and self.grille[x+1][y] > 0 \
+                     and self.grille[x][y+1] > 0 and self.grille[x+1][y+1] > 0):
             self.listeTours.append(tour)
             self.grille[x][y]=BLOC_TOUR
             self.grille[x+1][y]=BLOC_TOUR
@@ -66,6 +68,23 @@ class Grille():
             for i in range(GRILLE_LX):
                 print(self.grille[i][j],)
             print ("")
+
+    def affiche_score(self,argent,nombre_vie,vague):
+        texte="Argent : {} €".format(argent)
+        surface = FONT.render(texte, True, JAUNE)
+        rect = surface.get_rect(topleft=(MARGE_ECRAN+410, 10))
+        SCREEN.blit(surface, rect)
+
+        texte="Nombre de vie : {}".format(nombre_vie)
+        surface = FONT.render(texte, True, BLANC)
+        rect = surface.get_rect(topleft=(MARGE_ECRAN+5, 10))
+        SCREEN.blit(surface, rect)
+
+        texte="Vague : {:02d}".format(vague)
+        surface = FONT.render(texte, True, BLEU)
+        rect = surface.get_rect(topleft=(MARGE_ECRAN+245, 10))
+        SCREEN.blit(surface, rect)
+        pass
 
     # ------------------------------------------------
     def dessine_grille(self):

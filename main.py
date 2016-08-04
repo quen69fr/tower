@@ -37,7 +37,7 @@ if __name__=="__main__":
     vague_attente = 0 # attente entre deux vagues
 
     etat_partie = ETAT_PARTIE_ACCUEIL
-    ARGENT = 100
+    argent = 100
 
     nombre_vie = NOMBRE_BESTIOLES_SORTIE_MAX
 
@@ -62,28 +62,6 @@ if __name__=="__main__":
 
     while True:
 
-        #texte.affiche_ARGENT(ARGENT)
-        #texte.affiche_vie(nombre_vie)
-        texte="Argent : {} €".format(ARGENT)
-        surface = FONT.render(texte, True, JAUNE)
-        rect = surface.get_rect(topleft=(MARGE_ECRAN+410, 10))
-        SCREEN.blit(surface, rect)
-
-        texte="Nombre de vie : {}".format(nombre_vie)
-        surface = FONT.render(texte, True, BLANC)
-        rect = surface.get_rect(topleft=(MARGE_ECRAN+5, 10))
-        SCREEN.blit(surface, rect)
-
-        texte="Vague : {:02d}".format(vague)
-        surface = FONT.render(texte, True, BLEU)
-        rect = surface.get_rect(topleft=(MARGE_ECRAN+245, 10))
-        SCREEN.blit(surface, rect)
-
-        #print(VIE_BESTIOLE)
-        #print(vague_bestioles)
-        #print(ARGENT)
-        #print(len(grille.listeTours))
-        #print ("etat_partie={} ; nombre_pertes={} ARGENT={}".format(etat_partie, nombre_vie, ARGENT))
         #print ("Tours : {} ; Betes : {} ;  Tirs : {}".format(len(grille.listeTours), len(listeBestioles), len(listeTirs)))
 
         pygame.display.update()
@@ -149,13 +127,14 @@ if __name__=="__main__":
         # etat_partie_JEU
 
         grille.dessine_grille()
+        grille.affiche_score(argent, nombre_vie, vague)
 
         # Algo d'envoi des bestioles et vagues
         # une vague à la fois , on tire au hasard l'entrée de chaque bete de la vague
         # quand la vague est complete, on attend un peu
         # et on passe à la vague d'apres s'il en reste
 
-        print ('Vague {} ; compteur {} ; attente {}'.format(vague,vague_compteur, vague_attente))
+        # print ('Vague {} ; compteur {} ; attente {}'.format(vague,vague_compteur, vague_attente))
 
         # vague en cours finie ?
         if vague_compteur < TABLE_VAGUE[vague]['quantite']:
@@ -182,11 +161,46 @@ if __name__=="__main__":
 
         # handle MOUSEBUTTONUP
         if ev_clicgauche:
+            # chercher sur quoi on a cliqué : bouton, tour, case vide, bestiole
+            CIBLE_CLIC = 0
+            CIBLE_TOUR = None
+            CIBLE_BETE = None
+            CIBLE_BOUTON = None
+            (i, j) = conversionCoordPixelsVersCases(x_souris, y_souris)
+            if i >= 1 and i < GRILLE_LX - 1 and j >= 1 and j < GRILLE_LY - 1:
+                # une bestiole ?
+                for bete in listeBestioles:
+                    if bete.verifie_bestiole_dans_case(i,j):
+                        CIBLE_CLIC='bete'
+                        CIBLE_BETE = bete
+                        print("BETE CLIQUEE")
+                        break
+                if CIBLE_CLIC == 0:
+                    # sinon une tour ?
+                    if grille.grille[i][j] == BLOC_TOUR:
+                        CIBLE_CLIC = 'tour'
+                        # trouver quelle tour
+                    # sinon une case vide
+                    elif grille.grille[i][j]>=0:
+                        CIBLE_CLIC = 'grille_vide'
+                    else:
+                        CIBLE_CLIC = 'autre'
+            else:
+                # CIBLE_CLIC = 'menu'
+                # CIBLE_BOUTON = .......Menu.verifie_clic()
+                CIBLE_CLIC='autre'
+
+            print ("CIBLE_CLIC = ",CIBLE_CLIC)
+
+
+
+
+
             # print ("event mousebuttonup and button 1")
             (i, j) = conversionCoordPixelsVersCases(x_souris, y_souris)
             if i >= 1 and i < GRILLE_LX - 1 and j >= 1 and j < GRILLE_LY - 1:
                 # assez d'argent ?
-                if ARGENT >= PRIX_TOUR:
+                if argent >= PRIX_TOUR:
                     # emplacement autorisé ?
                     grille2 = copy.deepcopy(grille)
                     grille2.nouvelle_tour(Tour(i, j))
@@ -201,8 +215,8 @@ if __name__=="__main__":
                         if grille2_ok == False:
                             break
                     if grille2_ok == True:
-                        ARGENT -= PRIX_TOUR
-                        # print(ARGENT)
+                        argent -= PRIX_TOUR
+                        # print(argent)
                         grille=copy.deepcopy(grille2)
                         pygame.event.clear()
 
@@ -218,9 +232,7 @@ if __name__=="__main__":
             if grille.grille[a][b] == BLOC_TOUR and grille.grille[a+1][b] == BLOC_TOUR and grille.grille[a][b+1] == BLOC_TOUR and grille.grille[a+1][b+1] == BLOC_TOUR:
                 grille.enleve_tour(a, b)
                 grille.calcule_distance_grille()
-                ARGENT += int(PRIX_TOUR/2)
-
-
+                argent += int(PRIX_TOUR/2)
 
         # les bestioles
         for bete in listeBestioles:
@@ -235,8 +247,7 @@ if __name__=="__main__":
                     etat_partie = ETAT_PARTIE_PERDU
                 continue
             if bete.vie <= 0:
-                # ARGENT += ARGENT_BESTIOLE
-                ARGENT += TABLE_BESTIOLE[bete.type]['gain']
+                argent += TABLE_BESTIOLE[bete.type]['gain']
                 listeBestioles.remove(bete)
                 continue
 
