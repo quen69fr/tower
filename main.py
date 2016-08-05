@@ -42,11 +42,10 @@ if __name__=="__main__":
     nombre_vie = NOMBRE_BESTIOLES_SORTIE_MAX
 
     grille = Grille()
-
     listeBestioles = []
     listeTirs = []
 
-    # TODO : mettre le chargement csv, dans une methode de grille()  [ou outil à voir]
+    # TODO : mettre le chargement csv, dans une methode de grille()
     if AFFICHE_CSV:
         fichierDefBlocs = csv.reader(open(FICHIER_DEF_BLOCS,"r"),delimiter=';')
         numLigne = 0
@@ -179,7 +178,8 @@ if __name__=="__main__":
                     # sinon une tour ?
                     if grille.grille[i][j] == BLOC_TOUR:
                         CIBLE_CLIC = 'tour'
-                        # trouver quelle tour
+                        CIBLE_TOUR = grille.quelle_tour_dans_case(i,j)
+                        print("cible tour : ",CIBLE_TOUR)
                     # sinon une case vide
                     elif grille.grille[i][j]>=0:
                         CIBLE_CLIC = 'grille_vide'

@@ -69,6 +69,7 @@ class Grille():
                 print(self.grille[i][j],)
             print ("")
 
+    # ------------------------------------------------
     def affiche_score(self,argent,nombre_vie,vague):
         texte="Argent : {} €".format(argent)
         surface = FONT.render(texte, True, JAUNE)
@@ -215,7 +216,7 @@ class Grille():
         # if x == 0:
         #     return ('vd',x + 1, y)
 
-        if x == 0:   # porte d'entrée
+        if x == 0 or type == 'volant':   # porte d'entrée
             v = self.grille[x][y]
             vg = 9999
             vd = self.grille[x + 1][y]
@@ -290,4 +291,9 @@ class Grille():
         else:
             return False
 
-
+    # -------------------------------------------------
+    def quelle_tour_dans_case(self,i,j):
+        for t in self.listeTours:
+            if t.x == i and t.y == j:
+                return t
+        return None

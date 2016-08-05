@@ -59,9 +59,9 @@ NOMBRE_BESTIOLES_SORTIE_MAX = 5  # avant perte de partie
 
 TIR_ACTIF = True
 AFFICHE_PERIMETRE_TIR = True
-VITESSE_TIR = 8
+VITESSE_TIR = 5
 DISTANCE_TIR = 50
-DELAI_TIR = 20
+DELAI_TIR = 30
 
 
 FONT = pygame.font.Font(None,30)
@@ -73,9 +73,13 @@ FICHIER_DEF_BLOCS = "blocs2.csv"
 # Les types et caractéristiques des différentes bestioles
 
 TABLE_BESTIOLE = {}
-TABLE_BESTIOLE['normale']    = {'image':pygame.image.load("image/BestioleNormale.png"), 'vie':10, 'gain': 2, 'vitesse':1.0}
-TABLE_BESTIOLE['rapide']     = {'image':pygame.image.load("image/BestioleVolant.png"), 'vie':10, 'gain': 300, 'vitesse':1.5 }
-TABLE_BESTIOLE['immortelle'] = {'image':pygame.image.load("image/BestioleNormale.png"), 'vie':10000000, 'gain':77 , 'vitesse':1.0 }
+TABLE_BESTIOLE['normale']       = {'image':pygame.image.load("image/BestioleNormale.png")   , 'vie':10     , 'gain': 2,   'vitesse':1.0}
+TABLE_BESTIOLE['boss_normale']  = {'image':pygame.image.load("image/BestioleNormale.png")   , 'vie':100    , 'gain': 20,  'vitesse':1.0}
+TABLE_BESTIOLE['rapide']        = {'image':pygame.image.load("image/BestioleRapide.png")    , 'vie':10     , 'gain': 2,   'vitesse':1.5}
+TABLE_BESTIOLE['boss_rapide']   = {'image':pygame.image.load("image/BestioleRapide.png")    , 'vie':100    , 'gain': 2,   'vitesse':1.5}
+TABLE_BESTIOLE['volant']        = {'image':pygame.image.load("image/BestioleVolant.png")    , 'vie':10     , 'gain': 2,   'vitesse':1.0}
+TABLE_BESTIOLE['boss_volant']   = {'image':pygame.image.load("image/BestioleVolant.png")    , 'vie':10     , 'gain': 2,   'vitesse':1.0}
+TABLE_BESTIOLE['immortelle']    = {'image':pygame.image.load("image/BestioleNormale.png")   , 'vie':9999999, 'gain':77 ,  'vitesse':1.0}
 
 # TABLE_BESTIOLE['normale']['vie'] => la vie de la bestiole normale
 #
