@@ -8,7 +8,6 @@ from pygame.locals import *
 import random
 import math
 import csv
-import copy # pour copier les objets Grille*
 
 
 
@@ -19,7 +18,7 @@ HAUTEUR = 650
 pygame.init()
 SCREEN = pygame.display.set_mode((LARGEUR, HAUTEUR))
 pygame.display.set_caption("tower !")
-FPS = 20                # nombre d'image par seconde
+FPS = 60                # nombre d'image par seconde
 DELAY = 0               # vitesse du jeu
 
 NOIR =  (  0,   0,   0)
@@ -50,7 +49,7 @@ PRIX_TOUR = 10
 
 # tous les fichiets IMAGES
 IMAGE_TOURELLE_VIDE = pygame.image.load("image/TourelleVide.png")
-IMAGE_BESTIOLE = pygame.image.load("image/BestioleNormale.png")
+IMAGE_BESTIOLE = pygame.image.load("image/BestioleNormaleD.png")
 
 # NOMBRE_BESTIOLE = 10
 VITESSE_BESTIOLE = 1
@@ -66,20 +65,20 @@ DELAI_TIR = 30
 
 FONT = pygame.font.Font(None,30)
 
-AFFICHE_CSV = True
+AFFICHE_CSV = False
 FICHIER_DEF_BLOCS = "blocs2.csv"
 
 
 # Les types et caractéristiques des différentes bestioles
 
 TABLE_BESTIOLE = {}
-TABLE_BESTIOLE['normale']       = {'image':pygame.image.load("image/BestioleNormale.png")   , 'vie':10     , 'gain': 2,   'vitesse':1.0}
-TABLE_BESTIOLE['boss_normale']  = {'image':pygame.image.load("image/BestioleNormale.png")   , 'vie':100    , 'gain': 20,  'vitesse':1.0}
+TABLE_BESTIOLE['normale']       = {'image':pygame.image.load("image/BestioleNormaleD.png")   , 'vie':10     , 'gain': 2,   'vitesse':1.0}
+TABLE_BESTIOLE['boss_normale']  = {'image':pygame.image.load("image/BestioleNormaleD.png")   , 'vie':100    , 'gain': 20,  'vitesse':1.0}
 TABLE_BESTIOLE['rapide']        = {'image':pygame.image.load("image/BestioleRapide.png")    , 'vie':10     , 'gain': 2,   'vitesse':1.5}
 TABLE_BESTIOLE['boss_rapide']   = {'image':pygame.image.load("image/BestioleRapide.png")    , 'vie':100    , 'gain': 2,   'vitesse':1.5}
 TABLE_BESTIOLE['volant']        = {'image':pygame.image.load("image/BestioleVolant.png")    , 'vie':10     , 'gain': 2,   'vitesse':1.0}
-TABLE_BESTIOLE['boss_volant']   = {'image':pygame.image.load("image/BestioleVolant.png")    , 'vie':10     , 'gain': 2,   'vitesse':1.0}
-TABLE_BESTIOLE['immortelle']    = {'image':pygame.image.load("image/BestioleNormale.png")   , 'vie':9999999, 'gain':77 ,  'vitesse':1.0}
+TABLE_BESTIOLE['boss_volant']   = {'image':pygame.image.load("image/BestioleVolant.png")    , 'vie':100    , 'gain': 2,   'vitesse':1.0}
+TABLE_BESTIOLE['immortelle']    = {'image':pygame.image.load("image/BestioleNormaleD.png")   , 'vie':9999999, 'gain':77 ,  'vitesse':1.0}
 
 # TABLE_BESTIOLE['normale']['vie'] => la vie de la bestiole normale
 #
@@ -93,10 +92,15 @@ DELAI_ENTRE_VAGUE = 200  # délai en secondes entre deux vagues ; constant pour 
 
 TABLE_VAGUE = ( {'type':'normale', 'quantite':3},
                 {'type':'rapide','quantite':5},
-                {'type':'normale','quantite':30},
+                {'type':'volant','quantite':30},
                 {'type':'rapide','quantite':70},
                 {'type':'immortelle','quantite':2},
                 )
+
+
+# TODO  :dico de famille de tours, contenant une liste de tours, contenant une liste d'attributs
+# TABLE_TOUR = {} ? avec les différentes tour
+
 
 def conversionCoordCasesVersPixels(i,j):
     return (MARGE_ECRAN+i*TAILLE_BLOC,MARGE_ECRAN+j*TAILLE_BLOC)

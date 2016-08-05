@@ -57,8 +57,12 @@ class Bestiole():
 
         # TODO : bestiole volante
 
-        if type == 'volant':
-            pass
+        if TABLE_VAGUE[0] == 'volant':
+            direction = (1,0)
+            dx = direction[0]
+            dy = direction[1]
+            self.x+=dx*self.vitesse
+            self.y+=dy*self.vitesse
 
         else:
             # on regarde dans quelle case on est
@@ -85,7 +89,7 @@ class Bestiole():
                 if grille.est_libre(cx+1, cy-1) and grille.est_libre(cx+1,cy+1):
                     # hd et bd sont libres
                     direction = (1,0)
-                else :
+                else:
                     if depasseHaut(self.x,self.y,self.rayon):
                         if grille.est_libre(cx+1,cy-1):
                             # hd est libre

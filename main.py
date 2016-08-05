@@ -12,18 +12,15 @@ from outils import *
 
 # TODO général
 # - corriger les bugs
-#     ne pas créer une case sur une bestiole ?
-#     cases devant porte de sortie porte de sortie
-# - vies  : calculer (DONE) , afficher (QUENTIN)
-# - argent : calculer, afficher
-
+#     bug cases devant porte de sortie ne se déconstruit pas
+#     bug obstruction totale de la porte d'entrée par 2 tours
 # - dessiner la vie restante au dessus de chaque bestiole
 # - eloigner les bestioles (trop superposées)
-# - plusieurs sortes de Bestioles
 # - plusieurs sortes de Tours
 # - les upgrades (améliorations) de Tours
 # - l'orientation des bestioles (rotations)
 # - les sons
+# - mettre la gestion des vagues dans une methode en dehors de main()
 
 ETAT_PARTIE_ACCUEIL = 1   # on construit, pas de betes, on quitte quand on clic sur DEMARRER
 ETAT_PARTIE_JEU = 2       # les betes arrivent, on construit
@@ -45,10 +42,11 @@ if __name__=="__main__":
     listeBestioles = []
     listeTirs = []
 
-
     grille.charge_csv()
     grille.calcule_distance_grille()
     grille.dessine_grille()
+
+    tourBrouillon = None
 
     while True:
 
@@ -115,6 +113,7 @@ if __name__=="__main__":
             continue
         # -----------------------------
         # etat_partie_JEU
+        # -----------------------------
 
         grille.dessine_grille()
         grille.affiche_score(argent, nombre_vie, vague)
@@ -147,47 +146,31 @@ if __name__=="__main__":
                     vague_compteur = 0
                     vague_attente = 0
 
-
-
-
-        # handle MOUSEBUTTONUP
+        # clic-gauche - handle MOUSEBUTTONUP
         if ev_clicgauche:
+
             (i, j) = conversionCoordPixelsVersCases(x_souris, y_souris)
             # chercher sur quoi on a cliqué : bouton, tour, case vide, bestiole
             CIBLE_CLIC, CIBLE_OBJET = grille.cherche_cible_clic(i,j,listeBestioles)
             print ("CIBLE_CLIC = ",CIBLE_CLIC)
 
+            # construction sur case vide 4 ?
+            if tourBrouillon:
+                if CIBLE_CLIC == 'vide4':
+                     if argent >= PRIX_TOUR:
+                        if grille.nouvelle_tour_complet(i,j):
+                            argent -= PRIX_TOUR
+                else:
+                    tourBrouillon = None
 
-            # TODO : mettre dans une methode de grille :  nouvelle_tour_complet (=> nouvelle_tour => tour.__init__)
-            # idée : fusionner nouvelle_tour complet et nouvelle tour
-            # print ("event mousebuttonup and button 1")
-            if i >= 1 and i < GRILLE_LX - 1 and j >= 1 and j < GRILLE_LY - 1:
-                # assez d'argent ?
-                if argent >= PRIX_TOUR:
-                    # emplacement autorisé ?
-                    grille2 = copy.deepcopy(grille)
-                    grille2.nouvelle_tour(Tour(i, j))
-                    grille2.calcule_distance_grille()
-                    # verifie s'il y a des cases non calculées ?
-                    grille2_ok = True
-                    for i in range(GRILLE_LX):
-                        for j in range (GRILLE_LY):
-                            if grille2.grille[i][j]==BLOC_INCONNU:
-                                grille2_ok = False
-                                break
-                        if grille2_ok == False:
-                            break
-                    if grille2_ok == True:
-                        argent -= PRIX_TOUR
-                        # print(argent)
-                        grille=copy.deepcopy(grille2)
+            # selection d'un bouton Tour
+            # TODO : gerer les differents boutons
+            if CIBLE_CLIC == 'menu':
+                tourBrouillon = Tour(2,2, Tour._ETAT_TOUR_BROUILLON)
 
-        else:
-            (a, b) = conversionCoordPixelsVersCases(x_souris, y_souris)
-            if a >= 1 and a <= GRILLE_LX-3 and b >=1 and b <= GRILLE_LY - 3:
-                tourBrouillon = Tour(a, b, Tour._ETAT_TOUR_BROUILLON)
-            else:
-                tourBrouillon = None
+        # si clic-sur menu / bouton de tour, tour Brouillon :
+        #
+
 
         if ev_clic_droit:
             (a, b) = conversionCoordPixelsVersCases(x_souris, y_souris)
@@ -232,6 +215,9 @@ if __name__=="__main__":
 
         # le curseur / tour en construction
         if tourBrouillon:
+            (i, j) = conversionCoordPixelsVersCases(x_souris, y_souris)
+            tourBrouillon.x = i
+            tourBrouillon.y = j
             tourBrouillon.affiche()
 
         grille.dessine_portes()
