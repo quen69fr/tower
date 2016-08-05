@@ -66,7 +66,7 @@ DELAI_TIR = 30
 
 FONT = pygame.font.Font(None,30)
 
-AFFICHE_CSV = False
+AFFICHE_CSV = True
 FICHIER_DEF_BLOCS = "blocs2.csv"
 
 

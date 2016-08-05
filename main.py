@@ -45,17 +45,8 @@ if __name__=="__main__":
     listeBestioles = []
     listeTirs = []
 
-    # TODO : mettre le chargement csv, dans une methode de grille()
-    if AFFICHE_CSV:
-        fichierDefBlocs = csv.reader(open(FICHIER_DEF_BLOCS,"r"),delimiter=';')
-        numLigne = 0
-        for ligne in fichierDefBlocs:
-            for i in range(0,len(ligne)):
-                valeur = int(ligne[i])
-                if valeur == 1:
-                    grille.nouvelle_tour(Tour(i+1,numLigne+1))
-            numLigne += 1
 
+    grille.charge_csv()
     grille.calcule_distance_grille()
     grille.dessine_grille()
 

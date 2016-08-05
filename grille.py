@@ -3,6 +3,7 @@
 
 __author__ = 'Quentin'
 
+from tour import *
 from outils import *
 
 class Grille():
@@ -297,3 +298,15 @@ class Grille():
             if t.x == i and t.y == j:
                 return t
         return None
+
+    # -------------------------------------------------
+    def charge_csv(self):
+        if AFFICHE_CSV:
+            fichierDefBlocs = csv.reader(open(FICHIER_DEF_BLOCS,"r"),delimiter=';')
+            numLigne = 0
+            for ligne in fichierDefBlocs:
+                for i in range(0,len(ligne)):
+                    valeur = int(ligne[i])
+                    if valeur == 1:
+                        self.nouvelle_tour(Tour(i+1,numLigne+1))
+                numLigne += 1
