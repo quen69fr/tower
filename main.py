@@ -149,46 +149,18 @@ if __name__=="__main__":
 
 
 
+
         # handle MOUSEBUTTONUP
         if ev_clicgauche:
-            # chercher sur quoi on a cliqué : bouton, tour, case vide, bestiole
-            CIBLE_CLIC = 0
-            CIBLE_TOUR = None
-            CIBLE_BETE = None
-            CIBLE_BOUTON = None
             (i, j) = conversionCoordPixelsVersCases(x_souris, y_souris)
-            if i >= 1 and i < GRILLE_LX - 1 and j >= 1 and j < GRILLE_LY - 1:
-                # une bestiole ?
-                for bete in listeBestioles:
-                    if bete.verifie_bestiole_dans_case(i,j):
-                        CIBLE_CLIC='bete'
-                        CIBLE_BETE = bete
-                        print("BETE CLIQUEE")
-                        break
-                if CIBLE_CLIC == 0:
-                    # sinon une tour ?
-                    if grille.grille[i][j] == BLOC_TOUR:
-                        CIBLE_CLIC = 'tour'
-                        CIBLE_TOUR = grille.quelle_tour_dans_case(i,j)
-                        print("cible tour : ",CIBLE_TOUR)
-                    # sinon une case vide
-                    elif grille.grille[i][j]>=0:
-                        CIBLE_CLIC = 'grille_vide'
-                    else:
-                        CIBLE_CLIC = 'autre'
-            else:
-                # CIBLE_CLIC = 'menu'
-                # CIBLE_BOUTON = .......Menu.verifie_clic()
-                CIBLE_CLIC='autre'
-
+            # chercher sur quoi on a cliqué : bouton, tour, case vide, bestiole
+            CIBLE_CLIC, CIBLE_OBJET = grille.cherche_cible_clic(i,j,listeBestioles)
             print ("CIBLE_CLIC = ",CIBLE_CLIC)
 
 
-
-
-
+            # TODO : mettre dans une methode de grille :  nouvelle_tour_complet (=> nouvelle_tour => tour.__init__)
+            # idée : fusionner nouvelle_tour complet et nouvelle tour
             # print ("event mousebuttonup and button 1")
-            (i, j) = conversionCoordPixelsVersCases(x_souris, y_souris)
             if i >= 1 and i < GRILLE_LX - 1 and j >= 1 and j < GRILLE_LY - 1:
                 # assez d'argent ?
                 if argent >= PRIX_TOUR:
@@ -209,7 +181,6 @@ if __name__=="__main__":
                         argent -= PRIX_TOUR
                         # print(argent)
                         grille=copy.deepcopy(grille2)
-                        pygame.event.clear()
 
         else:
             (a, b) = conversionCoordPixelsVersCases(x_souris, y_souris)

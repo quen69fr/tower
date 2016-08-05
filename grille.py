@@ -5,6 +5,7 @@ __author__ = 'Quentin'
 
 from tour import *
 from outils import *
+from bestiole import *
 
 class Grille():
 
@@ -26,6 +27,45 @@ class Grille():
             self.grille[0][Y_PORTE+k]=BLOC_ENTREE
             self.grille[GRILLE_LX-1][Y_PORTE+k]=BLOC_PORTE
 
+
+
+
+    def cherche_cible_clic(self, i,j, listeBestioles):
+        '''
+        Cherche et renvoie l'objet cliqué à la souris dans le jeu
+        :param i:  case cliquée
+        :param j:
+        :param listeBestioles:
+        :return: CIBLE_CLIC (string) et CIBLE_OBJET (objet cliqué, bete, tour)
+        '''
+        CIBLE_CLIC = 0
+        CIBLE_OBJET = None
+
+        if i >= 1 and i < GRILLE_LX - 1 and j >= 1 and j < GRILLE_LY - 1:
+            # une bestiole ?
+            for bete in listeBestioles:
+                if bete.verifie_bestiole_dans_case(i,j):
+                    CIBLE_CLIC='bete'
+                    CIBLE_OBJET = bete
+                    print("BETE CLIQUEE", CIBLE_OBJET)
+                    break
+            if CIBLE_CLIC == 0:
+                # sinon une tour ?
+                if self.grille[i][j] == BLOC_TOUR:
+                    CIBLE_CLIC = 'tour'
+                    CIBLE_OBJET = self.quelle_tour_dans_case(i,j)
+                    print("cible tour : ",CIBLE_OBJET)
+                # sinon une case vide
+                elif self.grille[i][j]>=0:
+                    CIBLE_CLIC = 'grille_vide'
+                else:
+                    CIBLE_CLIC = 'grille_autre'
+        else:
+            # CIBLE_CLIC = 'menu'
+            # CIBLE_BOUTON = .......Menu.verifie_clic()
+            CIBLE_CLIC='autre'
+        return CIBLE_CLIC, CIBLE_OBJET
+
     # ------------------------------------------------
     def reset_distance_grille(self):
         for x in range(0,GRILLE_LX):
@@ -35,6 +75,9 @@ class Grille():
                         and self.grille[x][y] != BLOC_ENTREE \
                         and self.grille[x][y] != BLOC_TOUR:
                     self.grille[x][y] = BLOC_INCONNU
+
+
+
 
     # ------------------------------------------------
     def nouvelle_tour(self,tour):
@@ -294,6 +337,8 @@ class Grille():
 
     # -------------------------------------------------
     def quelle_tour_dans_case(self,i,j):
+        # TODO : bug : il faut tester les 4 sous-cases de la tour
+        # pas uniquement le coin en haut à gauche
         for t in self.listeTours:
             if t.x == i and t.y == j:
                 return t
