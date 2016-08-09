@@ -14,6 +14,7 @@ class Grille():
         self.grille=[]
         self.listeTours = []
         self.grille = [[BLOC_INCONNU for j in range(GRILLE_LY)] for i in range(GRILLE_LX)]
+        self.tour_selectionnee = None
 
         for i in range(GRILLE_LX):
             self.grille[i][0]=BLOC_BORD
@@ -37,6 +38,7 @@ class Grille():
         '''
         cible_clic = 0
         cible_objet = None
+        self.tour_selectionnee = None
 
         if i >= 1 and i < GRILLE_LX - 1 and j >= 1 and j < GRILLE_LY - 1:
             # une bestiole ? (en premier, donc permet d'éviter aussi de construire une tour sur une case avec bete)
@@ -44,14 +46,19 @@ class Grille():
                 if bete.verifie_bestiole_dans_case(i,j):
                     cible_clic='bete'
                     cible_objet = bete
-                    print("BETE CLIQUEE", cible_objet)
+                    #print("BETE CLIQUEE", cible_objet)
                     return cible_clic, cible_objet
             # sinon une tour ?
             if self.grille[i][j] == BLOC_TOUR:
                 cible_clic = 'tour'
                 cible_objet = self.quelle_tour_dans_case(i,j)
-                # print("cible tour : ",cible_objet)
+
+                print("cible tour : ",cible_objet)
+
+                self.tour_selectionnee = cible_objet
+
                 return cible_clic, cible_objet
+
 
             # sinon une case vide
             elif self.grille[i][j]>=0:
@@ -100,7 +107,6 @@ class Grille():
                      self.calcule_distance_grille()
                      return False
         return True
-
 
     # ------------------------------------------------
     def enleve_tour(self,x,y):
@@ -167,7 +173,14 @@ class Grille():
 
         # les tours
         for tour in self.listeTours:
-            tour.affiche()
+            #tour.affiche()
+            if tour == self.tour_selectionnee:
+                tourSelectionnee = True
+                tour.affiche(tourSelectionnee)
+            else:
+                tourSelectionnee = False
+                tour.affiche(tourSelectionnee)
+
 
     # ------------------------------------------------
     def dessine_portes(self):

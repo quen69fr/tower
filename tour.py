@@ -22,16 +22,28 @@ class Tour():
         self.delai = 0
 
     # ------------------------------------------------
-    def affiche(self):
+    def affiche(self,tour_selectionnee = False ):
         if self.etat == Tour._ETAT_TOUR_BROUILLON:
             recttransparent = pygame.Surface((40,40), pygame.SRCALPHA, 32)
             recttransparent.fill((0,0,255, 50))
             SCREEN.blit(recttransparent, conversionCoordCasesVersPixels(self.x,self.y))
             if AFFICHE_PERIMETRE_TIR:
-               pygame.draw.circle(SCREEN, VERT, centreTour(self.x, self.y), self.distance_tir, 1)
+                pygame.draw.circle(SCREEN, VERT, centreTour(self.x, self.y), self.distance_tir, 1)
 
         elif self.etat== Tour._ETAT_TOUR_CONSTRUIT:
-            SCREEN.blit(IMAGE_TOURELLE_VIDE,conversionCoordCasesVersPixels(self.x,self.y))
+
+            if tour_selectionnee == False:
+                SCREEN.blit(IMAGE_TOURELLE_VIDE,conversionCoordCasesVersPixels(self.x,self.y))
+
+            elif tour_selectionnee == True:
+
+                SCREEN.blit(IMAGE_TOURELLE_VIDE,conversionCoordCasesVersPixels(self.x,self.y))
+
+                recttransparent = pygame.Surface((40,40), pygame.SRCALPHA, 32)
+                recttransparent.fill((0,255,0, 100))
+                SCREEN.blit(recttransparent, conversionCoordCasesVersPixels(self.x,self.y))
+
+                pygame.draw.circle(SCREEN, VERT, centreTour(self.x, self.y), self.distance_tir, 1)
 
     # ------------------------------------------------
     def gere_construction(self):

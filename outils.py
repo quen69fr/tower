@@ -54,7 +54,7 @@ IMAGE_BESTIOLE = pygame.image.load("image/BestioleNormaleD.png")
 # NOMBRE_BESTIOLE = 10
 VITESSE_BESTIOLE = 1
 VIE_BESTIOLE = 10
-NOMBRE_BESTIOLES_SORTIE_MAX = 5  # avant perte de partie
+NOMBRE_BESTIOLES_SORTIE_MAX = 20  # avant perte de partie
 
 TIR_ACTIF = True
 AFFICHE_PERIMETRE_TIR = True
@@ -75,9 +75,9 @@ TABLE_BESTIOLE = {}
 TABLE_BESTIOLE['normale']       = {'image':pygame.image.load("image/BestioleNormaleD.png")   , 'vie':10     , 'gain': 2,   'vitesse':1.0}
 TABLE_BESTIOLE['boss_normale']  = {'image':pygame.image.load("image/BestioleNormaleD.png")   , 'vie':100    , 'gain': 20,  'vitesse':1.0}
 TABLE_BESTIOLE['rapide']        = {'image':pygame.image.load("image/BestioleRapide.png")    , 'vie':10     , 'gain': 2,   'vitesse':1.5}
-TABLE_BESTIOLE['boss_rapide']   = {'image':pygame.image.load("image/BestioleRapide.png")    , 'vie':100    , 'gain': 2,   'vitesse':1.5}
+TABLE_BESTIOLE['boss_rapide']   = {'image':pygame.image.load("image/BestioleRapide.png")    , 'vie':100    , 'gain': 20,   'vitesse':1.5}
 TABLE_BESTIOLE['volant']        = {'image':pygame.image.load("image/BestioleVolant.png")    , 'vie':10     , 'gain': 2,   'vitesse':1.0}
-TABLE_BESTIOLE['boss_volant']   = {'image':pygame.image.load("image/BestioleVolant.png")    , 'vie':100    , 'gain': 2,   'vitesse':1.0}
+TABLE_BESTIOLE['boss_volant']   = {'image':pygame.image.load("image/BestioleVolant.png")    , 'vie':100    , 'gain': 20,   'vitesse':1.0}
 TABLE_BESTIOLE['immortelle']    = {'image':pygame.image.load("image/BestioleNormaleD.png")   , 'vie':9999999, 'gain':77 ,  'vitesse':1.0}
 
 # TABLE_BESTIOLE['normale']['vie'] => la vie de la bestiole normale
@@ -90,7 +90,8 @@ TABLE_BESTIOLE['immortelle']    = {'image':pygame.image.load("image/BestioleNorm
 INTERVALLE_BESTIOLE = 15 # (random 1 sur / intervalle)
 DELAI_ENTRE_VAGUE = 200  # délai en secondes entre deux vagues ; constant pour toute la partie
 
-TABLE_VAGUE = ( {'type':'normale', 'quantite':3},
+TABLE_VAGUE = ( {'type':'normale', 'quantite':0},
+                {'type':'normale', 'quantite':3},
                 {'type':'rapide','quantite':5},
                 {'type':'volant','quantite':30},
                 {'type':'rapide','quantite':70},

@@ -20,7 +20,6 @@ from outils import *
 # - les upgrades (améliorations) de Tours
 # - l'orientation des bestioles (rotations)
 # - les sons
-# - mettre la gestion des vagues dans une methode en dehors de main()
 
 ETAT_PARTIE_ACCUEIL = 1   # on construit, pas de betes, on quitte quand on clic sur DEMARRER
 ETAT_PARTIE_JEU = 2       # les betes arrivent, on construit
@@ -29,8 +28,8 @@ ETAT_PARTIE_GAGNE = 5     # on fige le jeu ; on affiche la grille, les betes, et
 
 if __name__=="__main__":
 
-    vague=0
-    vague_compteur=0  # nombre de betes deja envoyees dans la vague en cours
+    vague = 0
+    vague_compteur= 0 # nombre de betes deja envoyees dans la vague en cours
     vague_attente = 0 # attente entre deux vagues
 
     etat_partie = ETAT_PARTIE_ACCUEIL
@@ -152,7 +151,7 @@ if __name__=="__main__":
             (i, j) = conversionCoordPixelsVersCases(x_souris, y_souris)
             # chercher sur quoi on a cliqué : bouton, tour, case vide, bestiole
             CIBLE_CLIC, CIBLE_OBJET = grille.cherche_cible_clic(i,j,listeBestioles)
-            print ("CIBLE_CLIC = ",CIBLE_CLIC)
+            #print ("CIBLE_CLIC = ",CIBLE_CLIC)
 
             # construction sur case vide 4 ?
             if tourBrouillon:
@@ -221,9 +220,3 @@ if __name__=="__main__":
             tourBrouillon.affiche()
 
         grille.dessine_portes()
-
-
-
-
-
-
