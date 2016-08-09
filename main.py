@@ -78,6 +78,17 @@ if __name__=="__main__":
                     pygame.quit()
                     exit(0)
 
+                # S
+                if event.key==115:
+                    grille.enleve_tour()
+                    grille.calcule_distance_grille()
+                    argent += int(PRIX_TOUR/2)
+
+
+                # U
+                if event.key==117:
+                    pass
+
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 ev_clicgauche = True
                 continue
@@ -170,13 +181,9 @@ if __name__=="__main__":
         # si clic-sur menu / bouton de tour, tour Brouillon :
         #
 
-
         if ev_clic_droit:
-            (a, b) = conversionCoordPixelsVersCases(x_souris, y_souris)
-            if grille.grille[a][b] == BLOC_TOUR and grille.grille[a+1][b] == BLOC_TOUR and grille.grille[a][b+1] == BLOC_TOUR and grille.grille[a+1][b+1] == BLOC_TOUR:
-                grille.enleve_tour(a, b)
-                grille.calcule_distance_grille()
-                argent += int(PRIX_TOUR/2)
+            pass
+
 
         # les bestioles
         for bete in listeBestioles:

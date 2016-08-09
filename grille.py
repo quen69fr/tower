@@ -53,7 +53,7 @@ class Grille():
                 cible_clic = 'tour'
                 cible_objet = self.quelle_tour_dans_case(i,j)
 
-                print("cible tour : ",cible_objet)
+                #print("cible tour : ",cible_objet)
 
                 self.tour_selectionnee = cible_objet
 
@@ -109,15 +109,28 @@ class Grille():
         return True
 
     # ------------------------------------------------
-    def enleve_tour(self,x,y):
+    def enleve_tour(self):
 
-        for t in self.listeTours:
+        if self.tour_selectionnee == None:
+            pass
+
+        else:
+            t=self.tour_selectionnee
+
+            self.listeTours.remove(t)
+            self.grille[t.x][t.y]=BLOC_INCONNU
+            self.grille[t.x+1][t.y]=BLOC_INCONNU
+            self.grille[t.x][t.y+1]=BLOC_INCONNU
+            self.grille[t.x+1][t.y+1]=BLOC_INCONNU
+
+
+        '''for t in self.listeTours:
             if t.x == x and t.y == y:
                 self.listeTours.remove(t)
                 self.grille[x][y]=BLOC_INCONNU
                 self.grille[x+1][y]=BLOC_INCONNU
                 self.grille[x][y+1]=BLOC_INCONNU
-                self.grille[x+1][y+1]=BLOC_INCONNU
+                self.grille[x+1][y+1]=BLOC_INCONNU'''
 
     # ------------------------------------------------
     def affiche_grille(self):

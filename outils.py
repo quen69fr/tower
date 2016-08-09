@@ -74,10 +74,16 @@ FICHIER_DEF_BLOCS = "blocs2.csv"
 TABLE_BESTIOLE = {}
 TABLE_BESTIOLE['normale']       = {'image':pygame.image.load("image/BestioleNormaleD.png")   , 'vie':10     , 'gain': 2,   'vitesse':1.0}
 TABLE_BESTIOLE['boss_normale']  = {'image':pygame.image.load("image/BestioleNormaleD.png")   , 'vie':100    , 'gain': 20,  'vitesse':1.0}
+
 TABLE_BESTIOLE['rapide']        = {'image':pygame.image.load("image/BestioleRapide.png")    , 'vie':10     , 'gain': 2,   'vitesse':1.5}
 TABLE_BESTIOLE['boss_rapide']   = {'image':pygame.image.load("image/BestioleRapide.png")    , 'vie':100    , 'gain': 20,   'vitesse':1.5}
+
 TABLE_BESTIOLE['volant']        = {'image':pygame.image.load("image/BestioleVolant.png")    , 'vie':10     , 'gain': 2,   'vitesse':1.0}
 TABLE_BESTIOLE['boss_volant']   = {'image':pygame.image.load("image/BestioleVolant.png")    , 'vie':100    , 'gain': 20,   'vitesse':1.0}
+
+TABLE_BESTIOLE['fort']        = {'image':pygame.image.load("image/BestioleVolant.png")    , 'vie':20     , 'gain': 2,   'vitesse':0.5}
+TABLE_BESTIOLE['boss_fort']   = {'image':pygame.image.load("image/BestioleVolant.png")    , 'vie':200    , 'gain': 20,   'vitesse':0.5}
+
 TABLE_BESTIOLE['immortelle']    = {'image':pygame.image.load("image/BestioleNormaleD.png")   , 'vie':9999999, 'gain':77 ,  'vitesse':1.0}
 
 # TABLE_BESTIOLE['normale']['vie'] => la vie de la bestiole normale
