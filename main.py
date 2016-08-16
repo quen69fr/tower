@@ -21,10 +21,6 @@ from outils import *
 # - l'orientation des bestioles (rotations)
 # - les sons
 
-ETAT_PARTIE_ACCUEIL = 1   # on construit, pas de betes, on quitte quand on clic sur DEMARRER
-ETAT_PARTIE_JEU = 2       # les betes arrivent, on construit
-ETAT_PARTIE_PERDU = 4     # on fige le jeu ; on affiche la grille, les betes, et des boutons "ENCORE / QUITTER"
-ETAT_PARTIE_GAGNE = 5     # on fige le jeu ; on affiche la grille, les betes, et des boutons "ENCORE / QUITTER"
 
 if __name__=="__main__":
 
@@ -72,7 +68,7 @@ if __name__=="__main__":
                     exit(0)
 
             if event.type==pygame.KEYDOWN:
-                # print(event.key)
+                #print(event.key)
                 # Q
                 if event.key==97:
                     pygame.quit()
@@ -80,7 +76,7 @@ if __name__=="__main__":
 
                 # S
                 if event.key==115:
-                    grille.enleve_tour()
+                    grille.enleve_tour_selectionnee()
                     grille.calcule_distance_grille()
                     argent += int(PRIX_TOUR/2)
 
@@ -88,6 +84,15 @@ if __name__=="__main__":
                 # U
                 if event.key==117:
                     pass
+
+                # N
+                if event.key==110:
+                    if vague_compteur < TABLE_VAGUE[vague]['quantite']:
+                        pass
+                    else:
+                        vague += 1
+                        vague_compteur = 0
+                        vague_attente = 0
 
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 ev_clicgauche = True
@@ -103,30 +108,40 @@ if __name__=="__main__":
         if etat_partie == ETAT_PARTIE_ACCUEIL:
             grille.dessine_grille()
             grille.dessine_portes()
-            texte="Une touche pour commencer ..."
-            surface = FONT.render(texte, True, BLANC)
-            rect = surface.get_rect(topleft=(180, 220))
-            SCREEN.blit(surface, rect)
-            if event.type==pygame.KEYDOWN or event.type==pygame.MOUSEBUTTONUP:
-                # S (start):  if event.key==115:
-                etat_partie = ETAT_PARTIE_JEU
-            continue
+            afficheAccueil(etat_partie)
 
+            if event.type==pygame.MOUSEBUTTONUP:
+                if X_START_NEXT < x_souris < (X_START_NEXT+155) and Y_START_NEXT < y_souris < (Y_START_NEXT+53):
+                    etat_partie = ETAT_PARTIE_JEU
+            continue
         # -----------------------------
         if etat_partie == ETAT_PARTIE_PERDU:
             grille.dessine_grille()
             grille.dessine_portes()
+            afficheAccueil(etat_partie)
+
             for bete in listeBestioles:
                 bete.affiche()
             for tir in listeTirs:
                 tir.affiche()
+            texte="Perdu"
+            surface = FONT_3.render(texte, True, ROUGE)
+            rect = surface.get_rect(topleft=(MARGE_ECRAN+200, 200))
+            SCREEN.blit(surface, rect)
+
+            '''if event.type==pygame.MOUSEBUTTONUP:
+                if X_START_NEXT < x_souris < (X_START_NEXT+155) and Y_START_NEXT < y_souris < (Y_START_NEXT+53):
+                    etat_partie = ETAT_PARTIE_JEU
+                    TODO il faut tout remêtre à 0.'''
+
+
             continue
         # -----------------------------
         # etat_partie_JEU
         # -----------------------------
 
         grille.dessine_grille()
-        grille.affiche_score(argent, nombre_vie, vague)
+        grille.affiche_score(argent, nombre_vie, int((DELAI_ENTRE_VAGUE - vague_attente)/20))
 
         # Algo d'envoi des bestioles et vagues
         # une vague à la fois , on tire au hasard l'entrée de chaque bete de la vague
@@ -138,11 +153,18 @@ if __name__=="__main__":
         # vague en cours finie ?
         if vague_compteur < TABLE_VAGUE[vague]['quantite']:
             # non, il faut envoyer une nouvelle bestiole de la vague en cours
-            if random.randint(0,INTERVALLE_BESTIOLE) == 1:
-                t=TABLE_VAGUE[vague]['type']
-                bestiole = Bestiole(type=t) # TODO : mettre ici les caractéristiques de la bete à créer
-                listeBestioles.append(bestiole)
-                vague_compteur += 1
+            if TABLE_VAGUE[vague]['type'] == 'groupe' or TABLE_VAGUE[vague]['type'] == 'boss_groupe':
+                    t=TABLE_VAGUE[vague]['type']
+                    bestiole = Bestiole(vague,type=t)
+                    listeBestioles.append(bestiole)
+                    vague_compteur += 1
+
+            else:
+                if random.randint(0,INTERVALLE_BESTIOLE) == 1:
+                    t=TABLE_VAGUE[vague]['type']
+                    bestiole = Bestiole(vague,type=t)
+                    listeBestioles.append(bestiole)
+                    vague_compteur += 1
         else:
             # oui la vague est finie,
             # j'attends ?
@@ -176,8 +198,16 @@ if __name__=="__main__":
             # selection d'un bouton Tour
             # TODO : gerer les differents boutons
             if CIBLE_CLIC == 'menu':
-                tourBrouillon = Tour(2,2, Tour._ETAT_TOUR_BROUILLON)
+                if X_START_NEXT < x_souris < (X_START_NEXT+155) and Y_START_NEXT < y_souris < (Y_START_NEXT+53):
+                    if vague_compteur < TABLE_VAGUE[vague]['quantite']:
+                        pass
+                    else:
+                        vague += 1
+                        vague_compteur = 0
+                        vague_attente = 0
 
+                if X_TOURELLE < x_souris < (X_TOURELLE+40) and Y_TOURELLE < y_souris < (Y_TOURELLE+40):
+                    tourBrouillon = Tour(2,2, Tour._ETAT_TOUR_BROUILLON)
         # si clic-sur menu / bouton de tour, tour Brouillon :
         #
 
@@ -198,8 +228,9 @@ if __name__=="__main__":
                     etat_partie = ETAT_PARTIE_PERDU
                 continue
             if bete.vie <= 0:
-                argent += TABLE_BESTIOLE[bete.type]['gain']
+                argent += TABLE_BESTIOLE[bete.type]['gain']*TABLE_VAGUE[vague]['difficultee']
                 listeBestioles.remove(bete)
+                #bestiole.affiche_vie(TABLE_BESTIOLE[bete.type]['gain']*TABLE_VAGUE[vague]['difficultee'])
                 continue
 
         # gestion des tours
@@ -227,3 +258,4 @@ if __name__=="__main__":
             tourBrouillon.affiche()
 
         grille.dessine_portes()
+        afficheAccueil(etat_partie)

@@ -9,29 +9,46 @@ from outils import *
 
 class Bestiole():
 
-    def __init__(self,x=-1,y=-1, type='normale'):
+    def __init__(self,vague,x=-1,y=-1, type='normale'):
         ''' x et y en pixels'''
 
         self.type = type
         self.vitesse = TABLE_BESTIOLE[type]['vitesse']
         self.vie = TABLE_BESTIOLE[type]['vie']
+
         self.rayon = TABLE_BESTIOLE[type]['image'].get_width()/2
         self.image = TABLE_BESTIOLE[type]['image']
+        self.difficultee = TABLE_VAGUE[vague]['difficultee']
+
+        self.vie = self.vie * self.difficultee
+        self.vie_max = self.vie
 
         if x!=-1 and y!=-1:
             self.x=x
             self.y=y
-        else:
-            random.random()
-            positionDansPorte = random.randint(1,TAILLE_PORTE-2)
-            y=Y_PORTE+positionDansPorte
-            (self.x,self.y)=conversionCoordCasesVersPixels(0,y)
-            x_pixel = random.randint(0,TAILLE_BLOC)
-            self.x += x_pixel
-            y_pixel = random.randint(0,TAILLE_BLOC)
-            self.y+=y_pixel
 
-            self.y+= -5
+        else:
+            if self.type == 'groupe' or self.type == 'boss_groupe':
+                y=Y_PORTE+TAILLE_PORTE/2
+                (self.x,self.y)=conversionCoordCasesVersPixels(0,y)
+                x_pixel = random.randint(0,TAILLE_BLOC/2)
+                self.x += x_pixel
+                y_pixel = random.randint(0,TAILLE_BLOC/2)
+                self.y+=y_pixel
+
+                self.y+= -5
+
+            else:
+                random.random()
+                positionDansPorte = random.randint(1,TAILLE_PORTE-2)
+                y=Y_PORTE+positionDansPorte
+                (self.x,self.y)=conversionCoordCasesVersPixels(0,y)
+                x_pixel = random.randint(0,TAILLE_BLOC)
+                self.x += x_pixel
+                y_pixel = random.randint(0,TAILLE_BLOC)
+                self.y+=y_pixel
+
+                self.y+= -5
 
     # -------------------------------------------------
     def verifie_bestiole_dans_case(self,i,j):
@@ -50,14 +67,31 @@ class Bestiole():
     # -------------------------------------------------
     def affiche(self):
         SCREEN.blit(self.image,(self.x-self.rayon,self.y-self.rayon))
+        self.affiche_vie()
         # print(self.vie)
+
+    # -------------------------------------------------
+    def affiche_vie(self):
+        ratio = self.vie/self.vie_max
+        #TODO : utiliser des constantes pour les dimensions d'affichage
+        hauteur = 2
+        largeur = 10
+        largeur1 = int(largeur*ratio)
+
+
+        x_vie =self.x-largeur/2
+        y_vie = self.y-hauteur/2-self.rayon-5
+
+        pygame.draw.rect(SCREEN, VERT, (x_vie, y_vie, largeur1, hauteur), 0)
+        pygame.draw.rect(SCREEN, ROUGE, (x_vie+largeur1, y_vie, largeur-largeur1, hauteur), 0)
+
 
     # -------------------------------------------------
     def deplace(self,grille):
 
         # TODO : bestiole volante
 
-        if TABLE_VAGUE[0] == 'volant':
+        if self.type == 'volant' or self.type == 'boss_volant':
             direction = (1,0)
             dx = direction[0]
             dy = direction[1]

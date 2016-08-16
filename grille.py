@@ -17,16 +17,27 @@ class Grille():
         self.tour_selectionnee = None
 
         for i in range(GRILLE_LX):
-            self.grille[i][0]=BLOC_BORD
-            self.grille[i][GRILLE_LY-1]=BLOC_BORD
+            self.grille[i][1]=BLOC_BORD
+            self.grille[i][GRILLE_LY-2]=BLOC_BORD
 
         for j in range(GRILLE_LY):
-            self.grille[0][j]=BLOC_BORD
-            self.grille[GRILLE_LX-1][j]=BLOC_BORD
+            self.grille[1][j]=BLOC_BORD
+            self.grille[GRILLE_LX-2][j]=BLOC_BORD
+
+        for i in range(GRILLE_LX):
+            self.grille[i][0]=BLOC_BORD_NOIR
+            self.grille[i][GRILLE_LY-1]=BLOC_BORD_NOIR
+
+        for j in range(GRILLE_LY):
+            self.grille[0][j]=BLOC_BORD_NOIR
+            self.grille[GRILLE_LX-1][j]=BLOC_BORD_NOIR
 
         for k in range(0,TAILLE_PORTE):
             self.grille[0][Y_PORTE+k]=BLOC_ENTREE
             self.grille[GRILLE_LX-1][Y_PORTE+k]=BLOC_PORTE
+
+            self.grille[1][Y_PORTE+k]=BLOC_INCONNU
+            self.grille[GRILLE_LX-2][Y_PORTE+k]=BLOC_INCONNU
 
     # ------------------------------------------------
     def cherche_cible_clic(self, i,j, listeBestioles):
@@ -59,7 +70,6 @@ class Grille():
 
                 return cible_clic, cible_objet
 
-
             # sinon une case vide
             elif self.grille[i][j]>=0:
                 # vide sur les 4 ?
@@ -73,6 +83,7 @@ class Grille():
         else:
             cible_clic = 'menu'
             # CIBLE_BOUTON = .......Menu.verifie_clic()
+            # cible_clic='autre'
         return cible_clic, cible_objet
 
     # ------------------------------------------------
@@ -82,6 +93,7 @@ class Grille():
                 if self.grille[x][y] != BLOC_BORD \
                         and self.grille[x][y] != BLOC_PORTE \
                         and self.grille[x][y] != BLOC_ENTREE \
+                        and self.grille[x][y] != BLOC_BORD_NOIR \
                         and self.grille[x][y] != BLOC_TOUR:
                     self.grille[x][y] = BLOC_INCONNU
 
@@ -100,16 +112,17 @@ class Grille():
 
         self.calcule_distance_grille()
         # verifie s'il y a des cases non calculées ?
-        for i in range(GRILLE_LX):
-            for j in range (GRILLE_LY):
-                if self.grille[i][j]==BLOC_INCONNU:
-                     self.enleve_tour(i,j)
-                     self.calcule_distance_grille()
-                     return False
+        for k in range(GRILLE_LX):
+            for l in range (GRILLE_LY):
+                if self.grille[k][l]==BLOC_INCONNU:
+                    self.enleve_tour(i,j)
+                    self.calcule_distance_grille()
+                    return False
         return True
 
     # ------------------------------------------------
-    def enleve_tour(self):
+    def enleve_tour_selectionnee(self):
+
 
         if self.tour_selectionnee == None:
             pass
@@ -123,14 +136,16 @@ class Grille():
             self.grille[t.x][t.y+1]=BLOC_INCONNU
             self.grille[t.x+1][t.y+1]=BLOC_INCONNU
 
-
-        '''for t in self.listeTours:
+    # ------------------------------------------------
+    def enleve_tour(self,x,y):
+        for t in self.listeTours:
             if t.x == x and t.y == y:
                 self.listeTours.remove(t)
                 self.grille[x][y]=BLOC_INCONNU
                 self.grille[x+1][y]=BLOC_INCONNU
                 self.grille[x][y+1]=BLOC_INCONNU
-                self.grille[x+1][y+1]=BLOC_INCONNU'''
+                self.grille[x+1][y+1]=BLOC_INCONNU
+                break
 
     # ------------------------------------------------
     def affiche_grille(self):
@@ -142,7 +157,8 @@ class Grille():
             print ("")
 
     # ------------------------------------------------
-    def affiche_score(self,argent,nombre_vie,vague):
+    def affiche_score(self,argent,nombre_vie,vague_compteur):
+
         texte="Argent : {} €".format(argent)
         surface = FONT.render(texte, True, JAUNE)
         rect = surface.get_rect(topleft=(MARGE_ECRAN+410, 10))
@@ -153,7 +169,7 @@ class Grille():
         rect = surface.get_rect(topleft=(MARGE_ECRAN+5, 10))
         SCREEN.blit(surface, rect)
 
-        texte="Vague : {:02d}".format(vague)
+        texte="Vague : {:02d}".format(vague_compteur)
         surface = FONT.render(texte, True, BLEU)
         rect = surface.get_rect(topleft=(MARGE_ECRAN+245, 10))
         SCREEN.blit(surface, rect)
@@ -169,12 +185,18 @@ class Grille():
                 v=self.grille[i][j]
                 # dessiner un rectangle en x,y de couleur v
                 c=NOIR
+
                 if v == BLOC_BORD:
                     c=BLEU
+
+                if v == BLOC_BORD_NOIR:
+                    c=NOIR
+
                 #if v == BLOC_ENTREE:
                 #    c=BLANC
                 if v == BLOC_INCONNU:
                     c=ROUGE
+
                 if v > 0:
                     nuance = v*3
                     if nuance > 255:
@@ -194,7 +216,6 @@ class Grille():
                 tourSelectionnee = False
                 tour.affiche(tourSelectionnee)
 
-
     # ------------------------------------------------
     def dessine_portes(self):
 
@@ -202,11 +223,11 @@ class Grille():
 
             if self.grille[GRILLE_LX-1][j] == BLOC_PORTE:
                 (x, y) = conversionCoordCasesVersPixels(GRILLE_LX-1, j)
-                pygame.draw.rect(SCREEN, JAUNE, (x, y, TAILLE_BLOC, TAILLE_BLOC), 0)
+                pygame.draw.rect(SCREEN, NOIR, (x, y, TAILLE_BLOC, TAILLE_BLOC), 0)
 
             if self.grille[0][j] == BLOC_ENTREE:
                 (x, y) = conversionCoordCasesVersPixels(0, j)
-                pygame.draw.rect(SCREEN, JAUNE, (x, y, TAILLE_BLOC, TAILLE_BLOC), 0)
+                pygame.draw.rect(SCREEN, NOIR, (x, y, TAILLE_BLOC, TAILLE_BLOC), 0)
 
     # ------------------------------------------------
     def calcule_distance(self,x,y):
