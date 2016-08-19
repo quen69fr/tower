@@ -14,13 +14,17 @@ from outils import *
 # - corriger les bugs
 #     bug cases devant porte de sortie ne se déconstruit pas
 #     bug obstruction totale de la porte d'entrée par 2 tours
-# - dessiner la vie restante au dessus de chaque bestiole
+# - on aperçoit les bestioles avant la porte
+# - on ne peut pas lancer plusieurs vagues rapidement (il faut attendre la fin de sortie de la vague précédente)
 # - eloigner les bestioles (trop superposées)
 # - plusieurs sortes de Tours
 # - les upgrades (améliorations) de Tours
 # - l'orientation des bestioles (rotations)
 # - les sons
-
+# - une classe MenuBoutons (qui affiche, vérifie ce qui est cliqué, etc.)
+# - sortie les TABLE_VAGUE et TABLE_BESTIOLES dans un format json
+# - afficher le copyright et noms des développeurs
+# - améliorer les graphiques (taille, contraste)
 
 if __name__=="__main__":
 

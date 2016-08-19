@@ -92,24 +92,25 @@ class Bestiole():
     # -------------------------------------------------
     def deplace(self,grille):
 
-        # TODO : bestiole volante
-
+        # bestiole volante
         if self.type == 'volant' or self.type == 'boss_volant':
             direction = (1,0)
-            dx = direction[0]
-            dy = direction[1]
-            self.x+=dx*self.vitesse
-            self.y+=dy*self.vitesse
+            # dx = direction[0]
+            # dy = direction[1]
+            # self.x+=dx*self.vitesse
+            # self.y+=dy*self.vitesse
 
         else:
             # on regarde dans quelle case on est
             (cx,cy) = conversionCoordPixelsVersCases(self.x,self.y)
 
-            # (prochaine_case_x,prochaine_case_y) = grille.prochaineCase(case_x,case_y)
+            # on cherche la prochaine case
             (best, pcx, pcy) = grille.prochaineCase(cx, cy)
 
-            #print ("cx:{},cy:{}, x:{} ,y:{}, best:{}, pcx:{}, pcy:{}". format(cx,cy,self.x,self.y,best, pcx,pcy))
-            # TOODO / à améliorer
+            # print ("cx:{},cy:{}, x:{} ,y:{}, best:{}, pcx:{}, pcy:{}". format(cx,cy,self.x,self.y,best, pcx,pcy))
+
+            # et on ajuste la trajectoire en pixel, selon les diagonales, angles et rayons des bestioles
+            # Algo :
             # si on va dans une case orthogonale (ex. : d ) :
             #   - si les deux cases autour sont vides (ex. hd, bd) : direction simple (ex. d)
             #   - si  une ou deux autour sont occupées, vérifier si ca passe en largeur
@@ -118,7 +119,7 @@ class Bestiole():
             # si on va dans une case diagonale (ex. bd)
             #   - si les deux cases autour sont vides (b,d), direction centre de la case diagonale
             #   - si une des deux cases autour est vide (ex.b) : direction ortho (ex. b) : A AMELIORER (b + 45degré)
-            #   - si deux cases autour occupées, pas possible, déjà éliminé par ProchaineCase2()
+            #   - si deux cases autour occupées, pas possible, déjà éliminé par ProchaineCase()
 
             direction = (0,0)
             if best == 'vd':
@@ -235,11 +236,13 @@ class Bestiole():
                     else :
                         direction = ( pcx - cx, pcy - cy)
 
-            #print("direction :", direction)
+        # Fin des cas selon type de bestioles et directions : maintenant on déplace !
+        # TODO : faire tourner d'abord si on a changé de direction de déplacement depuis la fois précédente.
 
-            dx = direction[0]
-            dy = direction[1]
-            #print("dirx : ",direction_x,"diry : ",direction_y)
-            self.x+=dx*self.vitesse
-            self.y+=dy*self.vitesse
+        #print("direction :", direction)
+        dx = direction[0]
+        dy = direction[1]
+        #print("dirx : ",direction_x,"diry : ",direction_y)
+        self.x+=dx*self.vitesse
+        self.y+=dy*self.vitesse
 

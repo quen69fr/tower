@@ -393,13 +393,13 @@ class Grille():
 
     # -------------------------------------------------
     def quelle_tour_dans_case(self,i,j):
+        # TODO : à améliorer (performance) : maintenir une table plutot que d'examiner toutes les tours.
         for t in self.listeTours:
             if t.x == i and t.y == j or\
             t.x+1 == i and t.y == j or\
             t.x == i and t.y+1 == j or\
             t.x+1 == i and t.y+1 == j:
                 return t
-
         return None
 
     # -------------------------------------------------
