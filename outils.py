@@ -122,7 +122,7 @@ TABLE_BESTIOLE['boss_final']    = {'image':pygame.image.load("image/BestioleBoss
 INTERVALLE_BESTIOLE = 15 # (random 1 sur / intervalle)
 DELAI_ENTRE_VAGUE = 500  # délai en secondes entre deux vagues ; constant pour toute la partie
 
-TABLE_VAGUE1 = ( {'type':'boss_final','quantite':0, 'difficultee':1},
+TABLE_VAGUE = ( {'type':'boss_final','quantite':0, 'difficultee':1},
 
                 {'type':'normale', 'quantite':10, 'difficultee':1},
                 {'type':'rapide','quantite':10, 'difficultee':1},
@@ -166,15 +166,6 @@ TABLE_VAGUE1 = ( {'type':'boss_final','quantite':0, 'difficultee':1},
 
                 {'type':'boss_final','quantite':1, 'difficultee':6})
 
-TABLE_VAGUE = ( {'type':'boss_final','quantite':0, 'difficultee':1},
-
-                {'type':'normale', 'quantite':10, 'difficultee':1},
-                {'type':'rapide','quantite':10, 'difficultee':1},
-                {'type':'groupe','quantite':10, 'difficultee':1},
-                {'type':'fort','quantite':10, 'difficultee':1},
-                {'type':'volant','quantite':10, 'difficultee':1},
-
-                {'type':'boss_final','quantite':1, 'difficultee':6})
 
 # TODO  :dico de famille de tours, contenant une liste de tours, contenant une liste d'attributs
 # TABLE_TOUR = {} ? avec les différentes tour
