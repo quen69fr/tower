@@ -104,6 +104,14 @@ if __name__=="__main__":
 
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 ev_clicgauche = True
+                rayon = int(IMAGE_START.get_height()/2)
+                #print(rayon)
+                if math.sqrt((x_souris - (X_BOUTON_PLAY_PAUSE+rayon))**2 + (y_souris - (Y_BOUTON_PLAY_PAUSE+rayon))**2 ) <= rayon:
+                    if etat_partie == ETAT_PARTIE_PAUSE:
+                        etat_partie = ETAT_PARTIE_JEU
+                    else:
+                        etat_partie = ETAT_PARTIE_PAUSE
+
                 continue
 
             if event.type == pygame.MOUSEBUTTONUP and event.button == 3:
@@ -254,13 +262,16 @@ if __name__=="__main__":
             # selection d'un bouton Tour
             # TODO : gerer les differents boutons
             if CIBLE_CLIC == 'menu':
-                if X_START_NEXT < x_souris < (X_START_NEXT+155) and Y_START_NEXT < y_souris < (Y_START_NEXT+53):
+                largeur = IMAGE_START.get_width()
+                hauteur = IMAGE_START.get_height()
+                if X_START_NEXT < x_souris < (X_START_NEXT + largeur) and Y_START_NEXT < y_souris < (Y_START_NEXT + hauteur):
                     if vague_compteur < TABLE_VAGUE[vague]['quantite']:
                         pass
                     else:
                         vague += 1
                         vague_compteur = 0
                         vague_attente = 0
+
 
                 if X_TOURELLE < x_souris < (X_TOURELLE+40) and Y_TOURELLE < y_souris < (Y_TOURELLE+40):
                     tourBrouillon = Tour(2,2, Tour._ETAT_TOUR_BROUILLON)
