@@ -94,6 +94,14 @@ if __name__=="__main__":
                         vague_compteur = 0
                         vague_attente = 0
 
+                if event.key==112:
+                    if etat_partie == ETAT_PARTIE_PAUSE:
+                        etat_partie = ETAT_PARTIE_JEU
+                    elif etat_partie == ETAT_PARTIE_JEU:
+                        etat_partie = ETAT_PARTIE_PAUSE
+                    else:
+                        pass
+
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 ev_clicgauche = True
                 continue
@@ -115,7 +123,7 @@ if __name__=="__main__":
                     etat_partie = ETAT_PARTIE_JEU
             continue
         # -----------------------------
-        if etat_partie == ETAT_PARTIE_PERDU:
+        if etat_partie == ETAT_PARTIE_PERDU or etat_partie == ETAT_PARTIE_GAGNE:
             grille.dessine_grille()
             grille.dessine_portes()
             afficheAccueil(etat_partie)
@@ -124,16 +132,60 @@ if __name__=="__main__":
                 bete.affiche()
             for tir in listeTirs:
                 tir.affiche()
-            texte="Perdu"
-            surface = FONT_3.render(texte, True, ROUGE)
-            rect = surface.get_rect(topleft=(MARGE_ECRAN+200, 200))
-            SCREEN.blit(surface, rect)
+            if etat_partie == ETAT_PARTIE_PERDU:
+                texte="Perdu"
+                surface = FONT_3.render(texte, True, ROUGE)
+                rect = surface.get_rect(topleft=(MARGE_ECRAN+200, 200))
+                SCREEN.blit(surface, rect)
 
-            '''if event.type==pygame.MOUSEBUTTONUP:
+            if etat_partie == ETAT_PARTIE_GAGNE:
+                texte="Gagné"
+                surface = FONT_3.render(texte, True, ROUGE)
+                rect = surface.get_rect(topleft=(MARGE_ECRAN+200, 200))
+                SCREEN.blit(surface, rect)
+
+            if event.type==pygame.MOUSEBUTTONUP:
                 if X_START_NEXT < x_souris < (X_START_NEXT+155) and Y_START_NEXT < y_souris < (Y_START_NEXT+53):
                     etat_partie = ETAT_PARTIE_JEU
-                    TODO il faut tout remêtre à 0.'''
 
+                    # TODO il faut tout remêtre à 0.
+
+                    vague = 0
+                    vague_compteur= 0 # nombre de betes deja envoyees dans la vague en cours
+                    vague_attente = 0 # attente entre deux vagues
+
+                    etat_partie = ETAT_PARTIE_ACCUEIL
+                    argent = 100
+
+                    nombre_vie = NOMBRE_BESTIOLES_SORTIE_MAX
+
+                    grille = Grille()
+                    listeBestioles = []
+                    listeTirs = []
+
+                    grille.charge_csv()
+                    grille.calcule_distance_grille()
+                    grille.dessine_grille()
+
+                    tourBrouillon = None
+
+            continue
+        # -----------------------------
+        if etat_partie == ETAT_PARTIE_PAUSE:
+            grille.dessine_grille()
+            grille.dessine_portes()
+            afficheAccueil(etat_partie)
+            grille.affiche_score(argent, nombre_vie, int((DELAI_ENTRE_VAGUE - vague_attente)/20))
+
+            for bete in listeBestioles:
+                bete.affiche()
+            for tir in listeTirs:
+                tir.affiche()
+
+            texte="Pause"
+            surface = FONT_3.render(texte, True, JAUNE)
+            rect = surface.get_rect(topleft=(MARGE_ECRAN+200, 200))
+            SCREEN.blit(surface, rect)
 
             continue
         # -----------------------------
@@ -151,6 +203,10 @@ if __name__=="__main__":
         # print ('Vague {} ; compteur {} ; attente {}'.format(vague,vague_compteur, vague_attente))
 
         # vague en cours finie ?
+        if vague == len(TABLE_VAGUE):
+            etat_partie = ETAT_PARTIE_GAGNE
+            continue
+
         if vague_compteur < TABLE_VAGUE[vague]['quantite']:
             # non, il faut envoyer une nouvelle bestiole de la vague en cours
             if TABLE_VAGUE[vague]['type'] == 'groupe' or TABLE_VAGUE[vague]['type'] == 'boss_groupe':

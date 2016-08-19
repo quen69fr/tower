@@ -40,6 +40,9 @@ GRILLE_LY = 30
 Y_PORTE = 12 # ordonnée plus haute case de porte
 TAILLE_PORTE = 4
 
+X_BARRE_DE_VIE = 10
+Y_BARRE_DE_VIE = 2
+HAUTEUR_BARRE_DE_VIE = 5
 
 TAILLE_BLOC = 20
 MARGE_ECRAN = 40
@@ -53,6 +56,8 @@ IMAGE_TOURELLE_VIDE = pygame.image.load("image/TourelleVide.png")
 IMAGE_START = pygame.image.load("image/Start.png")
 IMAGE_NEXT = pygame.image.load("image/Next.png")
 IMAGE_RESTART = pygame.image.load("image/ReStart.png")
+IMAGE_BOUTON_PLAY = pygame.image.load("image/BoutonPlay.png")
+IMAGE_BOUTON_PAUSE = pygame.image.load("image/BoutonPause.png")
 
 
 NOMBRE_BESTIOLES_SORTIE_MAX = 20  # avant perte de partie
@@ -65,6 +70,8 @@ DELAI_TIR = 30
 
 X_START_NEXT = 700
 Y_START_NEXT = 20
+X_BOUTON_PALY_PAUSE = 900
+Y_BOUTON_PALY_PAUSE = 20
 
 X_TOURELLE = 700
 Y_TOURELLE = 100
@@ -82,25 +89,26 @@ ETAT_PARTIE_ACCUEIL = 1   # on construit, pas de betes, on quitte quand on clic 
 ETAT_PARTIE_JEU = 2       # les betes arrivent, on construit
 ETAT_PARTIE_PERDU = 4     # on fige le jeu ; on affiche la grille, les betes, et des boutons "ENCORE / QUITTER"
 ETAT_PARTIE_GAGNE = 5     # on fige le jeu ; on affiche la grille, les betes, et des boutons "ENCORE / QUITTER"
+ETAT_PARTIE_PAUSE = 6
 
 
 # Les types et caractéristiques des différentes bestioles
 
 TABLE_BESTIOLE = {}
 TABLE_BESTIOLE['normale']       = {'image':pygame.image.load("image/BestioleNormale.png")   , 'vie':10     , 'gain': 1,   'vitesse':1.0}
-TABLE_BESTIOLE['boss_normale']  = {'image':pygame.image.load("image/BestioleNormaleBoss.png")   , 'vie':100    , 'gain': 10,  'vitesse':1.0}
+TABLE_BESTIOLE['boss_normale']  = {'image':pygame.image.load("image/BestioleNormaleBoss.png")   , 'vie':100    , 'gain': 50,  'vitesse':1.0}
 
 TABLE_BESTIOLE['rapide']        = {'image':pygame.image.load("image/BestioleRapide.png")    , 'vie':10     , 'gain': 1,   'vitesse':1.5}
-TABLE_BESTIOLE['boss_rapide']   = {'image':pygame.image.load("image/BestioleRapideBoss.png")    , 'vie':100    , 'gain': 10,   'vitesse':1.5}
+TABLE_BESTIOLE['boss_rapide']   = {'image':pygame.image.load("image/BestioleRapideBoss.png")    , 'vie':100    , 'gain': 50,   'vitesse':1.5}
 
 TABLE_BESTIOLE['groupe']       = {'image':pygame.image.load("image/BestioleGroupe.png")   , 'vie':10     , 'gain': 1,   'vitesse':1.0}
-TABLE_BESTIOLE['boss_groupe']  = {'image':pygame.image.load("image/BestioleGroupeBoss.png")   , 'vie':50    , 'gain': 10,  'vitesse':1.0}
+TABLE_BESTIOLE['boss_groupe']  = {'image':pygame.image.load("image/BestioleGroupeBoss.png")   , 'vie':50    , 'gain': 50,  'vitesse':1.0}
 
 TABLE_BESTIOLE['fort']        = {'image':pygame.image.load("image/BestioleFort.png")    , 'vie':20     , 'gain': 1,   'vitesse':0.5}
-TABLE_BESTIOLE['boss_fort']   = {'image':pygame.image.load("image/BestioleFortBoss.png")    , 'vie':200    , 'gain': 10,   'vitesse':0.5}
+TABLE_BESTIOLE['boss_fort']   = {'image':pygame.image.load("image/BestioleFortBoss.png")    , 'vie':200    , 'gain': 50,   'vitesse':0.5}
 
 TABLE_BESTIOLE['volant']        = {'image':pygame.image.load("image/BestioleVolant.png")    , 'vie':10     , 'gain': 1,   'vitesse':1.0}
-TABLE_BESTIOLE['boss_volant']   = {'image':pygame.image.load("image/BestioleVolantBoss.png")    , 'vie':100    , 'gain': 10,   'vitesse':1.0}
+TABLE_BESTIOLE['boss_volant']   = {'image':pygame.image.load("image/BestioleVolantBoss.png")    , 'vie':100    , 'gain': 50,   'vitesse':1.0}
 
 TABLE_BESTIOLE['boss_final']    = {'image':pygame.image.load("image/BestioleBossFinal.png")   , 'vie':500, 'gain':100 ,  'vitesse':1.0}
 
@@ -114,7 +122,7 @@ TABLE_BESTIOLE['boss_final']    = {'image':pygame.image.load("image/BestioleBoss
 INTERVALLE_BESTIOLE = 15 # (random 1 sur / intervalle)
 DELAI_ENTRE_VAGUE = 500  # délai en secondes entre deux vagues ; constant pour toute la partie
 
-TABLE_VAGUE = ( {'type':'boss_final','quantite':0, 'difficultee':1},
+TABLE_VAGUE1 = ( {'type':'boss_final','quantite':0, 'difficultee':1},
 
                 {'type':'normale', 'quantite':10, 'difficultee':1},
                 {'type':'rapide','quantite':10, 'difficultee':1},
@@ -155,6 +163,16 @@ TABLE_VAGUE = ( {'type':'boss_final','quantite':0, 'difficultee':1},
                 {'type':'volant','quantite':10, 'difficultee':5},
 
                 {'type':'boss_volant','quantite':1, 'difficultee':5},
+
+                {'type':'boss_final','quantite':1, 'difficultee':6})
+
+TABLE_VAGUE = ( {'type':'boss_final','quantite':0, 'difficultee':1},
+
+                {'type':'normale', 'quantite':10, 'difficultee':1},
+                {'type':'rapide','quantite':10, 'difficultee':1},
+                {'type':'groupe','quantite':10, 'difficultee':1},
+                {'type':'fort','quantite':10, 'difficultee':1},
+                {'type':'volant','quantite':10, 'difficultee':1},
 
                 {'type':'boss_final','quantite':1, 'difficultee':6})
 
@@ -230,6 +248,12 @@ def afficheAccueil(etat_partie):
     elif etat_partie == ETAT_PARTIE_JEU:
         SCREEN.blit(IMAGE_NEXT,(X_START_NEXT,Y_START_NEXT))
         SCREEN.blit(IMAGE_TOURELLE_VIDE,(X_TOURELLE,Y_TOURELLE))
+        SCREEN.blit(IMAGE_BOUTON_PAUSE,(X_BOUTON_PALY_PAUSE,Y_BOUTON_PALY_PAUSE))
+
+    elif etat_partie == ETAT_PARTIE_PAUSE:
+        SCREEN.blit(IMAGE_NEXT,(X_START_NEXT,Y_START_NEXT))
+        SCREEN.blit(IMAGE_TOURELLE_VIDE,(X_TOURELLE,Y_TOURELLE))
+        SCREEN.blit(IMAGE_BOUTON_PLAY,(X_BOUTON_PALY_PAUSE,Y_BOUTON_PALY_PAUSE))
 
     else:
         pass

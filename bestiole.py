@@ -73,18 +73,21 @@ class Bestiole():
     # -------------------------------------------------
     def affiche_vie(self):
         ratio = self.vie/self.vie_max
-        #TODO : utiliser des constantes pour les dimensions d'affichage
-        hauteur = 2
-        largeur = 10
-        largeur1 = int(largeur*ratio)
 
+        largeur1 = int(X_BARRE_DE_VIE*ratio)
 
-        x_vie =self.x-largeur/2
-        y_vie = self.y-hauteur/2-self.rayon-5
+        x_vie = self.x-X_BARRE_DE_VIE/2
+        y_vie = self.y-Y_BARRE_DE_VIE/2-self.rayon-HAUTEUR_BARRE_DE_VIE
 
-        pygame.draw.rect(SCREEN, VERT, (x_vie, y_vie, largeur1, hauteur), 0)
-        pygame.draw.rect(SCREEN, ROUGE, (x_vie+largeur1, y_vie, largeur-largeur1, hauteur), 0)
+        pygame.draw.rect(SCREEN, VERT, (x_vie, y_vie, largeur1, Y_BARRE_DE_VIE), 0)
+        pygame.draw.rect(SCREEN, ROUGE, (x_vie+largeur1, y_vie, X_BARRE_DE_VIE-largeur1, Y_BARRE_DE_VIE), 0)
 
+    # -------------------------------------------------
+    def affiche_gain(self,gain):
+        texte="+ {}".format(gain)
+        surface = FONT_2.render(texte, True, JAUNE)
+        rect = surface.get_rect(topleft=(MARGE_ECRAN+410, 10))
+        SCREEN.blit(surface, rect)
 
     # -------------------------------------------------
     def deplace(self,grille):
