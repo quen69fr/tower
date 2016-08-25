@@ -84,11 +84,6 @@ if __name__=="__main__":
                     grille.calcule_distance_grille()
                     argent += int(PRIX_TOUR/2)
 
-
-                # U
-                if event.key==117:
-                    pass
-
                 # N
                 if event.key==110:
                     if vague_compteur < TABLE_VAGUE[vague]['quantite']:
@@ -123,11 +118,12 @@ if __name__=="__main__":
                 continue
 
         SCREEN.fill(0)
+        grille.dessine_grille()
+        grille.affiche_score(argent, nombre_vie, int((DELAI_ENTRE_VAGUE - vague_attente)/20))
+        grille.dessine_portes()
 
         # -----------------------------
         if etat_partie == ETAT_PARTIE_ACCUEIL:
-            grille.dessine_grille()
-            grille.dessine_portes()
             afficheAccueil(etat_partie)
 
             if event.type==pygame.MOUSEBUTTONUP:
@@ -136,12 +132,10 @@ if __name__=="__main__":
             continue
         # -----------------------------
         if etat_partie == ETAT_PARTIE_PERDU or etat_partie == ETAT_PARTIE_GAGNE:
-            grille.dessine_grille()
-            grille.dessine_portes()
             afficheAccueil(etat_partie)
 
             for bete in listeBestioles:
-                bete.affiche()
+                bete.affiche(vague)
             for tir in listeTirs:
                 tir.affiche()
             if etat_partie == ETAT_PARTIE_PERDU:
@@ -184,28 +178,22 @@ if __name__=="__main__":
             continue
         # -----------------------------
         if etat_partie == ETAT_PARTIE_PAUSE:
-            grille.dessine_grille()
-            grille.dessine_portes()
             afficheAccueil(etat_partie)
-            grille.affiche_score(argent, nombre_vie, int((DELAI_ENTRE_VAGUE - vague_attente)/20))
 
             for bete in listeBestioles:
-                bete.affiche()
+                bete.affiche(vague)
             for tir in listeTirs:
                 tir.affiche()
 
             texte="Pause"
-            surface = FONT_3.render(texte, True, JAUNE)
-            rect = surface.get_rect(topleft=(MARGE_ECRAN+200, 200))
+            surface = FONT_3.render(texte, True, ROUGE)
+            rect = surface.get_rect(topleft=(MARGE_ECRAN+200, 250))
             SCREEN.blit(surface, rect)
 
             continue
         # -----------------------------
         # etat_partie_JEU
         # -----------------------------
-
-        grille.dessine_grille()
-        grille.affiche_score(argent, nombre_vie, int((DELAI_ENTRE_VAGUE - vague_attente)/20))
 
         # Algo d'envoi des bestioles et vagues
         # une vague à la fois , on tire au hasard l'entrée de chaque bete de la vague
@@ -215,9 +203,9 @@ if __name__=="__main__":
         # print ('Vague {} ; compteur {} ; attente {}'.format(vague,vague_compteur, vague_attente))
 
         # vague en cours finie ?
-        if vague == len(TABLE_VAGUE):
+        '''if vague == len(TABLE_VAGUE):
             etat_partie = ETAT_PARTIE_GAGNE
-            continue
+            continue'''
 
         if vague_compteur < TABLE_VAGUE[vague]['quantite']:
             # non, il faut envoyer une nouvelle bestiole de la vague en cours
@@ -289,7 +277,7 @@ if __name__=="__main__":
         # les bestioles
         for bete in listeBestioles:
             bete.deplace(grille)
-            bete.affiche()
+            bete.affiche(vague)
             (i,j)=conversionCoordPixelsVersCases(bete.x,bete.y)
             if i == GRILLE_LX-1:
                 # une besstiole est sortie

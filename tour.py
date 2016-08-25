@@ -16,9 +16,19 @@ class Tour():
     def __init__(self,x,y,etat=_ETAT_TOUR_CONSTRUIT):
         self.x = x
         self.y = y
-        self.etat = etat
-        self.distance_tir = DISTANCE_TIR  # en pixels
-        self.delai_initial = DELAI_TIR
+        self.etat = 1
+
+        self.force_tir = 5
+
+        self.distance_tir = 50
+
+        self.delai_tir = 5
+
+        self.vitesse_tir = 5
+
+        self.rapidité_tir = 1
+        self.delai_tir = 70 - 20*(self.rapidité_tir-1)
+
         self.delai = 0
 
     # ------------------------------------------------
@@ -44,6 +54,31 @@ class Tour():
                 SCREEN.blit(recttransparent, conversionCoordCasesVersPixels(self.x,self.y))
 
                 pygame.draw.circle(SCREEN, VERT, centreTour(self.x, self.y), self.distance_tir, 1)
+
+        if  tour_selectionnee == True:
+            SCREEN.blit(IMAGE_PENCARTE,(680,150))
+
+            SCREEN.blit(IMAGE_TOURELLE_VIDE,(785,185))
+
+            texte="Force : {}".format(self.force_tir)
+            surface = FONT_4.render(texte, True, ROUGE)
+            rect = surface.get_rect(topleft=(700, 250))
+            SCREEN.blit(surface, rect)
+
+            texte="Distance : {}".format(self.distance_tir)
+            surface = FONT_4.render(texte, True, VERT)
+            rect = surface.get_rect(topleft=(700, 300))
+            SCREEN.blit(surface, rect)
+
+            texte="Rapidité : {}".format(self.rapidité_tir)
+            surface = FONT_4.render(texte, True, BLEU)
+            rect = surface.get_rect(topleft=(700, 350))
+            SCREEN.blit(surface, rect)
+
+            texte="Vitesse : {}".format(self.vitesse_tir)
+            surface = FONT_4.render(texte, True, NOIR)
+            rect = surface.get_rect(topleft=(700, 400))
+            SCREEN.blit(surface, rect)
 
     # ------------------------------------------------
     def gere_construction(self):
@@ -81,10 +116,12 @@ class Tour():
             dist = math.sqrt ( (cx-b.x)**2 + (cy-b.y)**2 )
             if dist <= self.distance_tir:
                 # Si oui, calculer direction
-                self.delai = self.delai_initial
+                self.delai = self.delai_tir
                 c = centreTour(self.x, self.y)
-                return Tir(b, c[0], c[1])
+                return Tir(b,self.vitesse_tir,self.force_tir, c[0], c[1])
 
         # print(self.delai)
         # sinon pas de tir
         return
+
+

@@ -17,16 +17,12 @@ class Grille():
         self.tour_selectionnee = None
 
         for i in range(GRILLE_LX):
-            self.grille[i][1]=BLOC_BORD
-            self.grille[i][GRILLE_LY-2]=BLOC_BORD
+            self.grille[i][0]=BLOC_BORD
+            self.grille[i][GRILLE_LY-1]=BLOC_BORD
 
         for j in range(GRILLE_LY):
             self.grille[1][j]=BLOC_BORD
             self.grille[GRILLE_LX-2][j]=BLOC_BORD
-
-        for i in range(GRILLE_LX):
-            self.grille[i][0]=BLOC_BORD_NOIR
-            self.grille[i][GRILLE_LY-1]=BLOC_BORD_NOIR
 
         for j in range(GRILLE_LY):
             self.grille[0][j]=BLOC_BORD_NOIR
@@ -47,6 +43,7 @@ class Grille():
         :param listeBestioles:
         :return: cible_clic (vide, vide4, inconnu, menu, bete, tour) et cible_objet (objet cliqué, bete, tour)
         '''
+        self.listeBestioles = listeBestioles
         cible_clic = 0
         cible_objet = None
         self.tour_selectionnee = None
@@ -56,6 +53,7 @@ class Grille():
             for bete in listeBestioles:
                 if bete.verifie_bestiole_dans_case(i,j):
                     cible_clic='bete'
+
                     cible_objet = bete
                     #print("BETE CLIQUEE", cible_objet)
                     return cible_clic, cible_objet
@@ -112,17 +110,27 @@ class Grille():
 
         self.calcule_distance_grille()
         # verifie s'il y a des cases non calculées ?
+
         for k in range(GRILLE_LX):
             for l in range (GRILLE_LY):
                 if self.grille[k][l]==BLOC_INCONNU:
-                    self.enleve_tour(i,j)
-                    self.calcule_distance_grille()
-                    return False
+                    for bete in self.listeBestioles:
+                        if bete.verifie_bestiole_dans_case(k,l,False):
+                            self.enleve_tour(i,j)
+                            self.calcule_distance_grille()
+                            return False
+
+        for k in range(0,TAILLE_PORTE):
+            if self.grille[1][Y_PORTE+k] == BLOC_INCONNU or self.grille[GRILLE_LX-2][Y_PORTE+k] == BLOC_INCONNU:
+                self.enleve_tour(i,j)
+                self.calcule_distance_grille()
+                return False
+
+
         return True
 
     # ------------------------------------------------
     def enleve_tour_selectionnee(self):
-
 
         if self.tour_selectionnee == None:
             pass
@@ -161,17 +169,17 @@ class Grille():
 
         texte="Argent : {} €".format(argent)
         surface = FONT.render(texte, True, JAUNE)
-        rect = surface.get_rect(topleft=(MARGE_ECRAN+410, 10))
+        rect = surface.get_rect(topleft=(MARGE_ECRAN+425, 10))
         SCREEN.blit(surface, rect)
 
-        texte="Nombre de vie : {}".format(nombre_vie)
+        texte="Nombre de vies : {}".format(nombre_vie)
         surface = FONT.render(texte, True, BLANC)
-        rect = surface.get_rect(topleft=(MARGE_ECRAN+5, 10))
+        rect = surface.get_rect(topleft=(MARGE_ECRAN+20, 10))
         SCREEN.blit(surface, rect)
 
-        texte="Vague : {:02d}".format(vague_compteur)
+        texte="Vagues : {:02d}".format(vague_compteur)
         surface = FONT.render(texte, True, BLEU)
-        rect = surface.get_rect(topleft=(MARGE_ECRAN+245, 10))
+        rect = surface.get_rect(topleft=(MARGE_ECRAN+260, 10))
         SCREEN.blit(surface, rect)
         pass
 

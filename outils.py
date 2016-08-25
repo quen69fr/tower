@@ -21,12 +21,13 @@ pygame.display.set_caption("tower !")
 FPS = 60                # nombre d'image par seconde
 DELAY = 0               # vitesse du jeu
 
-NOIR =  (  0,   0,   0)
-BLANC = (255, 255, 255)
-BLEU =  (  0,   0, 255)
-VERT =  (  0, 255,   0)
-ROUGE = (255,   0,   0)
-JAUNE = (255, 255,   0)
+NOIR =  (0,0,0)
+BLANC = (255,255,255)
+BLEU =  (0,0,255)
+VERT =  (52,175,0)
+ROUGE = (255,0,0)
+ORANGE = (255,127,0)
+JAUNE = (255,255,0)
 
 BLOC_BORD_NOIR = -3
 BLOC_BORD = -2
@@ -36,9 +37,10 @@ BLOC_ENTREE = 9999
 BLOC_INCONNU = -99
 
 GRILLE_LX = 30
-GRILLE_LY = 30
-Y_PORTE = 12 # ordonnée plus haute case de porte
-TAILLE_PORTE = 4
+GRILLE_LY = 24
+TAILLE_PORTE = 6
+Y_PORTE = 9 # ordonnée plus haute case de porte
+
 
 X_BARRE_DE_VIE = 10
 Y_BARRE_DE_VIE = 2
@@ -53,11 +55,13 @@ PRIX_TOUR = 5
 
 # tous les fichiets IMAGES
 IMAGE_TOURELLE_VIDE = pygame.image.load("image/TourelleVide.png")
+
 IMAGE_START = pygame.image.load("image/Start.png")
 IMAGE_NEXT = pygame.image.load("image/Next.png")
 IMAGE_RESTART = pygame.image.load("image/ReStart.png")
 IMAGE_BOUTON_PLAY = pygame.image.load("image/BoutonPlay.png")
 IMAGE_BOUTON_PAUSE = pygame.image.load("image/BoutonPause.png")
+IMAGE_PENCARTE = pygame.image.load("image/Pencarte.png")
 
 
 NOMBRE_BESTIOLES_SORTIE_MAX = 20  # avant perte de partie
@@ -79,6 +83,7 @@ Y_TOURELLE = 100
 FONT = pygame.font.Font(None,30)
 FONT_2 = pygame.font.Font(None,20)
 FONT_3 = pygame.font.Font(None,100)
+FONT_4 = pygame.font.Font(None,40)
 
 AFFICHE_CSV = False
 FICHIER_DEF_BLOCS = "blocs2.csv"
@@ -165,6 +170,7 @@ TABLE_VAGUE = ( {'type':'boss_final','quantite':0, 'difficultee':1},
                 {'type':'boss_volant','quantite':1, 'difficultee':5},
 
                 {'type':'boss_final','quantite':1, 'difficultee':6})
+
 
 
 # TODO  :dico de famille de tours, contenant une liste de tours, contenant une liste d'attributs

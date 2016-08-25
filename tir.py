@@ -15,13 +15,13 @@ from outils import *
 
 class Tir():
 
-    def __init__(self, bete, x = 100 ,y=100):
+    def __init__(self, bete,vitesse,force, x = 100 ,y=100):
         self.x = x             # pixel abscisse
         self.y = y             # ordonnéee
         self.bete = bete       # cible du tir
-        self.vitesse = VITESSE_TIR
+        self.vitesse = vitesse
         self.impact = False    # le tir a-t-il atteint sa cible ?
-        self.force = 3         # force du tir (diminution de vie de la bestiole touchee)
+        self.force = force     # force du tir (diminution de vie de la bestiole touchee)
 
     def affiche(self):
         # SCREEN.blit(self.rot_center(IMAGE_BESTIOLE,45),(self.x-self.rayon,self.y-self.rayon))

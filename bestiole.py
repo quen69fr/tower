@@ -20,6 +20,8 @@ class Bestiole():
         self.image = TABLE_BESTIOLE[type]['image']
         self.difficultee = TABLE_VAGUE[vague]['difficultee']
 
+        self.secectionnée = False
+
         self.vie = self.vie * self.difficultee
         self.vie_max = self.vie
 
@@ -43,7 +45,7 @@ class Bestiole():
                 positionDansPorte = random.randint(1,TAILLE_PORTE-2)
                 y=Y_PORTE+positionDansPorte
                 (self.x,self.y)=conversionCoordCasesVersPixels(0,y)
-                x_pixel = random.randint(0,TAILLE_BLOC)
+                x_pixel = TAILLE_BLOC
                 self.x += x_pixel
                 y_pixel = random.randint(0,TAILLE_BLOC)
                 self.y+=y_pixel
@@ -51,7 +53,7 @@ class Bestiole():
                 self.y+= -5
 
     # -------------------------------------------------
-    def verifie_bestiole_dans_case(self,i,j):
+    def verifie_bestiole_dans_case(self,i,j,selectionne=True):
         '''
         Verifie si la bete est dans la case i,j
         :param i: abscisse case
@@ -60,14 +62,42 @@ class Bestiole():
         '''
         (i2,j2)=conversionCoordPixelsVersCases(self.x, self.y)
         if i == i2 and j == j2:
+            if selectionne == True:
+                self.secectionnée = True
             return True
         else:
+            if selectionne == True:
+                self.secectionnée = False
             return False
 
     # -------------------------------------------------
-    def affiche(self):
+    def affiche(self,vague):
         SCREEN.blit(self.image,(self.x-self.rayon,self.y-self.rayon))
         self.affiche_vie()
+
+        if self.secectionnée == True:
+            if self.vie <= 0:
+                self.secectionnée = False
+
+            else:
+                SCREEN.blit(IMAGE_PENCARTE,(680,150))
+
+                SCREEN.blit(self.image,(800,250))
+
+                texte="Vie : {}".format(self.vie)
+                surface = FONT_4.render(texte, True, ROUGE)
+                rect = surface.get_rect(topleft=(700, 300))
+                SCREEN.blit(surface, rect)
+
+                texte="Argent : {}".format(TABLE_BESTIOLE[self.type]['gain']*TABLE_VAGUE[vague]['difficultee'])
+                surface = FONT_4.render(texte, True, JAUNE)
+                rect = surface.get_rect(topleft=(700, 350))
+                SCREEN.blit(surface, rect)
+
+                texte="Vitesse : {}".format(self.vitesse)
+                surface = FONT_4.render(texte, True, BLEU)
+                rect = surface.get_rect(topleft=(700, 400))
+                SCREEN.blit(surface, rect)
         # print(self.vie)
 
     # -------------------------------------------------
