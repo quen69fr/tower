@@ -1,3 +1,3 @@
 # tower
 
-![Screenshot](/image/screenshot.png)
+![Screenshot](image/screenshot.png)
