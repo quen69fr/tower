@@ -1,3 +1,3 @@
 # tower
 
-![Screenshot](image/screenshot.png?raw=true)
+![Screenshot](quen69fr.github.com/tower/img/screenshot.png)
