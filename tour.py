@@ -33,6 +33,7 @@ class Tour():
 
     # ------------------------------------------------
     def affiche(self,tour_selectionnee = False ):
+
         if self.etat == Tour._ETAT_TOUR_BROUILLON:
             recttransparent = pygame.Surface((40,40), pygame.SRCALPHA, 32)
             recttransparent.fill((0,0,255, 50))

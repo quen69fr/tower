@@ -100,34 +100,60 @@ ETAT_PARTIE_PAUSE = 6
 # Les types et caractéristiques des différentes bestioles
 
 TABLE_BESTIOLE = {}
-TABLE_BESTIOLE['normale']       = {'image':pygame.image.load("image/BestioleNormale.png")   , 'vie':10     , 'gain': 1,   'vitesse':1.0}
-TABLE_BESTIOLE['boss_normale']  = {'image':pygame.image.load("image/BestioleNormaleBoss.png")   , 'vie':100    , 'gain': 50,  'vitesse':1.0}
 
-TABLE_BESTIOLE['rapide']        = {'image':pygame.image.load("image/BestioleRapide.png")    , 'vie':10     , 'gain': 1,   'vitesse':1.5}
-TABLE_BESTIOLE['boss_rapide']   = {'image':pygame.image.load("image/BestioleRapideBoss.png")    , 'vie':100    , 'gain': 50,   'vitesse':1.5}
+# pour faire des tests de rotation !
+TABLE_BESTIOLE['lent']       = {'image':"image/BestioleNormale.png"  , 'vie':10     , 'gain': 1,   'vitesse':0.2}
 
-TABLE_BESTIOLE['groupe']       = {'image':pygame.image.load("image/BestioleGroupe.png")   , 'vie':10     , 'gain': 1,   'vitesse':1.0}
-TABLE_BESTIOLE['boss_groupe']  = {'image':pygame.image.load("image/BestioleGroupeBoss.png")   , 'vie':50    , 'gain': 50,  'vitesse':1.0}
+TABLE_BESTIOLE['normale']       = {'image':"image/BestioleNormale.png"   , 'vie':10     , 'gain': 1,   'vitesse':1.0}
+TABLE_BESTIOLE['boss_normale']  = {'image':"image/BestioleNormaleBoss.png"   , 'vie':100    , 'gain': 50,  'vitesse':1.0}
 
-TABLE_BESTIOLE['fort']        = {'image':pygame.image.load("image/BestioleFort.png")    , 'vie':20     , 'gain': 1,   'vitesse':0.5}
-TABLE_BESTIOLE['boss_fort']   = {'image':pygame.image.load("image/BestioleFortBoss.png")    , 'vie':200    , 'gain': 50,   'vitesse':0.5}
+TABLE_BESTIOLE['rapide']        = {'image':"image/BestioleRapide.png"    , 'vie':10     , 'gain': 1,   'vitesse':1.5}
+TABLE_BESTIOLE['boss_rapide']   = {'image':"image/BestioleRapideBoss.png"    , 'vie':100    , 'gain': 50,   'vitesse':1.5}
 
-TABLE_BESTIOLE['volant']        = {'image':pygame.image.load("image/BestioleVolant.png")    , 'vie':10     , 'gain': 1,   'vitesse':1.0}
-TABLE_BESTIOLE['boss_volant']   = {'image':pygame.image.load("image/BestioleVolantBoss.png")    , 'vie':100    , 'gain': 50,   'vitesse':1.0}
+TABLE_BESTIOLE['groupe']       = {'image':"image/BestioleGroupe.png"   , 'vie':10     , 'gain': 1,   'vitesse':1.0}
+TABLE_BESTIOLE['boss_groupe']  = {'image':"image/BestioleGroupeBoss.png"  , 'vie':50    , 'gain': 50,  'vitesse':1.0}
 
-TABLE_BESTIOLE['boss_final']    = {'image':pygame.image.load("image/BestioleBossFinal.png")   , 'vie':500, 'gain':100 ,  'vitesse':1.0}
+TABLE_BESTIOLE['fort']        = {'image':"image/BestioleFort.png"    , 'vie':20     , 'gain': 1,   'vitesse':0.5}
+TABLE_BESTIOLE['boss_fort']   = {'image':"image/BestioleFortBoss.png"    , 'vie':200    , 'gain': 50,   'vitesse':0.5}
+
+TABLE_BESTIOLE['volant']        = {'image':"image/BestioleVolant.png"    , 'vie':10     , 'gain': 1,   'vitesse':1.0}
+TABLE_BESTIOLE['boss_volant']   = {'image':"image/BestioleVolantBoss.png"    , 'vie':100    , 'gain': 50,   'vitesse':1.0}
+
+TABLE_BESTIOLE['boss_final']    = {'image':"image/BestioleBossFinal.png"   , 'vie':500, 'gain':100 ,  'vitesse':1.0}
 
 # TABLE_BESTIOLE['normale']['vie'] => la vie de la bestiole normale
-#
+
+# preparation de toutes les images tournées
+# mon_image2 = pygame.transform.rotate(mon_image, 30)
+for bestiole in TABLE_BESTIOLE:
+    img = pygame.image.load( TABLE_BESTIOLE[bestiole]['image'] )
+    TABLE_BESTIOLE[bestiole]['image_d']=img
+    TABLE_BESTIOLE[bestiole]['image_hd']=pygame.transform.rotate(img, 45)
+    TABLE_BESTIOLE[bestiole]['image_h']=pygame.transform.rotate(img, 90)
+    TABLE_BESTIOLE[bestiole]['image_hg']=pygame.transform.rotate(img, 135)
+    TABLE_BESTIOLE[bestiole]['image_g']=pygame.transform.rotate(img, 180)
+    TABLE_BESTIOLE[bestiole]['image_bg']=pygame.transform.rotate(img, 225)
+    TABLE_BESTIOLE[bestiole]['image_b']=pygame.transform.rotate(img, 270)
+    TABLE_BESTIOLE[bestiole]['image_bd']=pygame.transform.rotate(img, 315)
+# variante plus jolie : dessiner chacune des images à l'avance et faire une boucle de chargement
+# for ...
+#   nom=TABLE_BESTIOLE[bestiole]['image']   # image/BestioleNormale
+#   TABLE_BESTIOLE[bestiole]['image_h']=pygame.image.load("nom"+"_h.png")
+#   ...
+
 # La composition des vagues de bestioles
 # type de bestiole
 # quantité
 # idées : coef multi de gain, de vie, etalement de l'arrivée
 
-INTERVALLE_BESTIOLE = 15 # (random 1 sur / intervalle)
+INTERVALLE_BESTIOLE = 20 # (random 1 sur / intervalle)
 DELAI_ENTRE_VAGUE = 500  # délai en secondes entre deux vagues ; constant pour toute la partie
 
-TABLE_VAGUE = ( {'type':'boss_final','quantite':0, 'difficultee':1},
+TABLE_VAGUE = (
+                # {'type':'boss_final','quantite':0, 'difficultee':1},
+
+                # pour faire des tests de rotation
+                # {'type': 'lent', 'quantite': 1, 'difficultee': 100},
 
                 {'type':'normale', 'quantite':10, 'difficultee':1},
                 {'type':'rapide','quantite':10, 'difficultee':1},

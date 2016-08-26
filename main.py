@@ -8,18 +8,15 @@ from bestiole import *
 from tir import *
 from outils import *
 
-
+# TODO (bugs)
+# le perimetre  de tir des tours a disparu quand on construit ; Phil - 26aout
+# on aperçoit les bestioles avant la porte
+# on ne peut pas lancer plusieurs vagues rapidement (il faut attendre la fin de sortie de la vague précédente)
+# on ne peut pas constuire avant de faire start (et envoi des bestioles)
 
 # TODO général
-# - corriger les bugs
-#     bug cases devant porte de sortie ne se déconstruit pas
-#     bug obstruction totale de la porte d'entrée par 2 tours
-# - on aperçoit les bestioles avant la porte
-# - on ne peut pas lancer plusieurs vagues rapidement (il faut attendre la fin de sortie de la vague précédente)
 # - eloigner les bestioles (trop superposées)
-# - plusieurs sortes de Tours
-# - les upgrades (améliorations) de Tours
-# - l'orientation des bestioles (rotations)
+# - plusieurs sortes de Tours ou d'upgrade
 # - les sons
 # - une classe MenuBoutons (qui affiche, vérifie ce qui est cliqué, etc.)
 # - sortie les TABLE_VAGUE et TABLE_BESTIOLES dans un format json

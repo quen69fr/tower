@@ -3,7 +3,7 @@
 
 __author__ = 'Quentin'
 
-from grille import *
+from grille import *   # pas tres propre
 from outils import *
 
 
@@ -16,11 +16,16 @@ class Bestiole():
         self.vitesse = TABLE_BESTIOLE[type]['vitesse']
         self.vie = TABLE_BESTIOLE[type]['vie']
 
-        self.rayon = TABLE_BESTIOLE[type]['image'].get_width()/2
-        self.image = TABLE_BESTIOLE[type]['image']
+        self.rayon = TABLE_BESTIOLE[type]['image_d'].get_width()/2
+        # inutile : on ira chercher la/les images dans la TABLE
+        # self.image = TABLE_BESTIOLE[type]['image']
+        # la direction permet de faire tourner les betes lors des deplacements
+        # et de choisir la bonne image à afficher
+        # 8 valeurs : _d , _hd , _h , _hg ,  _g , _bg , _b , _bd
+        self.direction = '_d'  # direction à droite par défaut au début
         self.difficultee = TABLE_VAGUE[vague]['difficultee']
 
-        self.secectionnée = False
+        self.selectionne = False
 
         self.vie = self.vie * self.difficultee
         self.vie_max = self.vie
@@ -63,21 +68,25 @@ class Bestiole():
         (i2,j2)=conversionCoordPixelsVersCases(self.x, self.y)
         if i == i2 and j == j2:
             if selectionne == True:
-                self.secectionnée = True
+                self.selectionne = True
             return True
         else:
             if selectionne == True:
-                self.secectionnée = False
+                self.selectionne = False
             return False
 
     # -------------------------------------------------
     def affiche(self,vague):
-        SCREEN.blit(self.image,(self.x-self.rayon,self.y-self.rayon))
+
+        img=TABLE_BESTIOLE[self.type]["image"+self.direction]
+        SCREEN.blit(img,(self.x-self.rayon,self.y-self.rayon))
+        # SCREEN.blit(self.image,(self.x-self.rayon,self.y-self.rayon))
+
         self.affiche_vie()
 
-        if self.secectionnée == True:
+        if self.selectionne == True:
             if self.vie <= 0:
-                self.secectionnée = False
+                self.selectionne = False
 
             else:
                 SCREEN.blit(IMAGE_PENCARTE,(680,150))
@@ -125,10 +134,7 @@ class Bestiole():
         # bestiole volante
         if self.type == 'volant' or self.type == 'boss_volant':
             direction = (1,0)
-            # dx = direction[0]
-            # dy = direction[1]
-            # self.x+=dx*self.vitesse
-            # self.y+=dy*self.vitesse
+            direction2 = '_d'
 
         else:
             # on regarde dans quelle case on est
@@ -151,7 +157,7 @@ class Bestiole():
             #   - si une des deux cases autour est vide (ex.b) : direction ortho (ex. b) : A AMELIORER (b + 45degré)
             #   - si deux cases autour occupées, pas possible, déjà éliminé par ProchaineCase()
 
-            direction = (0,0)
+            direction = (1,0)
             if best == 'vd':
                 # 2 cas : autour est libre, ou pas
                 if grille.est_libre(cx+1, cy-1) and grille.est_libre(cx+1,cy+1):
@@ -269,10 +275,23 @@ class Bestiole():
         # Fin des cas selon type de bestioles et directions : maintenant on déplace !
         # TODO : faire tourner d'abord si on a changé de direction de déplacement depuis la fois précédente.
 
-        #print("direction :", direction)
         dx = direction[0]
         dy = direction[1]
-        #print("dirx : ",direction_x,"diry : ",direction_y)
-        self.x+=dx*self.vitesse
-        self.y+=dy*self.vitesse
+
+        table_direction2 = [
+                            ['?','_b','_h'],  # dx = 0
+                            ['_d', '_bd', '_hd'],  # dx = 1
+                            ['_g', '_bg', '_hg']  # dx = -1
+                            ]
+        direction2 = table_direction2[dx][dy]
+        # print("direction :", direction, "direction2 : ",direction2, "best : ",best, "dx : ",dx,"dy : ",dy)
+
+        # si self.direction != direction2 , on tourne
+        # (directement vers l'orientation finale ) (amélioration : on tourne cran par cran)
+        if self.direction != direction2:
+            self.direction = direction2
+        else:
+            # sinon on deplace
+            self.x+=dx*self.vitesse
+            self.y+=dy*self.vitesse
 
