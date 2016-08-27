@@ -150,7 +150,7 @@ INTERVALLE_BESTIOLE = 20 # (random 1 sur / intervalle)
 DELAI_ENTRE_VAGUE = 500  # délai en secondes entre deux vagues ; constant pour toute la partie
 
 TABLE_VAGUE = (
-                # {'type':'boss_final','quantite':0, 'difficultee':1},
+                {'type':'boss_final','quantite':0, 'difficultee':1},
 
                 # pour faire des tests de rotation
                 # {'type': 'lent', 'quantite': 1, 'difficultee': 100},

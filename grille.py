@@ -144,6 +144,7 @@ class Grille():
             self.grille[t.x][t.y+1]=BLOC_INCONNU
             self.grille[t.x+1][t.y+1]=BLOC_INCONNU
 
+
     # ------------------------------------------------
     def enleve_tour(self,x,y):
         for t in self.listeTours:

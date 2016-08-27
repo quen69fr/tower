@@ -91,7 +91,8 @@ class Bestiole():
             else:
                 SCREEN.blit(IMAGE_PENCARTE,(680,150))
 
-                SCREEN.blit(self.image,(800,250))
+                SCREEN.blit(TABLE_BESTIOLE[self.type]["image_d"],(800,250))
+
 
                 texte="Vie : {}".format(self.vie)
                 surface = FONT_4.render(texte, True, ROUGE)
