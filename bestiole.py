@@ -139,10 +139,10 @@ class Bestiole():
 
         else:
             # on regarde dans quelle case on est
-            (cx,cy) = conversionCoordPixelsVersCases(self.x,self.y)
+            (ci,cj) = conversionCoordPixelsVersCases(self.x,self.y)
 
             # on cherche la prochaine case
-            (best, pcx, pcy) = grille.prochaineCase(cx, cy)
+            (best, pci, pcj) = grille.prochaineCase(ci, cj)
 
             # print ("cx:{},cy:{}, x:{} ,y:{}, best:{}, pcx:{}, pcy:{}". format(cx,cy,self.x,self.y,best, pcx,pcy))
 
@@ -161,18 +161,18 @@ class Bestiole():
             direction = (1,0)
             if best == 'vd':
                 # 2 cas : autour est libre, ou pas
-                if grille.est_libre(cx+1, cy-1) and grille.est_libre(cx+1,cy+1):
+                if grille.est_libre(ci+1, cj-1) and grille.est_libre(ci+1,cj+1):
                     # hd et bd sont libres
                     direction = (1,0)
                 else:
                     if depasseHaut(self.x,self.y,self.rayon):
-                        if grille.est_libre(cx+1,cy-1):
+                        if grille.est_libre(ci+1,cj-1):
                             # hd est libre
                             direction = (1,0)
                         else:
                             direction = (0,1)
                     elif depasseBas(self.x,self.y, self.rayon):
-                        if grille.est_libre(cx+1,cy+1):
+                        if grille.est_libre(ci+1,cj+1):
                             # bd est libre
                             direction = (1,0)
                         else:
@@ -180,18 +180,18 @@ class Bestiole():
                     else:
                         direction = (1,0)
             elif best == 'vb':
-                if grille.est_libre(cx+1, cy+1) and grille.est_libre(cx-1,cy+1):
+                if grille.est_libre(ci+1, cj+1) and grille.est_libre(ci-1,cj+1):
                     # bd et bg sont libres
                     direction = (0,1)
                 else :
                     if depasseDroit(self.x,self.y,self.rayon):
-                        if grille.est_libre(cx+1,cy+1):
+                        if grille.est_libre(ci+1,cj+1):
                             # bd est libre
                             direction = (0,1)
                         else:
                             direction = (-1,0)
                     elif depasseGauche(self.x,self.y, self.rayon):
-                        if grille.est_libre(cx-1,cy+1):
+                        if grille.est_libre(ci-1,cj+1):
                             # bg est libre
                             direction = (0,1)
                         else:
@@ -199,18 +199,18 @@ class Bestiole():
                     else:
                         direction = (0,1)
             elif best == 'vg':
-                if grille.est_libre(cx-1, cy-1) and grille.est_libre(cx-1,cy+1):
+                if grille.est_libre(ci-1, cj-1) and grille.est_libre(ci-1,cj+1):
                     # hg et bg sont libres
                     direction = (-1,0)
                 else :
                     if depasseHaut(self.x,self.y,self.rayon):
-                        if grille.est_libre(cx-1,cy-1):
+                        if grille.est_libre(ci-1,cj-1):
                             # hg est libre
                             direction = (-1,0)
                         else:
                             direction = (0,1)
                     elif depasseBas(self.x,self.y, self.rayon):
-                        if grille.est_libre(cx-1,cy+1):
+                        if grille.est_libre(ci-1,cj+1):
                             # bg est libre
                             direction = (-1,0)
                         else:
@@ -218,18 +218,18 @@ class Bestiole():
                     else:
                         direction = (-1,0)
             elif best == 'vh':
-                if grille.est_libre(cx - 1, cy - 1) and grille.est_libre(cx + 1, cy - 1):
+                if grille.est_libre(ci - 1, cj - 1) and grille.est_libre(ci + 1, cj - 1):
                     # hg et hd sont libres
                     direction = (0, -1)
                 else:
                     if depasseGauche(self.x,self.y,self.rayon):
-                        if grille.est_libre(cx-1,cy-1):
+                        if grille.est_libre(ci-1,cj-1):
                             # hg est libre
                             direction = (0,-1)
                         else:
                             direction = (1,0)
                     elif depasseDroit(self.x,self.y, self.rayon):
-                        if grille.est_libre(cx-1,cy+1):
+                        if grille.est_libre(ci-1,cj+1):
                             # hd est libre
                             direction = (0,-1)
                         else:
@@ -240,38 +240,38 @@ class Bestiole():
                 #print("***********DIAG**********")
                 if not (depasseHaut(self.x,self.y,self.rayon) or depasseDroit(self.x,self.y,self.rayon) or depasseGauche(self.x,self.y,self.rayon) or depasseBas(self.x,self.y,self.rayon)):
                     # on ne dépasse pas, on fonce !
-                    direction = ( pcx - cx, pcy - cy)
+                    direction = ( pci - ci, pcj - cj)
                 else:
                     if best == 'vhd':
-                        if depasseHaut(self.x, self.y,self.rayon) and not grille.est_libre(cx,cy-1):
+                        if depasseHaut(self.x, self.y,self.rayon) and not grille.est_libre(ci,cj-1):
                             direction = (1,0)
-                        elif depasseDroit(self.x, self.y,self.rayon) and not grille.est_libre(cx+1,cy):
+                        elif depasseDroit(self.x, self.y,self.rayon) and not grille.est_libre(ci+1,cj):
                             direction = (0,-1)
                         else:
                             direction = (1,-1)
                     elif best == 'vhg':
-                        if depasseHaut(self.x, self.y,self.rayon) and not grille.est_libre(cx,cy-1):
+                        if depasseHaut(self.x, self.y,self.rayon) and not grille.est_libre(ci,cj-1):
                             direction = (-1,0)
-                        elif depasseGauche(self.x, self.y,self.rayon) and not grille.est_libre(cx-1,cy):
+                        elif depasseGauche(self.x, self.y,self.rayon) and not grille.est_libre(ci-1,cj):
                             direction = (0,-1)
                         else:
                             direction = (-1,-1)
                     elif best == 'vbg':
-                        if depasseBas(self.x, self.y,self.rayon) and not grille.est_libre(cx,cy+1):
+                        if depasseBas(self.x, self.y,self.rayon) and not grille.est_libre(ci,cj+1):
                             direction = (-1,0)
-                        elif depasseGauche(self.x, self.y,self.rayon) and not grille.est_libre(cx-1,cy):
+                        elif depasseGauche(self.x, self.y,self.rayon) and not grille.est_libre(ci-1,cj):
                             direction = (0,1)
                         else:
                             direction = (-1,1)
                     elif best == 'vbd':
-                        if depasseBas(self.x, self.y,self.rayon) and not grille.est_libre(cx,cy+1):
+                        if depasseBas(self.x, self.y,self.rayon) and not grille.est_libre(ci,cj+1):
                             direction = (1,0)
-                        elif depasseDroit(self.x, self.y,self.rayon) and not grille.est_libre(cx+1,cy):
+                        elif depasseDroit(self.x, self.y,self.rayon) and not grille.est_libre(ci+1,cj):
                             direction = (0,1)
                         else:
                             direction = (1,1)
                     else :
-                        direction = ( pcx - cx, pcy - cy)
+                        direction = ( pci - ci, pcj - cj)
 
         # Fin des cas selon type de bestioles et directions : maintenant on déplace !
         # TODO : faire tourner d'abord si on a changé de direction de déplacement depuis la fois précédente.
@@ -295,4 +295,20 @@ class Bestiole():
             # sinon on deplace
             self.x+=dx*self.vitesse
             self.y+=dy*self.vitesse
+
+            # et on  fait un petit ajustement de trajectoire éventuel en direction
+            # du centre de la prochaine case pour éviter les décalages au dernier moment
+            # Phil - 28 aout
+            (pcx, pcy) = centreCase(pci, pcj)
+            if direction2 == '_d' or direction2 == '_g':
+                if self.y > pcy+2:
+                    self.y -= 1
+                if self.y < pcy-2:
+                    self.y += 1
+            if direction2 == '_h' or direction2 == '_b'
+                if self.x > pcx + 2:
+                    self.x -= 1
+                if self.x < pcx - 2:
+                    self.x += 1
+
 
