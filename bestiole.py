@@ -300,12 +300,12 @@ class Bestiole():
             # du centre de la prochaine case pour éviter les décalages au dernier moment
             # Phil - 28 aout
             (pcx, pcy) = centreCase(pci, pcj)
-            if direction2 == '_d' or direction2 == '_g':
+            if (direction2 == '_d' or direction2 == '_g') and (best =='vd' or best == 'vg'):
                 if self.y > pcy+2:
                     self.y -= 1
                 if self.y < pcy-2:
                     self.y += 1
-            if direction2 == '_h' or direction2 == '_b'
+            if (direction2 == '_h' or direction2 == '_b') and (best == 'vh' or best =='vb'):
                 if self.x > pcx + 2:
                     self.x -= 1
                 if self.x < pcx - 2:
