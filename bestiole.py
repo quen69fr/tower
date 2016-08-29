@@ -308,13 +308,13 @@ class Bestiole():
             (pcx, pcy) = centreCase(pci, pcj)
             if (direction2 == '_d' or direction2 == '_g') and (best =='vd' or best == 'vg'):
                 if self.y > pcy+2:
-                    self.y -= 1
+                    self.y -= 0.05
                 if self.y < pcy-2:
-                    self.y += 1
+                    self.y += 0.05
             if (direction2 == '_h' or direction2 == '_b') and (best == 'vh' or best =='vb'):
                 if self.x > pcx + 2:
-                    self.x -= 1
+                    self.x -= 0.05
                 if self.x < pcx - 2:
-                    self.x += 1
+                    self.x += 0.05
 
 
