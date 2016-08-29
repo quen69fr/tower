@@ -132,14 +132,20 @@ class Bestiole():
     # -------------------------------------------------
     def deplace(self,grille):
 
+        # on regarde dans quelle case on est
+        (ci, cj) = conversionCoordPixelsVersCases(self.x, self.y)
+
         # bestiole volante
         if self.type == 'volant' or self.type == 'boss_volant':
+
+            # prochaine case : à droite
             direction = (1,0)
             direction2 = '_d'
+            best="vd"
+            pci = ci + 1
+            pcj = cj
 
         else:
-            # on regarde dans quelle case on est
-            (ci,cj) = conversionCoordPixelsVersCases(self.x,self.y)
 
             # on cherche la prochaine case
             (best, pci, pcj) = grille.prochaineCase(ci, cj)
@@ -274,7 +280,6 @@ class Bestiole():
                         direction = ( pci - ci, pcj - cj)
 
         # Fin des cas selon type de bestioles et directions : maintenant on déplace !
-        # TODO : faire tourner d'abord si on a changé de direction de déplacement depuis la fois précédente.
 
         dx = direction[0]
         dy = direction[1]
@@ -302,13 +307,13 @@ class Bestiole():
             (pcx, pcy) = centreCase(pci, pcj)
             if (direction2 == '_d' or direction2 == '_g') and (best =='vd' or best == 'vg'):
                 if self.y > pcy+2:
-                    self.y -= 1
+                    self.y -= 0.05
                 if self.y < pcy-2:
-                    self.y += 1
+                    self.y += 0.05
             if (direction2 == '_h' or direction2 == '_b') and (best == 'vh' or best =='vb'):
                 if self.x > pcx + 2:
-                    self.x -= 1
+                    self.x -= 0.05
                 if self.x < pcx - 2:
-                    self.x += 1
+                    self.x += 0.05
 
 
