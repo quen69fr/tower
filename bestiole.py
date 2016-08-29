@@ -280,7 +280,6 @@ class Bestiole():
                         direction = ( pci - ci, pcj - cj)
 
         # Fin des cas selon type de bestioles et directions : maintenant on déplace !
-        # TODO : faire tourner d'abord si on a changé de direction de déplacement depuis la fois précédente.
 
         dx = direction[0]
         dy = direction[1]
