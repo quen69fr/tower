@@ -7,6 +7,7 @@ from tour import *
 from outils import *
 from bestiole import *
 
+
 class Grille():
 
     def __init__(self):
@@ -36,53 +37,22 @@ class Grille():
             self.grille[GRILLE_LX-2][Y_PORTE+k]=BLOC_INCONNU
 
     # ------------------------------------------------
-    def cherche_cible_clic(self, i,j, listeBestioles):
-        '''
-        Cherche et renvoie l'objet cliqué à la souris dans le jeu
-        :param i,j:  case cliquée
-        :param listeBestioles:
-        :return: cible_clic (vide, vide4, inconnu, menu, bete, tour) et cible_objet (objet cliqué, bete, tour)
-        '''
-        self.listeBestioles = listeBestioles
-        cible_clic = 0
-        cible_objet = None
-        self.tour_selectionnee = None
+    def estDansGrille(self,i,j):
+        return(i >= 1 and i < GRILLE_LX - 1 and j >= 1 and j < GRILLE_LY - 1)
 
-        if i >= 1 and i < GRILLE_LX - 1 and j >= 1 and j < GRILLE_LY - 1:
-            # une bestiole ? (en premier, donc permet d'éviter aussi de construire une tour sur une case avec bete)
-            for bete in listeBestioles:
-                if bete.verifie_bestiole_dans_case(i,j):
-                    cible_clic='bete'
+    # ------------------------------------------------
+    # Indique si on a cliqué sur une case vide
+    def caseVide(self, i,j):
+        reponse = False
+        if self.estDansGrille(i,j):
+            if self.grille[i][j]>=0 or self.grille[i][j]==BLOC_INCONNU:
+                reponse = True
+        return reponse
 
-                    cible_objet = bete
-                    #print("BETE CLIQUEE", cible_objet)
-                    return cible_clic, cible_objet
-            # sinon une tour ?
-            if self.grille[i][j] == BLOC_TOUR:
-                cible_clic = 'tour'
-                cible_objet = self.quelle_tour_dans_case(i,j)
+    # ------------------------------------------------
+    def caseVide4(self, i,j):
+        return self.caseVide(i,j) and self.caseVide(i+1,j) and self.caseVide(i,j+1) and self.caseVide(i+1,j+1)
 
-                #print("cible tour : ",cible_objet)
-
-                self.tour_selectionnee = cible_objet
-
-                return cible_clic, cible_objet
-
-            # sinon une case vide
-            elif self.grille[i][j]>=0:
-                # vide sur les 4 ?
-                if self.grille[i+1][j]>0 and self.grille[i+1][j+1]>0 and self.grille[i][j+1]>0:
-                    cible_clic = 'vide4'
-                else:
-                    cible_clic = 'vide'
-                return cible_clic, cible_objet
-            else:
-                cible_clic = 'inconnu'
-        else:
-            cible_clic = 'menu'
-            # CIBLE_BOUTON = .......Menu.verifie_clic()
-            # cible_clic='autre'
-        return cible_clic, cible_objet
 
     # ------------------------------------------------
     def reset_distance_grille(self):
@@ -96,11 +66,32 @@ class Grille():
                     self.grille[x][y] = BLOC_INCONNU
 
     # ------------------------------------------------
-    def nouvelle_tour_complet(self,i,j):
+    def nouvelle_tour_complet(self,i,j,listeBestioles,tour_type):
         '''
         :return: True / False selon réussite
         '''
-        t=Tour(i,j)
+
+        if tour_type == TOUR_VOLANT:
+            t=Tour(i,j,TOUR_VOLANT)
+        elif tour_type == TOUR_TOUS:
+            t=Tour(i,j,TOUR_TOUS)
+        elif tour_type == TOUR_BOUM:
+            t=Tour(i,j,TOUR_BOUM)
+        elif tour_type == TOUR_BOUM_VOLANT:
+            t=Tour(i,j,TOUR_BOUM_VOLANT)
+        elif tour_type == TOUR_PLUS:
+            t=Tour(i,j,TOUR_PLUS)
+            toursVoisine = self.listeToursVoisines(i,j)
+            for tv in toursVoisine :
+                tv.plusAmeliore()
+        else:
+            t=Tour(i,j,TOUR_NORMAL)
+        #print(t)
+
+        toursVoisine = self.listeToursVoisines(i,j)
+        for tv in toursVoisine :
+            if tv.type == TOUR_PLUS:
+                t.plusAmeliore()
 
         self.listeTours.append(t)
         self.grille[i][j]=BLOC_TOUR
@@ -114,7 +105,7 @@ class Grille():
         for k in range(GRILLE_LX):
             for l in range (GRILLE_LY):
                 if self.grille[k][l]==BLOC_INCONNU:
-                    for bete in self.listeBestioles:
+                    for bete in listeBestioles:
                         if bete.verifie_bestiole_dans_case(k,l,False):
                             self.enleve_tour(i,j)
                             self.calcule_distance_grille()
@@ -133,17 +124,22 @@ class Grille():
     def enleve_tour_selectionnee(self):
 
         if self.tour_selectionnee == None:
-            pass
+            return False
 
         else:
             t=self.tour_selectionnee
+
+            if t.type == TOUR_PLUS:
+                toursVoisine = self.listeToursVoisines(t.x,t.y)
+                for tv in toursVoisine :
+                    tv.plusDeameliore()
 
             self.listeTours.remove(t)
             self.grille[t.x][t.y]=BLOC_INCONNU
             self.grille[t.x+1][t.y]=BLOC_INCONNU
             self.grille[t.x][t.y+1]=BLOC_INCONNU
             self.grille[t.x+1][t.y+1]=BLOC_INCONNU
-
+            return True
 
     # ------------------------------------------------
     def enleve_tour(self,x,y):
@@ -166,7 +162,7 @@ class Grille():
             print ("")
 
     # ------------------------------------------------
-    def affiche_score(self,argent,nombre_vie,vague_compteur):
+    def affiche_score(self,argent,première_vague,nombre_vie,vague_compteur):
 
         texte="Argent : {} €".format(argent)
         surface = FONT.render(texte, True, JAUNE)
@@ -178,7 +174,10 @@ class Grille():
         rect = surface.get_rect(topleft=(MARGE_ECRAN+20, 10))
         SCREEN.blit(surface, rect)
 
-        texte="Vagues : {:02d}".format(vague_compteur)
+        if première_vague == True:
+            texte="Vagues : "
+        else:
+            texte="Vagues : {:02d}".format(vague_compteur)
         surface = FONT.render(texte, True, BLEU)
         rect = surface.get_rect(topleft=(MARGE_ECRAN+260, 10))
         SCREEN.blit(surface, rect)
@@ -393,14 +392,6 @@ class Grille():
             return (best, x+1,y+1)
 
     # -------------------------------------------------
-    def est_libre(self, i,j):
-        ''' renvoie True/False selon que la case i,j est libre (pas de tour)'''
-        if self.grille[i][j] >= 0:
-            return True
-        else:
-            return False
-
-    # -------------------------------------------------
     def quelle_tour_dans_case(self,i,j):
         # TODO : à améliorer (performance) : maintenir une table plutot que d'examiner toutes les tours.
         for t in self.listeTours:
@@ -422,3 +413,36 @@ class Grille():
                     if valeur == 1:
                         self.nouvelle_tour(Tour(i+1,numLigne+1))
                 numLigne += 1
+
+
+    def listeToursVoisines(self,i,j):
+
+        listeTours = []
+
+        t= self.quelle_tour_dans_case(i,j-2)
+        if t!=None:
+            listeTours.append(t)
+        t= self.quelle_tour_dans_case(i+2,j-2)
+        if t!=None:
+            listeTours.append(t)
+        t= self.quelle_tour_dans_case(i+2,j)
+        if t!=None:
+            listeTours.append(t)
+        t= self.quelle_tour_dans_case(i+2,j+2)
+        if t!=None:
+            listeTours.append(t)
+        t= self.quelle_tour_dans_case(i,j+2)
+        if t!=None:
+            listeTours.append(t)
+        t= self.quelle_tour_dans_case(i-2,j-2)
+        if t!=None:
+            listeTours.append(t)
+        t= self.quelle_tour_dans_case(i-2,j)
+        if t!=None:
+            listeTours.append(t)
+        t= self.quelle_tour_dans_case(i-2,j+2)
+        if t!=None:
+            listeTours.append(t)
+
+
+        return listeTours

@@ -12,22 +12,26 @@ import csv
 
 
 # SCREEN sera une "surface de dessin"
-LARGEUR = 1000
+LARGEUR = 1100
 HAUTEUR = 650
 
 pygame.init()
 SCREEN = pygame.display.set_mode((LARGEUR, HAUTEUR))
 pygame.display.set_caption("tower !")
+
 FPS = 60                # nombre d'image par seconde
+
 DELAY = 0               # vitesse du jeu
 
-NOIR =  (0,0,0)
-BLANC = (255,255,255)
-BLEU =  (0,0,255)
-VERT =  (52,175,0)
-ROUGE = (255,0,0)
-ORANGE = (255,127,0)
-JAUNE = (255,255,0)
+NOIR =   (0,0,0)
+GRIS =   (100,100,100)
+BLANC =  (255,255,255)
+BLEU =   (0,0,255)
+VERT =   (52,175,0)
+ROUGE =  (255,0,0)
+ORANGE = (255,100,0)
+JAUNE =  (255,255,0)
+JAUNE2 =  (50,50,0)
 
 BLOC_BORD_NOIR = -3
 BLOC_BORD = -2
@@ -41,7 +45,6 @@ GRILLE_LY = 24
 TAILLE_PORTE = 6
 Y_PORTE = 9 # ordonnée plus haute case de porte
 
-
 X_BARRE_DE_VIE = 10
 Y_BARRE_DE_VIE = 2
 HAUTEUR_BARRE_DE_VIE = 5
@@ -49,20 +52,51 @@ HAUTEUR_BARRE_DE_VIE = 5
 TAILLE_BLOC = 20
 MARGE_ECRAN = 40
 
-ARGENT = 100
+ARGENT_DEPART = 1000
 #ARGENT_BESTIOLE = 2
 PRIX_TOUR = 5
 
 # tous les fichiets IMAGES
-IMAGE_TOURELLE_VIDE = pygame.image.load("image/TourelleVide.png")
+IMAGE_TOURELLE_NORMAL = pygame.image.load("image/TourelleNormal.png")
+IMAGE_TOURELLE_VOLANT = pygame.image.load("image/TourelleVolant.png")
+IMAGE_TOURELLE_TOUS = pygame.image.load("image/TourelleTous.png")
+IMAGE_TOURELLE_BOUM = pygame.image.load("image/TourelleBoum.png")
+IMAGE_TOURELLE_BOUM_VOLANT = pygame.image.load("image/TourelleBoumVolant.png")
+IMAGE_TOURELLE_PLUS = pygame.image.load("image/TourellePlus.png")
 
 IMAGE_START = pygame.image.load("image/Start.png")
 IMAGE_NEXT = pygame.image.load("image/Next.png")
 IMAGE_RESTART = pygame.image.load("image/ReStart.png")
 IMAGE_BOUTON_PLAY = pygame.image.load("image/BoutonPlay.png")
 IMAGE_BOUTON_PAUSE = pygame.image.load("image/BoutonPause.png")
+IMAGE_BOUTON_PLUS = pygame.image.load("image/Bouton+.png")
+IMAGE_BOUTON_MOINS = pygame.image.load("image/Bouton-.png")
 IMAGE_PENCARTE = pygame.image.load("image/Pencarte.png")
 
+IMAGE_TOURELLE_CANON_1 = pygame.image.load("image/TourelleCanon1.png")
+IMAGE_TOURELLE_CANON_2 = pygame.image.load("image/TourelleCanon2.png")
+IMAGE_TOURELLE_CANON_3 = pygame.image.load("image/TourelleCanon3.png")
+IMAGE_TOURELLE_CANON_4 = pygame.image.load("image/TourelleCanon4.png")
+
+RAYON_BOUTON_PAUSE = int(IMAGE_BOUTON_PAUSE.get_height()/2)
+
+BOUTON_START_NEXT = "BOUTON_START_NEXT"
+BOUTON_PAUSE = "BOUTON_PAUSE"
+BOUTON_TOURELLE_NORMAL = "BOUTON_TOURELLE_NORMAL"
+BOUTON_TOURELLE_VOLANT = "BOUTON_TOURELLE_VOLANT"
+BOUTON_TOURELLE_TOUS = "BOUTON_TOURELLE_TOUS"
+BOUTON_TOURELLE_BOUM = "BOUTON_TOURELLE_BOUM"
+BOUTON_TOURELLE_BOUM_VOLANT = "BOUTON_TOURELLE_BOUM_VOLANT"
+BOUTON_TOURELLE_PLUS = "BOUTON_TOURELLE_PLUS"
+BOUTON_PLUS = "BOUTON_PLUS"
+BOUTON_MOINS = "BOUTON_MOINS"
+
+TOUR_NORMAL = "TOUR_NORMAL"
+TOUR_VOLANT = "TOUR_VOLANT"
+TOUR_TOUS = "TOUR_TOUS"
+TOUR_BOUM = "TOUR_BOUM"
+TOUR_BOUM_VOLANT = "TOUR_BOUM_VOLANT"
+TOUR_PLUS = "TOUR_PLUS"
 
 NOMBRE_BESTIOLES_SORTIE_MAX = 20  # avant perte de partie
 
@@ -72,9 +106,11 @@ VITESSE_TIR = 5
 DISTANCE_TIR = 50
 DELAI_TIR = 30
 
+COEFF_TOUR_PLUS = 1.1
+
 X_START_NEXT = 700
 Y_START_NEXT = 20
-X_BOUTON_PLAY_PAUSE = 900
+X_BOUTON_PLAY_PAUSE = 1030
 Y_BOUTON_PLAY_PAUSE = 21
 
 X_TOURELLE = 700
@@ -102,29 +138,29 @@ ETAT_PARTIE_PAUSE = 6
 TABLE_BESTIOLE = {}
 
 # pour faire des tests de rotation !
-TABLE_BESTIOLE['lent']       = {'image':"image/BestioleNormale.png"  , 'vie':10     , 'gain': 1,   'vitesse':0.2}
+TABLE_BESTIOLE['départ']         = {'image':"image/BestioleNormale.png"     , 'vie':10   , 'gain': 1  , 'vitesse':0.2}
 
-TABLE_BESTIOLE['normale']       = {'image':"image/BestioleNormale.png"   , 'vie':10     , 'gain': 1,   'vitesse':1.0}
-TABLE_BESTIOLE['boss_normale']  = {'image':"image/BestioleNormaleBoss.png"   , 'vie':100    , 'gain': 50,  'vitesse':1.0}
+TABLE_BESTIOLE['normale']      = {'image':"image/BestioleNormale.png"     , 'vie':10   , 'gain': 1  , 'vitesse':1.0}
+TABLE_BESTIOLE['boss_normale'] = {'image':"image/BestioleNormaleBoss.png" , 'vie':150  , 'gain': 40 , 'vitesse':1.0}
 
-TABLE_BESTIOLE['rapide']        = {'image':"image/BestioleRapide.png"    , 'vie':10     , 'gain': 1,   'vitesse':1.5}
-TABLE_BESTIOLE['boss_rapide']   = {'image':"image/BestioleRapideBoss.png"    , 'vie':100    , 'gain': 50,   'vitesse':1.5}
+TABLE_BESTIOLE['rapide']       = {'image':"image/BestioleRapide.png"      , 'vie':10   , 'gain': 1  , 'vitesse':1.5}
+TABLE_BESTIOLE['boss_rapide']  = {'image':"image/BestioleRapideBoss.png"  , 'vie':200  , 'gain': 45 , 'vitesse':1.5}
 
-TABLE_BESTIOLE['groupe']       = {'image':"image/BestioleGroupe.png"   , 'vie':10     , 'gain': 1,   'vitesse':1.0}
-TABLE_BESTIOLE['boss_groupe']  = {'image':"image/BestioleGroupeBoss.png"  , 'vie':50    , 'gain': 50,  'vitesse':1.0}
+TABLE_BESTIOLE['groupe']       = {'image':"image/BestioleGroupe.png"      , 'vie':10   , 'gain': 1  , 'vitesse':1.0}
+TABLE_BESTIOLE['boss_groupe']  = {'image':"image/BestioleGroupeBoss.png"  , 'vie':80   , 'gain': 17 , 'vitesse':1.0}
 
-TABLE_BESTIOLE['fort']        = {'image':"image/BestioleFort.png"    , 'vie':20     , 'gain': 1,   'vitesse':0.5}
-TABLE_BESTIOLE['boss_fort']   = {'image':"image/BestioleFortBoss.png"    , 'vie':200    , 'gain': 50,   'vitesse':0.5}
+TABLE_BESTIOLE['imune']        = {'image':"image/BestioleImune.png"      , 'vie':10   , 'gain': 1  , 'vitesse':1.0}
+TABLE_BESTIOLE['boss_imune']   = {'image':"image/BestioleImuneBoss.png"  , 'vie':300  , 'gain': 55 , 'vitesse':1.0}
 
-TABLE_BESTIOLE['volant']        = {'image':"image/BestioleVolant.png"    , 'vie':10     , 'gain': 1,   'vitesse':1.0}
-TABLE_BESTIOLE['boss_volant']   = {'image':"image/BestioleVolantBoss.png"    , 'vie':100    , 'gain': 50,   'vitesse':1.0}
+TABLE_BESTIOLE['fort']         = {'image':"image/BestioleFort.png"        , 'vie':13   , 'gain': 1  , 'vitesse':0.5}
+TABLE_BESTIOLE['boss_fort']    = {'image':"image/BestioleFortBoss.png"    , 'vie':350  , 'gain': 60 , 'vitesse':0.5}
 
-TABLE_BESTIOLE['boss_final']    = {'image':"image/BestioleBossFinal.png"   , 'vie':500, 'gain':100 ,  'vitesse':1.0}
+TABLE_BESTIOLE['volant']       = {'image':"image/BestioleVolant.png"      , 'vie':7    , 'gain': 1  , 'vitesse':1.0}
+TABLE_BESTIOLE['boss_volant']  = {'image':"image/BestioleVolantBoss.png"  , 'vie':360  , 'gain': 65 , 'vitesse':1.0}
 
-# TABLE_BESTIOLE['normale']['vie'] => la vie de la bestiole normale
+TABLE_BESTIOLE['boss_final']   = {'image':"image/BestioleBossFinal.png"   , 'vie':1000 , 'gain':100 , 'vitesse':1.0}
 
-# preparation de toutes les images tournées
-# mon_image2 = pygame.transform.rotate(mon_image, 30)
+
 for bestiole in TABLE_BESTIOLE:
     img = pygame.image.load( TABLE_BESTIOLE[bestiole]['image'] )
     TABLE_BESTIOLE[bestiole]['image_d']=img
@@ -141,23 +177,16 @@ for bestiole in TABLE_BESTIOLE:
 #   TABLE_BESTIOLE[bestiole]['image_h']=pygame.image.load("nom"+"_h.png")
 #   ...
 
-# La composition des vagues de bestioles
-# type de bestiole
-# quantité
-# idées : coef multi de gain, de vie, etalement de l'arrivée
 
 INTERVALLE_BESTIOLE = 20 # (random 1 sur / intervalle)
 DELAI_ENTRE_VAGUE = 500  # délai en secondes entre deux vagues ; constant pour toute la partie
 
-TABLE_VAGUE = (
-                {'type':'boss_final','quantite':0, 'difficultee':1},
-
-                # pour faire des tests de rotation
-                # {'type': 'lent', 'quantite': 1, 'difficultee': 100},
+TABLE_VAGUE =  ({'type':'départ','quantite':0, 'difficultee':1},
 
                 {'type':'normale', 'quantite':10, 'difficultee':1},
                 {'type':'rapide','quantite':10, 'difficultee':1},
                 {'type':'groupe','quantite':10, 'difficultee':1},
+                {'type':'imune','quantite':10, 'difficultee':1},
                 {'type':'fort','quantite':10, 'difficultee':1},
                 {'type':'volant','quantite':10, 'difficultee':1},
 
@@ -166,6 +195,7 @@ TABLE_VAGUE = (
                 {'type':'normale', 'quantite':10, 'difficultee':2},
                 {'type':'rapide','quantite':10, 'difficultee':2},
                 {'type':'groupe','quantite':10, 'difficultee':2},
+                {'type':'imune','quantite':10, 'difficultee':2},
                 {'type':'fort','quantite':10, 'difficultee':2},
                 {'type':'volant','quantite':10, 'difficultee':2},
 
@@ -174,6 +204,7 @@ TABLE_VAGUE = (
                 {'type':'normale', 'quantite':10, 'difficultee':3},
                 {'type':'rapide','quantite':10, 'difficultee':3},
                 {'type':'groupe','quantite':10, 'difficultee':3},
+                {'type':'imune','quantite':10, 'difficultee':3},
                 {'type':'fort','quantite':10, 'difficultee':3},
                 {'type':'volant','quantite':10, 'difficultee':3},
 
@@ -182,33 +213,116 @@ TABLE_VAGUE = (
                 {'type':'normale', 'quantite':10, 'difficultee':4},
                 {'type':'rapide','quantite':10, 'difficultee':4},
                 {'type':'groupe','quantite':10, 'difficultee':4},
+                {'type':'imune','quantite':10, 'difficultee':4},
                 {'type':'fort','quantite':10, 'difficultee':4},
                 {'type':'volant','quantite':10, 'difficultee':4},
 
-                {'type':'boss_fort','quantite':1, 'difficultee':4},
+                {'type':'boss_imune','quantite':1, 'difficultee':4},
 
                 {'type':'normale', 'quantite':10, 'difficultee':5},
                 {'type':'rapide','quantite':10, 'difficultee':5},
                 {'type':'groupe','quantite':10, 'difficultee':5},
+                {'type':'imune','quantite':10, 'difficultee':5},
                 {'type':'fort','quantite':10, 'difficultee':5},
                 {'type':'volant','quantite':10, 'difficultee':5},
 
-                {'type':'boss_volant','quantite':1, 'difficultee':5},
+                {'type':'boss_fort','quantite':1, 'difficultee':5},
 
-                {'type':'boss_final','quantite':1, 'difficultee':6})
+                {'type':'normale', 'quantite':10, 'difficultee':6},
+                {'type':'rapide','quantite':10, 'difficultee':6},
+                {'type':'groupe','quantite':10, 'difficultee':6},
+                {'type':'imune','quantite':10, 'difficultee':6},
+                {'type':'fort','quantite':10, 'difficultee':6},
+                {'type':'volant','quantite':10, 'difficultee':6},
 
+                {'type':'boss_volant','quantite':1, 'difficultee':6},
 
+                {'type':'normale', 'quantite':10, 'difficultee':7},
+                {'type':'rapide','quantite':10, 'difficultee':7},
+                {'type':'groupe','quantite':10, 'difficultee':7},
+                {'type':'imune','quantite':10, 'difficultee':7},
+                {'type':'fort','quantite':10, 'difficultee':7},
+                {'type':'volant','quantite':10, 'difficultee':7},
 
-# TODO  :dico de famille de tours, contenant une liste de tours, contenant une liste d'attributs
-# TABLE_TOUR = {} ? avec les différentes tour
+                {'type':'boss_normale','quantite':1, 'difficultee':7},
+
+                {'type':'normale', 'quantite':10, 'difficultee':8},
+                {'type':'rapide','quantite':10, 'difficultee':8},
+                {'type':'groupe','quantite':10, 'difficultee':8},
+                {'type':'imune','quantite':10, 'difficultee':8},
+                {'type':'fort','quantite':10, 'difficultee':8},
+                {'type':'volant','quantite':10, 'difficultee':8},
+
+                {'type':'boss_rapide','quantite':1, 'difficultee':8},
+
+                {'type':'normale', 'quantite':10, 'difficultee':9},
+                {'type':'rapide','quantite':10, 'difficultee':9},
+                {'type':'groupe','quantite':10, 'difficultee':9},
+                {'type':'imune','quantite':10, 'difficultee':9},
+                {'type':'fort','quantite':10, 'difficultee':9},
+                {'type':'volant','quantite':10, 'difficultee':9},
+
+                {'type':'boss_groupe','quantite':3, 'difficultee':9},
+
+                {'type':'normale', 'quantite':10, 'difficultee':10},
+                {'type':'rapide','quantite':10, 'difficultee':10},
+                {'type':'groupe','quantite':10, 'difficultee':10},
+                {'type':'imune','quantite':10, 'difficultee':10},
+                {'type':'fort','quantite':10, 'difficultee':10},
+                {'type':'volant','quantite':10, 'difficultee':10},
+
+                {'type':'boss_imune','quantite':1, 'difficultee':10},
+
+                {'type':'normale', 'quantite':10, 'difficultee':11},
+                {'type':'rapide','quantite':10, 'difficultee':11},
+                {'type':'groupe','quantite':10, 'difficultee':11},
+                {'type':'imune','quantite':10, 'difficultee':11},
+                {'type':'fort','quantite':10, 'difficultee':11},
+                {'type':'volant','quantite':10, 'difficultee':11},
+
+                {'type':'boss_fort','quantite':1, 'difficultee':11},
+
+                {'type':'normale', 'quantite':10, 'difficultee':12},
+                {'type':'rapide','quantite':10, 'difficultee':12},
+                {'type':'groupe','quantite':10, 'difficultee':12},
+                {'type':'imune','quantite':10, 'difficultee':12},
+                {'type':'fort','quantite':10, 'difficultee':12},
+                {'type':'volant','quantite':10, 'difficultee':12},
+
+                {'type':'boss_volant','quantite':1, 'difficultee':12},
+                {'type':'boss_final','quantite':1, 'difficultee':13})
+
+# Définition des améliorations possibles des tours
+TOUR_AMELIORATION_FORCE = "TOUR_AMELIORATION_FORCE"
+TABLE_TOUR_FORCE = [5,10,20,40]
+TABLE_TOUR_FORCE_PRIX = [10,30,70]
+
+TOUR_AMELIORATION_DISTANCE = "TOUR_AMELIORATION_DISTANCE"
+TABLE_TOUR_DISTANCE = [40,55,70,90]
+TABLE_TOUR_DISTANCE_PRIX = [10,35,75]
+
+TOUR_AMELIORATION_VITESSE = "TOUR_AMELIORATION_VITESSE"
+TABLE_TOUR_VITESSE = [5,7,10,14]
+TABLE_TOUR_VITESSE_PRIX = [5,10,25]
+
+TOUR_AMELIORATION_RAPIDITE = "TOUR_AMELIORATION_RAPIDITE"
+TABLE_TOUR_RAPIDITE = [1,1,1,1]
+TABLE_TOUR_RAPIDITE_PRIX = [20,25,30]
+
+TOUR_AMELIORATION_RALENTI = "TOUR_AMELIORATION_RALENTI"
+TABLE_TOUR_RALENTI_FORCE = [1,(-0.1),(-0.15),(-0.20)]
+TABLE_TOUR_RALENTI_PRIX = [20,25,30]
+TABLE_TOUR_RALENTI_DUREE = [1,5,20,50]
 
 
 def conversionCoordCasesVersPixels(i,j):
     return (MARGE_ECRAN+i*TAILLE_BLOC,MARGE_ECRAN+j*TAILLE_BLOC)
 
+# ------------------------------------------------
 def conversionCoordPixelsVersCases(x,y):
     return (int((x-MARGE_ECRAN)/TAILLE_BLOC),int((y-MARGE_ECRAN)/TAILLE_BLOC))
 
+# ------------------------------------------------
 def centreCase(i,j):
     '''
     Donne le pixel (px,py) du centre d'une case (i,j)
@@ -219,6 +333,7 @@ def centreCase(i,j):
     return (MARGE_ECRAN+(i+0.5) * TAILLE_BLOC, MARGE_ECRAN+(j+0.5) * TAILLE_BLOC)
     pass
 
+# ------------------------------------------------
 def centreTour(i,j):
     ''' une tour occupe 4 cases
     rend le pixel du centre des 4 cases,
@@ -226,58 +341,59 @@ def centreTour(i,j):
     '''
     return conversionCoordCasesVersPixels(i+1,j+1)
 
+# ------------------------------------------------
 def anglesCase(i,j):
     ''' dans l'ordre x1,y1 coin supérieur gauche et x2,y2 coin inférieur droit
     '''
     return [MARGE_ECRAN+i*TAILLE_BLOC, MARGE_ECRAN+j*TAILLE_BLOC,MARGE_ECRAN+(i+1)*TAILLE_BLOC, MARGE_ECRAN+(j+1)*TAILLE_BLOC]
 
+# ------------------------------------------------
 def directionCentreCase(px, py):
     (i, j) = conversionCoordCasesVersPixels(px, py)
     (px2, py2) = centreCase(i, j)
     hypo = math.sqrt((px2-px)**2 + (py2-py)**2)
     return ((px2-px)/hypo, (py2-py)/hypo)
 
+# ------------------------------------------------
 def depasseHaut(x,y,r):
     ''' renvoie True si l'objet x,y rayon r, depasse le haut de sa case'''
     (i,j) = conversionCoordPixelsVersCases(x,y)
     coordAnglesCase = anglesCase(i,j)
     return (y-r<coordAnglesCase[1])
 
+# ------------------------------------------------
 def depasseBas(x,y,r):
     ''' renvoie True si l'objet x,y rayon r, depasse le bas de sa case'''
     (i,j) = conversionCoordPixelsVersCases(x,y)
     coordAnglesCase = anglesCase(i,j)
     return (y+r>coordAnglesCase[3])
 
+# ------------------------------------------------
 def depasseGauche(x,y,r):
     ''' renvoie True si l'objet x,y rayon r, depasse le gauche de sa case'''
     (i,j) = conversionCoordPixelsVersCases(x,y)
     coordAnglesCase = anglesCase(i,j)
     return (x-r<coordAnglesCase[0])
 
+# ------------------------------------------------
 def depasseDroit(x,y,r):
     ''' renvoie True si l'objet x,y rayon r, depasse le droit de sa case'''
     (i,j) = conversionCoordPixelsVersCases(x,y)
     coordAnglesCase = anglesCase(i,j)
     return (x+r>coordAnglesCase[2])
 
-def afficheAccueil(etat_partie):
-    if etat_partie == ETAT_PARTIE_ACCUEIL:
-        SCREEN.blit(IMAGE_START,(X_START_NEXT,Y_START_NEXT))
+# ------------------------------------------------
+def prixSuplementaire(t):
+    suplement = (t.niveau_distance + t.niveau_force + t.niveau_ralentire + t.niveau_rapidite + t.niveau_vitesse)
+    suplement = int(suplement * suplement)
+    return suplement
 
-    elif etat_partie == ETAT_PARTIE_PERDU or etat_partie == ETAT_PARTIE_GAGNE:
-        SCREEN.blit(IMAGE_RESTART,(X_START_NEXT,Y_START_NEXT))
+# ------------------------------------------------
+def rot_centre(image, angle):
 
-    elif etat_partie == ETAT_PARTIE_JEU:
-        SCREEN.blit(IMAGE_NEXT,(X_START_NEXT,Y_START_NEXT))
-        SCREEN.blit(IMAGE_TOURELLE_VIDE,(X_TOURELLE,Y_TOURELLE))
-        SCREEN.blit(IMAGE_BOUTON_PAUSE,(X_BOUTON_PLAY_PAUSE,Y_BOUTON_PLAY_PAUSE))
-
-    elif etat_partie == ETAT_PARTIE_PAUSE:
-        SCREEN.blit(IMAGE_NEXT,(X_START_NEXT,Y_START_NEXT))
-        SCREEN.blit(IMAGE_TOURELLE_VIDE,(X_TOURELLE,Y_TOURELLE))
-        SCREEN.blit(IMAGE_BOUTON_PLAY,(X_BOUTON_PLAY_PAUSE,Y_BOUTON_PLAY_PAUSE))
-
-    else:
-        pass
-
+    orig_rect = image.get_rect()
+    rot_image = pygame.transform.rotate(image, angle)
+    rot_rect = orig_rect.copy()
+    rot_rect.center = rot_image.get_rect().center
+    rot_image = rot_image.subsurface(rot_rect).copy()
+    return rot_image

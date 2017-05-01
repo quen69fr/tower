@@ -15,6 +15,7 @@ class Bestiole():
         self.type = type
         self.vitesse = TABLE_BESTIOLE[type]['vitesse']
         self.vie = TABLE_BESTIOLE[type]['vie']
+        self.vague = vague
 
         self.rayon = TABLE_BESTIOLE[type]['image_d'].get_width()/2
         # inutile : on ira chercher la/les images dans la TABLE
@@ -27,7 +28,7 @@ class Bestiole():
 
         self.selectionne = False
 
-        self.vie = self.vie * self.difficultee
+        self.vie = int(self.vie * self.difficultee * self.difficultee * self.difficultee*0.5)
         self.vie_max = self.vie
 
         if x!=-1 and y!=-1:
@@ -57,6 +58,9 @@ class Bestiole():
 
                 self.y+= -5
 
+        self.force_ralentie = 0
+        self.compte_a_rebour_ralentie = -15
+
     # -------------------------------------------------
     def verifie_bestiole_dans_case(self,i,j,selectionne=True):
         '''
@@ -76,7 +80,7 @@ class Bestiole():
             return False
 
     # -------------------------------------------------
-    def affiche(self,vague):
+    def affiche(self):
 
         img=TABLE_BESTIOLE[self.type]["image"+self.direction]
         SCREEN.blit(img,(self.x-self.rayon,self.y-self.rayon))
@@ -84,30 +88,6 @@ class Bestiole():
 
         self.affiche_vie()
 
-        if self.selectionne == True:
-            if self.vie <= 0:
-                self.selectionne = False
-
-            else:
-                SCREEN.blit(IMAGE_PENCARTE,(680,150))
-
-                img = TABLE_BESTIOLE[self.type]["image_d"]
-                SCREEN.blit(img,(800,250))
-
-                texte="Vie : {}".format(self.vie)
-                surface = FONT_4.render(texte, True, ROUGE)
-                rect = surface.get_rect(topleft=(700, 300))
-                SCREEN.blit(surface, rect)
-
-                texte="Argent : {}".format(TABLE_BESTIOLE[self.type]['gain']*TABLE_VAGUE[vague]['difficultee'])
-                surface = FONT_4.render(texte, True, JAUNE)
-                rect = surface.get_rect(topleft=(700, 350))
-                SCREEN.blit(surface, rect)
-
-                texte="Vitesse : {}".format(self.vitesse)
-                surface = FONT_4.render(texte, True, BLEU)
-                rect = surface.get_rect(topleft=(700, 400))
-                SCREEN.blit(surface, rect)
         # print(self.vie)
 
     # -------------------------------------------------
@@ -119,8 +99,10 @@ class Bestiole():
         x_vie = self.x-X_BARRE_DE_VIE/2
         y_vie = self.y-Y_BARRE_DE_VIE/2-self.rayon-HAUTEUR_BARRE_DE_VIE
 
-        pygame.draw.rect(SCREEN, VERT, (x_vie, y_vie, largeur1, Y_BARRE_DE_VIE), 0)
-        pygame.draw.rect(SCREEN, ROUGE, (x_vie+largeur1, y_vie, X_BARRE_DE_VIE-largeur1, Y_BARRE_DE_VIE), 0)
+        if ratio>0:
+            pygame.draw.rect(SCREEN, VERT, (x_vie, y_vie, largeur1, Y_BARRE_DE_VIE), 0)
+        if ratio<1:
+            pygame.draw.rect(SCREEN, ROUGE, (x_vie+largeur1, y_vie, X_BARRE_DE_VIE-largeur1, Y_BARRE_DE_VIE), 0)
 
     # -------------------------------------------------
     def affiche_gain(self,gain):
@@ -130,8 +112,13 @@ class Bestiole():
         SCREEN.blit(surface, rect)
 
     # -------------------------------------------------
+    def clic(self,x_souris,y_souris):
+        return math.sqrt((x_souris - self.x)**2 + (y_souris - self.y)**2 ) <= self.rayon+5
+
+    # -------------------------------------------------
     def deplace(self,grille):
 
+        self.reaccelerer()
         # on regarde dans quelle case on est
         (ci, cj) = conversionCoordPixelsVersCases(self.x, self.y)
 
@@ -167,18 +154,18 @@ class Bestiole():
             direction = (1,0)
             if best == 'vd':
                 # 2 cas : autour est libre, ou pas
-                if grille.est_libre(ci+1, cj-1) and grille.est_libre(ci+1,cj+1):
+                if grille.caseVide(ci+1, cj-1) and grille.caseVide(ci+1,cj+1):
                     # hd et bd sont libres
                     direction = (1,0)
                 else:
                     if depasseHaut(self.x,self.y,self.rayon):
-                        if grille.est_libre(ci+1,cj-1):
+                        if grille.caseVide(ci+1,cj-1):
                             # hd est libre
                             direction = (1,0)
                         else:
                             direction = (0,1)
                     elif depasseBas(self.x,self.y, self.rayon):
-                        if grille.est_libre(ci+1,cj+1):
+                        if grille.caseVide(ci+1,cj+1):
                             # bd est libre
                             direction = (1,0)
                         else:
@@ -186,18 +173,18 @@ class Bestiole():
                     else:
                         direction = (1,0)
             elif best == 'vb':
-                if grille.est_libre(ci+1, cj+1) and grille.est_libre(ci-1,cj+1):
+                if grille.caseVide(ci+1, cj+1) and grille.caseVide(ci-1,cj+1):
                     # bd et bg sont libres
                     direction = (0,1)
                 else :
                     if depasseDroit(self.x,self.y,self.rayon):
-                        if grille.est_libre(ci+1,cj+1):
+                        if grille.caseVide(ci+1,cj+1):
                             # bd est libre
                             direction = (0,1)
                         else:
                             direction = (-1,0)
                     elif depasseGauche(self.x,self.y, self.rayon):
-                        if grille.est_libre(ci-1,cj+1):
+                        if grille.caseVide(ci-1,cj+1):
                             # bg est libre
                             direction = (0,1)
                         else:
@@ -205,18 +192,18 @@ class Bestiole():
                     else:
                         direction = (0,1)
             elif best == 'vg':
-                if grille.est_libre(ci-1, cj-1) and grille.est_libre(ci-1,cj+1):
+                if grille.caseVide(ci-1, cj-1) and grille.caseVide(ci-1,cj+1):
                     # hg et bg sont libres
                     direction = (-1,0)
                 else :
                     if depasseHaut(self.x,self.y,self.rayon):
-                        if grille.est_libre(ci-1,cj-1):
+                        if grille.caseVide(ci-1,cj-1):
                             # hg est libre
                             direction = (-1,0)
                         else:
                             direction = (0,1)
                     elif depasseBas(self.x,self.y, self.rayon):
-                        if grille.est_libre(ci-1,cj+1):
+                        if grille.caseVide(ci-1,cj+1):
                             # bg est libre
                             direction = (-1,0)
                         else:
@@ -224,18 +211,18 @@ class Bestiole():
                     else:
                         direction = (-1,0)
             elif best == 'vh':
-                if grille.est_libre(ci - 1, cj - 1) and grille.est_libre(ci + 1, cj - 1):
+                if grille.caseVide(ci - 1, cj - 1) and grille.caseVide(ci + 1, cj - 1):
                     # hg et hd sont libres
                     direction = (0, -1)
                 else:
                     if depasseGauche(self.x,self.y,self.rayon):
-                        if grille.est_libre(ci-1,cj-1):
+                        if grille.caseVide(ci-1,cj-1):
                             # hg est libre
                             direction = (0,-1)
                         else:
                             direction = (1,0)
                     elif depasseDroit(self.x,self.y, self.rayon):
-                        if grille.est_libre(ci-1,cj+1):
+                        if grille.caseVide(ci-1,cj+1):
                             # hd est libre
                             direction = (0,-1)
                         else:
@@ -249,30 +236,30 @@ class Bestiole():
                     direction = ( pci - ci, pcj - cj)
                 else:
                     if best == 'vhd':
-                        if depasseHaut(self.x, self.y,self.rayon) and not grille.est_libre(ci,cj-1):
+                        if depasseHaut(self.x, self.y,self.rayon) and not grille.caseVide(ci,cj-1):
                             direction = (1,0)
-                        elif depasseDroit(self.x, self.y,self.rayon) and not grille.est_libre(ci+1,cj):
+                        elif depasseDroit(self.x, self.y,self.rayon) and not grille.caseVide(ci+1,cj):
                             direction = (0,-1)
                         else:
                             direction = (1,-1)
                     elif best == 'vhg':
-                        if depasseHaut(self.x, self.y,self.rayon) and not grille.est_libre(ci,cj-1):
+                        if depasseHaut(self.x, self.y,self.rayon) and not grille.caseVide(ci,cj-1):
                             direction = (-1,0)
-                        elif depasseGauche(self.x, self.y,self.rayon) and not grille.est_libre(ci-1,cj):
+                        elif depasseGauche(self.x, self.y,self.rayon) and not grille.caseVide(ci-1,cj):
                             direction = (0,-1)
                         else:
                             direction = (-1,-1)
                     elif best == 'vbg':
-                        if depasseBas(self.x, self.y,self.rayon) and not grille.est_libre(ci,cj+1):
+                        if depasseBas(self.x, self.y,self.rayon) and not grille.caseVide(ci,cj+1):
                             direction = (-1,0)
-                        elif depasseGauche(self.x, self.y,self.rayon) and not grille.est_libre(ci-1,cj):
+                        elif depasseGauche(self.x, self.y,self.rayon) and not grille.caseVide(ci-1,cj):
                             direction = (0,1)
                         else:
                             direction = (-1,1)
                     elif best == 'vbd':
-                        if depasseBas(self.x, self.y,self.rayon) and not grille.est_libre(ci,cj+1):
+                        if depasseBas(self.x, self.y,self.rayon) and not grille.caseVide(ci,cj+1):
                             direction = (1,0)
-                        elif depasseDroit(self.x, self.y,self.rayon) and not grille.est_libre(ci+1,cj):
+                        elif depasseDroit(self.x, self.y,self.rayon) and not grille.caseVide(ci+1,cj):
                             direction = (0,1)
                         else:
                             direction = (1,1)
@@ -315,5 +302,32 @@ class Bestiole():
                     self.x -= 0.05
                 if self.x < pcx - 2:
                     self.x += 0.05
+    
+    # -------------------------------------------------
+    def ralentie(self,temps,force):
 
+        if self.type == 'imune' or self.type == 'boss_imune':
+            pass
 
+        else:
+            if self.compte_a_rebour_ralentie == -15:
+
+                self.compte_a_rebour_ralentie = temps
+                self.force_ralentie = force
+
+                return True
+
+            else:
+                return False
+
+    # -------------------------------------------------
+    def reaccelerer(self):
+        if self.compte_a_rebour_ralentie == -15:
+            self.compte_a_rebour_ralentie = -15
+
+        elif self.compte_a_rebour_ralentie == 1:
+            self.vitesse = TABLE_BESTIOLE[self.type]['vitesse']
+            self.compte_a_rebour_ralentie = 0
+
+        else:
+            self.compte_a_rebour_ralentie -= 1

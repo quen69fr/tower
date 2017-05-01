@@ -7,6 +7,7 @@ from tour import *
 from bestiole import *
 from tir import *
 from outils import *
+from bandeauActions import *
 
 # TODO BUG : le perimetre  de tir des tours a disparu quand on construit ; Phil - 26aout
 # TODO BUG : on aperçoit les bestioles avant la porte
@@ -26,24 +27,43 @@ if __name__=="__main__":
     vague = 0
     vague_compteur= 0 # nombre de betes deja envoyees dans la vague en cours
     vague_attente = 0 # attente entre deux vagues
-
-    etat_partie = ETAT_PARTIE_ACCUEIL
-    argent = 100
-
-    nombre_vie = NOMBRE_BESTIOLES_SORTIE_MAX
-
-    grille = Grille()
+    etat_partie = None
+    argent = 0
+    nombre_vie = 0
+    grille = None
     listeBestioles = []
     listeTirs = []
-
-    grille.charge_csv()
-    grille.calcule_distance_grille()
-    grille.dessine_grille()
-
     tourBrouillon = None
+    bestiole_selectionnee = None
+    bandeauAction = None
+    premiere_vague = True
+    tour_type = None
+
 
     while True:
 
+        # On initialise la partie si pas de partie en cours
+        if etat_partie==None:
+            vague = 0
+            vague_compteur= 0 # nombre de betes deja envoyees dans la vague en cours
+            vague_attente = 0 # attente entre deux vagues
+            etat_partie = ETAT_PARTIE_ACCUEIL
+            argent = ARGENT_DEPART
+            nombre_vie = NOMBRE_BESTIOLES_SORTIE_MAX
+            grille = Grille()
+            listeBestioles = []
+            listeTirs = []
+            grille.charge_csv()
+            grille.calcule_distance_grille()
+            grille.dessine_grille()
+            tourBrouillon = None
+            bestiole_selectionnee = None
+            bandeauAction = BandeauAction()
+            premiere_vague = True
+            tour_type = None
+
+
+        bandeauAction.mise_jour_etat(etat_partie,grille.tour_selectionnee,bestiole_selectionnee,argent)
         #print ("Tours : {} ; Betes : {} ;  Tirs : {}".format(len(grille.listeTours), len(listeBestioles), len(listeTirs)))
 
         pygame.display.update()
@@ -75,9 +95,49 @@ if __name__=="__main__":
 
                 # S
                 if event.key==115:
-                    grille.enleve_tour_selectionnee()
+                    if grille.enleve_tour_selectionnee():
+                        argent += int(PRIX_TOUR/2)
                     grille.calcule_distance_grille()
-                    argent += int(PRIX_TOUR/2)
+
+                if grille.tour_selectionnee!=None:
+                    t = grille.tour_selectionnee
+                    # F
+                    if event.key==102:
+                        if t.niveau_force<len(TABLE_TOUR_FORCE)-1:
+                            prix = TABLE_TOUR_FORCE_PRIX[t.niveau_force] + prixSuplementaire(t)
+                            if argent>=prix:
+                                if t.ameliore(TOUR_AMELIORATION_FORCE):
+                                    argent-=prix
+                    # D
+                    if event.key==100:
+                        if t.niveau_distance<len(TABLE_TOUR_DISTANCE)-1:
+                            prix = TABLE_TOUR_DISTANCE_PRIX[t.niveau_distance] + prixSuplementaire(t)
+                            if argent>=prix:
+                                if t.ameliore(TOUR_AMELIORATION_DISTANCE):
+                                    argent-=prix
+                    # R
+                    if event.key==114:
+                        if t.niveau_rapidite<len(TABLE_TOUR_RAPIDITE)-1:
+                            prix = TABLE_TOUR_RAPIDITE_PRIX[t.niveau_rapidite] + prixSuplementaire(t)
+                            if argent>=prix:
+                                if t.ameliore(TOUR_AMELIORATION_RAPIDITE):
+                                    argent-=prix
+                    # V
+                    if event.key==118:
+                        if t.niveau_vitesse<len(TABLE_TOUR_VITESSE)-1:
+                            prix = TABLE_TOUR_VITESSE_PRIX[t.niveau_vitesse] + prixSuplementaire(t)
+                            if argent>=prix:
+                                if t.ameliore(TOUR_AMELIORATION_VITESSE):
+                                    argent-=prix
+
+                    # L
+                    if event.key==108:
+                        if t.niveau_ralentire<len(TABLE_TOUR_RALENTI_DUREE)-1:
+                            prix = TABLE_TOUR_RALENTI_PRIX[t.niveau_ralentire] + prixSuplementaire(t)
+                            if argent>=prix:
+                                if t.ameliore(TOUR_AMELIORATION_RALENTI):
+                                    argent-=prix
+
 
                 # N
                 if event.key==110:
@@ -87,7 +147,10 @@ if __name__=="__main__":
                         vague += 1
                         vague_compteur = 0
                         vague_attente = 0
+                        delay_entre_vague = DELAI_ENTRE_VAGUE
+                        premiere_vague = False
 
+                # P
                 if event.key==112:
                     if etat_partie == ETAT_PARTIE_PAUSE:
                         etat_partie = ETAT_PARTIE_JEU
@@ -96,16 +159,10 @@ if __name__=="__main__":
                     else:
                         pass
 
+            #===========================================================
+            # Click sur le bouton gauche
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 ev_clicgauche = True
-                rayon = int(IMAGE_START.get_height()/2)
-                #print(rayon)
-                if math.sqrt((x_souris - (X_BOUTON_PLAY_PAUSE+rayon))**2 + (y_souris - (Y_BOUTON_PLAY_PAUSE+rayon))**2 ) <= rayon:
-                    if etat_partie == ETAT_PARTIE_PAUSE:
-                        etat_partie = ETAT_PARTIE_JEU
-                    else:
-                        etat_partie = ETAT_PARTIE_PAUSE
-
                 continue
 
             if event.type == pygame.MOUSEBUTTONUP and event.button == 3:
@@ -114,75 +171,54 @@ if __name__=="__main__":
 
         SCREEN.fill(0)
         grille.dessine_grille()
-        grille.affiche_score(argent, nombre_vie, int((DELAI_ENTRE_VAGUE - vague_attente)/20))
+        grille.affiche_score(argent, premiere_vague, nombre_vie, int((DELAI_ENTRE_VAGUE - vague_attente)/20))
         grille.dessine_portes()
+        bandeauAction.affiche()
+        for bete in listeBestioles:
+            bete.affiche()
+        for tir in listeTirs:
+            tir.affiche()
 
         # -----------------------------
         if etat_partie == ETAT_PARTIE_ACCUEIL:
-            afficheAccueil(etat_partie)
-
-            if event.type==pygame.MOUSEBUTTONUP:
-                if X_START_NEXT < x_souris < (X_START_NEXT+155) and Y_START_NEXT < y_souris < (Y_START_NEXT+53):
+            if ev_clicgauche:
+                if bandeauAction.clic(x_souris,y_souris)==BOUTON_START_NEXT:
                     etat_partie = ETAT_PARTIE_JEU
             continue
+
         # -----------------------------
         if etat_partie == ETAT_PARTIE_PERDU or etat_partie == ETAT_PARTIE_GAGNE:
-            afficheAccueil(etat_partie)
 
-            for bete in listeBestioles:
-                bete.affiche(vague)
-            for tir in listeTirs:
-                tir.affiche()
             if etat_partie == ETAT_PARTIE_PERDU:
                 texte="Perdu"
                 surface = FONT_3.render(texte, True, ROUGE)
-                rect = surface.get_rect(topleft=(MARGE_ECRAN+200, 200))
+                rect = surface.get_rect(topleft=(MARGE_ECRAN+200, 260))
                 SCREEN.blit(surface, rect)
 
             if etat_partie == ETAT_PARTIE_GAGNE:
                 texte="Gagné"
-                surface = FONT_3.render(texte, True, ROUGE)
-                rect = surface.get_rect(topleft=(MARGE_ECRAN+200, 200))
+                surface = FONT_3.render(texte, True, VERT)
+                rect = surface.get_rect(topleft=(MARGE_ECRAN+200, 260))
                 SCREEN.blit(surface, rect)
 
-            if event.type==pygame.MOUSEBUTTONUP:
-                if X_START_NEXT < x_souris < (X_START_NEXT+155) and Y_START_NEXT < y_souris < (Y_START_NEXT+53):
-                    etat_partie = ETAT_PARTIE_JEU
-
-                    # TODO il faut tout remêtre à 0.
-
-                    vague = 0
-                    vague_compteur= 0 # nombre de betes deja envoyees dans la vague en cours
-                    vague_attente = 0 # attente entre deux vagues
-
-                    etat_partie = ETAT_PARTIE_ACCUEIL
-                    argent = 100
-
-                    nombre_vie = NOMBRE_BESTIOLES_SORTIE_MAX
-
-                    grille = Grille()
-                    listeBestioles = []
-                    listeTirs = []
-
-                    grille.charge_csv()
-                    grille.calcule_distance_grille()
-                    grille.dessine_grille()
-
-                    tourBrouillon = None
-
+            if ev_clicgauche:
+                if bandeauAction.clic(x_souris,y_souris)==BOUTON_START_NEXT:
+                    etat_partie = None
             continue
+
         # -----------------------------
         if etat_partie == ETAT_PARTIE_PAUSE:
-            afficheAccueil(etat_partie)
 
-            for bete in listeBestioles:
-                bete.affiche(vague)
-            for tir in listeTirs:
-                tir.affiche()
+            # Click gauche : on regarde si on doit enlever la pause
+            #==============================================================
+            if ev_clicgauche:
+
+                if bandeauAction.clic(x_souris,y_souris)==BOUTON_PAUSE:
+                    etat_partie = ETAT_PARTIE_JEU
 
             texte="Pause"
             surface = FONT_3.render(texte, True, ROUGE)
-            rect = surface.get_rect(topleft=(MARGE_ECRAN+200, 250))
+            rect = surface.get_rect(topleft=(MARGE_ECRAN+200, 260))
             SCREEN.blit(surface, rect)
 
             continue
@@ -198,17 +234,17 @@ if __name__=="__main__":
         # print ('Vague {} ; compteur {} ; attente {}'.format(vague,vague_compteur, vague_attente))
 
         # vague en cours finie ?
-        '''if vague == len(TABLE_VAGUE):
+        if vague == len(TABLE_VAGUE)-1:
             etat_partie = ETAT_PARTIE_GAGNE
-            continue'''
+            continue
 
         if vague_compteur < TABLE_VAGUE[vague]['quantite']:
             # non, il faut envoyer une nouvelle bestiole de la vague en cours
             if TABLE_VAGUE[vague]['type'] == 'groupe' or TABLE_VAGUE[vague]['type'] == 'boss_groupe':
-                    t=TABLE_VAGUE[vague]['type']
-                    bestiole = Bestiole(vague,type=t)
-                    listeBestioles.append(bestiole)
-                    vague_compteur += 1
+                t=TABLE_VAGUE[vague]['type']
+                bestiole = Bestiole(vague,type=t)
+                listeBestioles.append(bestiole)
+                vague_compteur += 1
 
             else:
                 if random.randint(0,INTERVALLE_BESTIOLE) == 1:
@@ -219,7 +255,10 @@ if __name__=="__main__":
         else:
             # oui la vague est finie,
             # j'attends ?
-            if vague_attente < DELAI_ENTRE_VAGUE:
+            if premiere_vague == True:
+                delay_entre_vague = 1000000000000000
+
+            if vague_attente < delay_entre_vague:
                 # oui
                 vague_attente += 1
             else:
@@ -228,51 +267,101 @@ if __name__=="__main__":
                     vague += 1
                     vague_compteur = 0
                     vague_attente = 0
+                    delay_entre_vague = DELAI_ENTRE_VAGUE
+                    premiere_vague = False
 
         # clic-gauche - handle MOUSEBUTTONUP
         if ev_clicgauche:
 
-            (i, j) = conversionCoordPixelsVersCases(x_souris, y_souris)
-            # chercher sur quoi on a cliqué : bouton, tour, case vide, bestiole
-            CIBLE_CLIC, CIBLE_OBJET = grille.cherche_cible_clic(i,j,listeBestioles)
-            #print ("CIBLE_CLIC = ",CIBLE_CLIC)
+            bestiole_selectionnee=None
+            grille.tour_selectionnee=None
 
-            # construction sur case vide 4 ?
-            if tourBrouillon:
-                if CIBLE_CLIC == 'vide4':
-                     if argent >= PRIX_TOUR:
-                        if grille.nouvelle_tour_complet(i,j):
-                            argent -= PRIX_TOUR
+            if bandeauAction.clic(x_souris,y_souris)==BOUTON_PLUS:
+                if FPS != 1560:
+                    FPS = FPS + 500
+
+            if bandeauAction.clic(x_souris,y_souris)==BOUTON_MOINS:
+                if FPS != 60:
+                    FPS = FPS - 500
+
+            # Gestion du bouton pause
+            if bandeauAction.clic(x_souris,y_souris)==BOUTON_PAUSE:
+                etat_partie = ETAT_PARTIE_PAUSE
+                continue
+
+            # Gestion du bouton next
+            if bandeauAction.clic(x_souris,y_souris)==BOUTON_START_NEXT:
+                # TODO : gerer la dernière vague
+                if vague_compteur >= TABLE_VAGUE[vague]['quantite']:
+                    vague += 1
+                    vague_compteur = 0
+                    vague_attente = 0
+                    delay_entre_vague = DELAI_ENTRE_VAGUE
+                    premiere_vague = False
+
+                tourBrouillon=None
+                continue
+
+            # Gestion du bouton tourelle
+            if bandeauAction.clic(x_souris,y_souris)==BOUTON_TOURELLE_NORMAL:
+                tour_type = TOUR_NORMAL
+                tourBrouillon = Tour(2,2, Tour._ETAT_TOUR_BROUILLON)
+                continue
+
+            elif bandeauAction.clic(x_souris,y_souris)==BOUTON_TOURELLE_VOLANT:
+                tour_type = TOUR_VOLANT
+                tourBrouillon = Tour(2,2, Tour._ETAT_TOUR_BROUILLON)
+                continue
+
+            elif bandeauAction.clic(x_souris,y_souris)==BOUTON_TOURELLE_TOUS:
+                tour_type = TOUR_TOUS
+                tourBrouillon = Tour(2,2, Tour._ETAT_TOUR_BROUILLON)
+                continue
+
+            elif bandeauAction.clic(x_souris,y_souris)==BOUTON_TOURELLE_BOUM:
+                tour_type = TOUR_BOUM
+                tourBrouillon = Tour(2,2, Tour._ETAT_TOUR_BROUILLON)
+                continue
+
+            elif bandeauAction.clic(x_souris,y_souris)==BOUTON_TOURELLE_BOUM_VOLANT:
+                tour_type = TOUR_BOUM_VOLANT
+                tourBrouillon = Tour(2,2, Tour._ETAT_TOUR_BROUILLON)
+                continue
+
+            elif bandeauAction.clic(x_souris,y_souris)==BOUTON_TOURELLE_PLUS:
+                tour_type = TOUR_PLUS
+                tourBrouillon = Tour(2,2, Tour._ETAT_TOUR_BROUILLON)
+                continue
+
+
+
+            # Gestion du clic sur une bestiole
+            for bete in listeBestioles:
+                if bete.clic(x_souris,y_souris):
+                    bestiole_selectionnee = bete
+                    tourBrouillon=None
+                    continue
+
+            # Gestion du clic sur une tour existante
+            (i, j) = conversionCoordPixelsVersCases(x_souris, y_souris)
+            tour = grille.quelle_tour_dans_case(i,j)
+            if tour:
+                grille.tour_selectionnee=tour
+                tourBrouillon = None
+                continue
+
+            # Gestion de la construction d'une nouvelle tour
+            if tourBrouillon and grille.caseVide4(i,j):
+                if argent >= PRIX_TOUR:
+                    if grille.nouvelle_tour_complet(i,j,listeBestioles,tour_type):
+                        argent -= PRIX_TOUR
                 else:
                     tourBrouillon = None
-
-            # selection d'un bouton Tour
-            # TODO : gerer les differents boutons
-            if CIBLE_CLIC == 'menu':
-                largeur = IMAGE_START.get_width()
-                hauteur = IMAGE_START.get_height()
-                if X_START_NEXT < x_souris < (X_START_NEXT + largeur) and Y_START_NEXT < y_souris < (Y_START_NEXT + hauteur):
-                    if vague_compteur < TABLE_VAGUE[vague]['quantite']:
-                        pass
-                    else:
-                        vague += 1
-                        vague_compteur = 0
-                        vague_attente = 0
-
-
-                if X_TOURELLE < x_souris < (X_TOURELLE+40) and Y_TOURELLE < y_souris < (Y_TOURELLE+40):
-                    tourBrouillon = Tour(2,2, Tour._ETAT_TOUR_BROUILLON)
-        # si clic-sur menu / bouton de tour, tour Brouillon :
-        #
-
-        if ev_clic_droit:
-            pass
 
 
         # les bestioles
         for bete in listeBestioles:
             bete.deplace(grille)
-            bete.affiche(vague)
             (i,j)=conversionCoordPixelsVersCases(bete.x,bete.y)
             if i == GRILLE_LX-1:
                 # une besstiole est sortie
@@ -284,6 +373,8 @@ if __name__=="__main__":
             if bete.vie <= 0:
                 argent += TABLE_BESTIOLE[bete.type]['gain']*TABLE_VAGUE[vague]['difficultee']
                 listeBestioles.remove(bete)
+                if bestiole_selectionnee == bete:
+                    bestiole_selectionnee=None
                 #bestiole.affiche_vie(TABLE_BESTIOLE[bete.type]['gain']*TABLE_VAGUE[vague]['difficultee'])
                 continue
 
@@ -293,23 +384,23 @@ if __name__=="__main__":
             tour.gere_deconstruction()
             t=tour.cree_tir(listeBestioles)
             if t is not None :
-                listeTirs.append(t)
+                listeTirs.extend(t)
 
         # les tirs
         for tir in listeTirs:
-            tir.deplace(grille)
+            tir.deplace()
             if tir.impact == True:
                 tir.traite_impact()
                 listeTirs.remove(tir)
-                next
-            tir.affiche()
 
         # le curseur / tour en construction
         if tourBrouillon:
             (i, j) = conversionCoordPixelsVersCases(x_souris, y_souris)
             tourBrouillon.x = i
             tourBrouillon.y = j
-            tourBrouillon.affiche()
-
-        grille.dessine_portes()
-        afficheAccueil(etat_partie)
+            if grille.estDansGrille(i,j):
+                if grille.caseVide4(i,j):
+                    tourBrouillon.etat=tourBrouillon._ETAT_TOUR_BROUILLON
+                else:
+                    tourBrouillon.etat=tourBrouillon._ETAT_TOUR_BROUILLON_IMPOSSIBLE
+                tourBrouillon.affiche()
