@@ -84,6 +84,11 @@ class Tour():
                 if self.type != TOUR_BOUM and self.type != TOUR_PLUS and self.type != TOUR_BOUM_VOLANT:
                     SCREEN.blit(self.image_tourelle_canon,(x,y))
 
+                if self.coeffPlus != 1:
+                    SCREEN.blit(IMAGE_TOURELLE_AMELIOREE, conversionCoordCasesVersPixels(self.x,self.y))
+
+
+
             elif tour_selectionnee == True:
                 SCREEN.blit(self.image,conversionCoordCasesVersPixels(self.x,self.y))
                 self.orinenteCanon()
@@ -91,11 +96,14 @@ class Tour():
                 if self.type != TOUR_BOUM and self.type != TOUR_PLUS and self.type != TOUR_BOUM_VOLANT:
                     SCREEN.blit(self.image_tourelle_canon,(x,y))
 
+
                 recttransparent = pygame.Surface((40,40), pygame.SRCALPHA, 32)
                 recttransparent.fill((255,255,255, 150))
                 SCREEN.blit(recttransparent, conversionCoordCasesVersPixels(self.x,self.y))
 
                 pygame.draw.circle(SCREEN, VERT, centreTour(self.x, self.y), self.distance_tir, 1)
+
+
 
     # ------------------------------------------------
     def gere_construction(self):

@@ -63,6 +63,7 @@ IMAGE_TOURELLE_TOUS = pygame.image.load("image/TourelleTous.png")
 IMAGE_TOURELLE_BOUM = pygame.image.load("image/TourelleBoum.png")
 IMAGE_TOURELLE_BOUM_VOLANT = pygame.image.load("image/TourelleBoumVolant.png")
 IMAGE_TOURELLE_PLUS = pygame.image.load("image/TourellePlus.png")
+IMAGE_TOURELLE_AMELIOREE = pygame.image.load("image/TourelleAmelioree.png")
 
 IMAGE_START = pygame.image.load("image/Start.png")
 IMAGE_NEXT = pygame.image.load("image/Next.png")
