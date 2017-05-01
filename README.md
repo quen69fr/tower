@@ -1,4 +1,4 @@
 # tower
 
-![Screenshot](image/screenshot.png?raw=true)
+![Screenshot](image/screenshot2.png?raw=true)
 
