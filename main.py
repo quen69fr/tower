@@ -330,7 +330,7 @@ if __name__=="__main__":
 
             # Gestion de la construction d'une nouvelle tour
             if tourBrouillon and grille.caseVide4(i,j):
-                argent -= grille.nouvelle_tour_complet(i,j,listeBestioles,tour_type,argent)
+                argent -= int(grille.nouvelle_tour_complet(i,j,listeBestioles,tour_type,argent))
 
         # les bestioles
         for bete in listeBestioles:

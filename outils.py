@@ -9,8 +9,6 @@ import random
 import math
 import csv
 
-
-
 # SCREEN sera une "surface de dessin"
 LARGEUR = 1100
 HAUTEUR = 650
@@ -23,40 +21,22 @@ FPS = 60                # nombre d'image par seconde
 
 DELAY = 0               # vitesse du jeu
 
-NOIR =   (0,0,0)
-GRIS =   (100,100,100)
-BLANC =  (255,255,255)
-BLEU =   (0,0,255)
-VERT =   (52,175,0)
-ROUGE =  (255,0,0)
-ORANGE = (255,100,0)
-JAUNE =  (255,255,0)
-JAUNE2 =  (50,50,0)
-
-BLOC_BORD_NOIR = -3
-BLOC_BORD = -2
-BLOC_TOUR = -1
-BLOC_PORTE = 0
-BLOC_ENTREE = 9999
-BLOC_INCONNU = -99
-
-GRILLE_LX = 30
-GRILLE_LY = 24
-TAILLE_PORTE = 6
-Y_PORTE = 9 # ordonnée plus haute case de porte
-
-X_BARRE_DE_VIE = 10
-Y_BARRE_DE_VIE = 2
-HAUTEUR_BARRE_DE_VIE = 5
-
 TAILLE_BLOC = 20
 MARGE_ECRAN = 40
 
 ARGENT_DEPART = 1000
-#ARGENT_BESTIOLE = 2
-PRIX_TOUR_NORMALE = 5
 
-# tous les fichiets IMAGES
+ETAT_PARTIE_ACCUEIL = 1   # on construit, pas de betes, on quitte quand on clic sur DEMARRER
+ETAT_PARTIE_JEU = 2       # les betes arrivent, on construit
+ETAT_PARTIE_PERDU = 4     # on fige le jeu ; on affiche la grille, les betes, et des boutons "ENCORE / QUITTER"
+ETAT_PARTIE_GAGNE = 5     # on fige le jeu ; on affiche la grille, les betes, et des boutons "ENCORE / QUITTER"
+ETAT_PARTIE_PAUSE = 6
+
+# ----------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------ IMAGES + POLICE + COULEURS ------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------------------
+
+# ------------------ Images ------------------
 IMAGE_TOURELLE_NORMAL = pygame.image.load("image/TourelleNormal.png")
 IMAGE_TOURELLE_VOLANT = pygame.image.load("image/TourelleVolant.png")
 IMAGE_TOURELLE_TOUS = pygame.image.load("image/TourelleTous.png")
@@ -79,6 +59,30 @@ IMAGE_TOURELLE_CANON_2 = pygame.image.load("image/TourelleCanon2.png")
 IMAGE_TOURELLE_CANON_3 = pygame.image.load("image/TourelleCanon3.png")
 IMAGE_TOURELLE_CANON_4 = pygame.image.load("image/TourelleCanon4.png")
 
+
+# ------------------ Polices ------------------
+FONT = pygame.font.Font(None,30)
+FONT_2 = pygame.font.Font(None,20)
+FONT_3 = pygame.font.Font(None,100)
+FONT_4 = pygame.font.Font(None,40)
+
+
+# ------------------ Couleur ------------------
+NOIR =   (0,0,0)
+GRIS =   (100,100,100)
+BLANC =  (255,255,255)
+BLEU =   (0,0,255)
+VERT =   (52,175,0)
+ROUGE =  (255,0,0)
+ORANGE = (255,100,0)
+JAUNE =  (255,255,0)
+JAUNE2 =  (50,50,0)
+
+# -----------------------------------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------- BOUTONS ----------------------------------------------------------
+# -----------------------------------------------------------------------------------------------------------------------------
+
+
 RAYON_BOUTON_PAUSE = int(IMAGE_BOUTON_PAUSE.get_height()/2)
 
 BOUTON_START_NEXT = "BOUTON_START_NEXT"
@@ -92,23 +96,6 @@ BOUTON_TOURELLE_PLUS = "BOUTON_TOURELLE_PLUS"
 BOUTON_PLUS = "BOUTON_PLUS"
 BOUTON_MOINS = "BOUTON_MOINS"
 
-TOUR_NORMAL = "TOUR_NORMAL"
-TOUR_VOLANT = "TOUR_VOLANT"
-TOUR_TOUS = "TOUR_TOUS"
-TOUR_BOUM = "TOUR_BOUM"
-TOUR_BOUM_VOLANT = "TOUR_BOUM_VOLANT"
-TOUR_PLUS = "TOUR_PLUS"
-
-NOMBRE_BESTIOLES_SORTIE_MAX = 20  # avant perte de partie
-
-TIR_ACTIF = True
-AFFICHE_PERIMETRE_TIR = True
-VITESSE_TIR = 5
-DISTANCE_TIR = 50
-DELAI_TIR = 30
-
-COEFF_TOUR_PLUS = 1.1
-
 X_START_NEXT = 700
 Y_START_NEXT = 20
 X_BOUTON_PLAY_PAUSE = 1030
@@ -117,24 +104,9 @@ Y_BOUTON_PLAY_PAUSE = 21
 X_TOURELLE = 700
 Y_TOURELLE = 100
 
-FONT = pygame.font.Font(None,30)
-FONT_2 = pygame.font.Font(None,20)
-FONT_3 = pygame.font.Font(None,100)
-FONT_4 = pygame.font.Font(None,40)
-
-AFFICHE_CSV = False
-FICHIER_DEF_BLOCS = "blocs2.csv"
-
-
-
-ETAT_PARTIE_ACCUEIL = 1   # on construit, pas de betes, on quitte quand on clic sur DEMARRER
-ETAT_PARTIE_JEU = 2       # les betes arrivent, on construit
-ETAT_PARTIE_PERDU = 4     # on fige le jeu ; on affiche la grille, les betes, et des boutons "ENCORE / QUITTER"
-ETAT_PARTIE_GAGNE = 5     # on fige le jeu ; on affiche la grille, les betes, et des boutons "ENCORE / QUITTER"
-ETAT_PARTIE_PAUSE = 6
-
-
-# Les types et caractéristiques des différentes bestioles
+# ---------------------------------------------------------------------------------------------------------------------------
+# ---------------------------------------------------- BESTIOLES + VAGUE ----------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------------
 
 TABLE_BESTIOLE = {}
 
@@ -179,8 +151,13 @@ for bestiole in TABLE_BESTIOLE:
 #   ...
 
 
+NOMBRE_BESTIOLES_SORTIE_MAX = 20  # avant perte de partie
 INTERVALLE_BESTIOLE = 20 # (random 1 sur / intervalle)
 DELAI_ENTRE_VAGUE = 500  # délai en secondes entre deux vagues ; constant pour toute la partie
+
+X_BARRE_DE_VIE = 10
+Y_BARRE_DE_VIE = 2
+HAUTEUR_BARRE_DE_VIE = 5
 
 TABLE_VAGUE =  ({'type':'départ','quantite':0, 'difficultee':1},
 
@@ -293,28 +270,126 @@ TABLE_VAGUE =  ({'type':'départ','quantite':0, 'difficultee':1},
                 {'type':'boss_volant','quantite':1, 'difficultee':12},
                 {'type':'boss_final','quantite':1, 'difficultee':13})
 
+# ---------------------------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------ TOURS(GRILLE) ------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------------
+BLOC_BORD_NOIR = -3
+BLOC_BORD = -2
+BLOC_TOUR = -1
+BLOC_PORTE = 0
+BLOC_ENTREE = 9999
+BLOC_INCONNU = -99
+
+GRILLE_LX = 30
+GRILLE_LY = 24
+TAILLE_PORTE = 6
+Y_PORTE = 9 # ordonnée plus haute case de porte
+
+# ------------------ Tours ------------------
+AFFICHE_CSV = False
+FICHIER_DEF_BLOCS = "blocs2.csv"
+
+TIR_ACTIF = True
+AFFICHE_DISTANCE_TIR_BROUILLON = True
+
+COEFF_TOUR_PLUS = 1.1
+
 # Définition des améliorations possibles des tours
+TOUR_NORMAL = "TOUR_NORMAL"
+TOUR_VOLANT = "TOUR_VOLANT"
+TOUR_TOUS = "TOUR_TOUS"
+TOUR_BOUM = "TOUR_BOUM"
+TOUR_BOUM_VOLANT = "TOUR_BOUM_VOLANT"
+TOUR_PLUS = "TOUR_PLUS"
+
+
+# prix de départ d'une tour
+PRIX_TOUR_NORMALE = 20
+PRIX_TOUR_VOLANT = 20
+PRIX_TOUR_TOUS = 5
+PRIX_TOUR_BOUM = 20
+PRIX_TOUR_BOUM_VOLANT = 20
+PRIX_TOUR_PLUS = 75
+
+
 TOUR_AMELIORATION_FORCE = "TOUR_AMELIORATION_FORCE"
-TABLE_NORMALE_TOUR_FORCE = [5, 10, 20, 40]
-TABLE_NORMALE_TOUR_FORCE_PRIX = [10, 30, 70]
+TABLE_NORMALE_TOUR_FORCE = [10, 20, 40, 60]
+TABLE_VOLANT_TOUR_FORCE = [10, 20, 40, 60]
+TABLE_TOUS_TOUR_FORCE = [3, 5, 10, 20]
+TABLE_BOUM_TOUR_FORCE = [10, 20, 40, 60]
+TABLE_BOUM_VOLANT_TOUR_FORCE = [10, 20, 40, 60]
+
+TABLE_NORMALE_TOUR_FORCE_PRIX = [15, 40, 80]
+TABLE_VOLANT_TOUR_FORCE_PRIX = [15, 40, 80]
+TABLE_TOUS_TOUR_FORCE_PRIX = [8, 20, 50]
+TABLE_BOUM_TOUR_FORCE_PRIX = [15, 40, 80]
+TABLE_BOUM_VOLANT_TOUR_FORCE_PRIX = [8, 25, 60]
+
 
 TOUR_AMELIORATION_DISTANCE = "TOUR_AMELIORATION_DISTANCE"
-TABLE_NORMALE_TOUR_DISTANCE = [40, 55, 70, 90]
+TABLE_NORMALE_TOUR_DISTANCE = [40, 50, 58, 70]
+TABLE_VOLANT_TOUR_DISTANCE = [40, 50, 58, 70]
+TABLE_TOUS_TOUR_DISTANCE = [40, 10, 12, 14]
+TABLE_BOUM_TOUR_DISTANCE = [40, 12, 14, 18]
+TABLE_BOUM_VOLANT_TOUR_DISTANCE = [40, 12, 14, 18]
+
 TABLE_NORMALE_TOUR_DISTANCE_PRIX = [10, 35, 75]
+TABLE_VOLANT_TOUR_DISTANCE_PRIX = [10, 35, 75]
+TABLE_TOUS_TOUR_DISTANCE_PRIX = [10, 20, 50]
+TABLE_BOUM_TOUR_DISTANCE_PRIX = [10, 20, 50]
+TABLE_BOUM_VOLANT_TOUR_DISTANCE_PRIX = [10, 20, 50]
+
 
 TOUR_AMELIORATION_VITESSE = "TOUR_AMELIORATION_VITESSE"
-TABLE_NORMALE_TOUR_VITESSE = [5, 7, 10, 14]
-TABLE_NORMALE_TOUR_VITESSE_PRIX = [5, 10, 25]
+TABLE_NORMALE_TOUR_VITESSE = [5, 6, 7, 9]
+TABLE_VOLANT_TOUR_VITESSE = [5, 6, 7, 9]
+TABLE_TOUS_TOUR_VITESSE = [5, 6, 7, 9]
+TABLE_BOUM_TOUR_VITESSE = [5, 6, 7, 9]
+TABLE_BOUM_VOLANT_TOUR_VITESSE = [5, 6, 7, 9]
+
+TABLE_NORMALE_TOUR_VITESSE_PRIX = [5, 10, 20]
+TABLE_VOLANT_TOUR_VITESSE_PRIX = [5, 10, 20]
+TABLE_TOUS_TOUR_VITESSE_PRIX = [5, 10, 20]
+TABLE_BOUM_TOUR_VITESSE_PRIX = [5, 10, 20]
+TABLE_BOUM_VOLANT_TOUR_VITESSE_PRIX = [5, 10, 20]
+
 
 TOUR_AMELIORATION_RAPIDITE = "TOUR_AMELIORATION_RAPIDITE"
 TABLE_NORMALE_TOUR_RAPIDITE = [1, 1, 1, 1]
+TABLE_VOLANT_TOUR_RAPIDITE = [1, 1, 1, 1]
+TABLE_TOUS_TOUR_RAPIDITE = [1, 1, 1, 1]
+TABLE_BOUM_TOUR_RAPIDITE = [1, 1, 1, 1]
+TABLE_BOUM_VOLANT_TOUR_RAPIDITE = [1, 1, 1, 1]
+
 TABLE_NORMALE_TOUR_RAPIDITE_PRIX = [20,25,30]
+TABLE_VOLANT_TOUR_RAPIDITE_PRIX = [20,25,30]
+TABLE_TOUS_TOUR_RAPIDITE_PRIX = [20,25,30]
+TABLE_BOUM_TOUR_RAPIDITE_PRIX = [20,25,30]
+TABLE_BOUM_VOLANT_TOUR_RAPIDITE_PRIX = [20,25,30]
+
 
 TOUR_AMELIORATION_RALENTI = "TOUR_AMELIORATION_RALENTI"
 TABLE_NORMALE_TOUR_RALENTI_FORCE = [1, (-0.1), (-0.15), (-0.20)]
-TABLE_NORMALE_TOUR_RALENTI_PRIX = [20, 25, 30]
-TABLE_NORMALE_TOUR_RALENTI_DUREE = [1, 5, 20, 50]
+TABLE_VOLANT_TOUR_RALENTI_FORCE = [1, (-0.1), (-0.15), (-0.20)]
+TABLE_TOUS_TOUR_RALENTI_FORCE = [1, (-0.1), (-0.15), (-0.20)]
+TABLE_BOUM_TOUR_RALENTI_FORCE = [1, (-0.1), (-0.15), (-0.20)]
+TABLE_BOUM_VOLANT_TOUR_RALENTI_FORCE = [1, (-0.1), (-0.15), (-0.20)]
 
+TABLE_NORMALE_TOUR_RALENTI_DUREE = [1, 5, 20, 50]
+TABLE_VOLANT_TOUR_RALENTI_DUREE = [1, 5, 20, 50]
+TABLE_TOUS_TOUR_RALENTI_DUREE = [1, 5, 20, 50]
+TABLE_BOUM_TOUR_RALENTI_DUREE = [1, 8, 30, 80]
+TABLE_BOUM_VOLANT_TOUR_RALENTI_DUREE = [1, 6, 25, 60]
+
+TABLE_NORMALE_TOUR_RALENTI_PRIX = [8, 15, 20]
+TABLE_VOLANT_TOUR_RALENTI_PRIX = [8, 15, 20]
+TABLE_TOUS_TOUR_RALENTI_PRIX = [20, 25, 30]
+TABLE_BOUM_TOUR_RALENTI_PRIX = [20, 30, 40]
+TABLE_BOUM_VOLANT_TOUR_RALENTI_PRIX = [20, 30, 40]
+
+# ----------------------------------------------------------------------------------------------------------------------------
+# --------------------------------------------------------- FONCTION ---------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------------------
 
 def conversionCoordCasesVersPixels(i,j):
     return (MARGE_ECRAN+i*TAILLE_BLOC,MARGE_ECRAN+j*TAILLE_BLOC)

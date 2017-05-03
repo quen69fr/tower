@@ -33,17 +33,73 @@ class Tour():
         self.table_tour_ralenti_duree = TABLE_NORMALE_TOUR_RALENTI_DUREE
         self.table_tour_ralenti_prix = TABLE_NORMALE_TOUR_RALENTI_PRIX
 
+        if type == TOUR_NORMAL:
+            pass
 
-        if type == TOUR_TOUS:
+        elif type == TOUR_TOUS:
             self.image = IMAGE_TOURELLE_TOUS
-        elif type == TOUR_NORMAL:
-            self.image = IMAGE_TOURELLE_NORMAL
+
+            self.prix_tour = PRIX_TOUR_TOUS
+            self.table_tour_force = TABLE_TOUS_TOUR_FORCE
+            self.table_tour_force_prix = TABLE_TOUS_TOUR_FORCE_PRIX
+            self.table_tour_distance = TABLE_TOUS_TOUR_DISTANCE
+            self.table_tour_distance_prix = TABLE_TOUS_TOUR_DISTANCE_PRIX
+            self.table_tour_vitesse = TABLE_TOUS_TOUR_VITESSE
+            self.table_tour_vitesse_prix = TABLE_TOUS_TOUR_VITESSE_PRIX
+            self.table_tour_rapidite = TABLE_TOUS_TOUR_RAPIDITE
+            self.table_tour_rapidite_prix = TABLE_TOUS_TOUR_RAPIDITE_PRIX
+            self.table_tour_ralenti_force = TABLE_TOUS_TOUR_RALENTI_FORCE
+            self.table_tour_ralenti_duree = TABLE_TOUS_TOUR_RALENTI_DUREE
+            self.table_tour_ralenti_prix = TABLE_TOUS_TOUR_RALENTI_PRIX
+
         elif type == TOUR_BOUM:
             self.image = IMAGE_TOURELLE_BOUM
+
+            self.prix_tour = PRIX_TOUR_BOUM
+            self.table_tour_force = TABLE_BOUM_TOUR_FORCE
+            self.table_tour_force_prix = TABLE_BOUM_TOUR_FORCE_PRIX
+            self.table_tour_distance = TABLE_BOUM_TOUR_DISTANCE
+            self.table_tour_distance_prix = TABLE_BOUM_TOUR_DISTANCE_PRIX
+            self.table_tour_vitesse = TABLE_BOUM_TOUR_VITESSE
+            self.table_tour_vitesse_prix = TABLE_BOUM_TOUR_VITESSE_PRIX
+            self.table_tour_rapidite = TABLE_BOUM_TOUR_RAPIDITE
+            self.table_tour_rapidite_prix = TABLE_BOUM_TOUR_RAPIDITE_PRIX
+            self.table_tour_ralenti_force = TABLE_BOUM_TOUR_RALENTI_FORCE
+            self.table_tour_ralenti_duree = TABLE_BOUM_TOUR_RALENTI_DUREE
+            self.table_tour_ralenti_prix = TABLE_BOUM_TOUR_RALENTI_PRIX
+
         elif type == TOUR_VOLANT:
             self.image = IMAGE_TOURELLE_VOLANT
+
+            self.prix_tour = PRIX_TOUR_VOLANT
+            self.table_tour_force = TABLE_VOLANT_TOUR_FORCE
+            self.table_tour_force_prix = TABLE_VOLANT_TOUR_FORCE_PRIX
+            self.table_tour_distance = TABLE_VOLANT_TOUR_DISTANCE
+            self.table_tour_distance_prix = TABLE_VOLANT_TOUR_DISTANCE_PRIX
+            self.table_tour_vitesse = TABLE_VOLANT_TOUR_VITESSE
+            self.table_tour_vitesse_prix = TABLE_VOLANT_TOUR_VITESSE_PRIX
+            self.table_tour_rapidite = TABLE_VOLANT_TOUR_RAPIDITE
+            self.table_tour_rapidite_prix = TABLE_VOLANT_TOUR_RAPIDITE_PRIX
+            self.table_tour_ralenti_force = TABLE_VOLANT_TOUR_RALENTI_FORCE
+            self.table_tour_ralenti_duree = TABLE_VOLANT_TOUR_RALENTI_DUREE
+            self.table_tour_ralenti_prix = TABLE_VOLANT_TOUR_RALENTI_PRIX
+
         elif type == TOUR_BOUM_VOLANT:
             self.image = IMAGE_TOURELLE_BOUM_VOLANT
+
+            self.prix_tour = PRIX_TOUR_BOUM_VOLANT
+            self.table_tour_force = TABLE_BOUM_VOLANT_TOUR_FORCE
+            self.table_tour_force_prix = TABLE_BOUM_VOLANT_TOUR_FORCE_PRIX
+            self.table_tour_distance = TABLE_BOUM_VOLANT_TOUR_DISTANCE
+            self.table_tour_distance_prix = TABLE_BOUM_VOLANT_TOUR_DISTANCE_PRIX
+            self.table_tour_vitesse = TABLE_BOUM_VOLANT_TOUR_VITESSE
+            self.table_tour_vitesse_prix = TABLE_BOUM_VOLANT_TOUR_VITESSE_PRIX
+            self.table_tour_rapidite = TABLE_BOUM_VOLANT_TOUR_RAPIDITE
+            self.table_tour_rapidite_prix = TABLE_BOUM_VOLANT_TOUR_RAPIDITE_PRIX
+            self.table_tour_ralenti_force = TABLE_BOUM_VOLANT_TOUR_RALENTI_FORCE
+            self.table_tour_ralenti_duree = TABLE_BOUM_VOLANT_TOUR_RALENTI_DUREE
+            self.table_tour_ralenti_prix = TABLE_BOUM_VOLANT_TOUR_RALENTI_PRIX
+
         elif type == TOUR_PLUS:
             self.image = IMAGE_TOURELLE_PLUS
 
@@ -89,7 +145,7 @@ class Tour():
             else:
                 recttransparent.fill((255,0,0, 50))
             SCREEN.blit(recttransparent, conversionCoordCasesVersPixels(self.x,self.y))
-            if AFFICHE_PERIMETRE_TIR:
+            if AFFICHE_DISTANCE_TIR_BROUILLON:
                 pygame.draw.circle(SCREEN, VERT, centreTour(self.x, self.y), self.distance_tir, 1)
 
         elif self.etat== Tour._ETAT_TOUR_CONSTRUIT:
@@ -157,9 +213,6 @@ class Tour():
         force_tir_plus_coeff = self.force_tir*self.coeffPlus
 
         self.delai_tir = 70 - (15*(self.rapidite_tir-1))
-
-        if TIR_ACTIF is False:
-            return
 
         # delai de tir OK ? (autre stratégie : nombre de tirs simultanés maxi)
         if self.delai != 0:
@@ -269,8 +322,8 @@ class Tour():
                 prix = self.table_tour_ralenti_prix[self.niveau_ralentire]+prixSuplementaire(self)
                 if argent>=prix:
                     self.niveau_ralentire += 1
-                    self.force_ralentire = self.table_tour_ralenti_force[self.niveau_ralentire]
-                    self.compte_a_rebour_ralentire = self.table_tour_ralenti_duree[self.niveau_ralentire]
+                    self.force_ralentire += self.table_tour_ralenti_force[self.niveau_ralentire]
+                    self.compte_a_rebour_ralentire += self.table_tour_ralenti_duree[self.niveau_ralentire]
                     self.argent_depense += prix
                     return prix
             return 0
