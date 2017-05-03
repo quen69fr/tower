@@ -95,48 +95,26 @@ if __name__=="__main__":
 
                 # S
                 if event.key==115:
-                    if grille.enleve_tour_selectionnee():
-                        argent += int(PRIX_TOUR/2)
+                    argent += grille.enleve_tour_selectionnee()
                     grille.calcule_distance_grille()
 
                 if grille.tour_selectionnee!=None:
                     t = grille.tour_selectionnee
                     # F
                     if event.key==102:
-                        if t.niveau_force<len(TABLE_TOUR_FORCE)-1:
-                            prix = TABLE_TOUR_FORCE_PRIX[t.niveau_force] + prixSuplementaire(t)
-                            if argent>=prix:
-                                if t.ameliore(TOUR_AMELIORATION_FORCE):
-                                    argent-=prix
+                        argent-=t.ameliore(TOUR_AMELIORATION_FORCE,argent)
                     # D
                     if event.key==100:
-                        if t.niveau_distance<len(TABLE_TOUR_DISTANCE)-1:
-                            prix = TABLE_TOUR_DISTANCE_PRIX[t.niveau_distance] + prixSuplementaire(t)
-                            if argent>=prix:
-                                if t.ameliore(TOUR_AMELIORATION_DISTANCE):
-                                    argent-=prix
+                        argent-=t.ameliore(TOUR_AMELIORATION_DISTANCE,argent)
                     # R
                     if event.key==114:
-                        if t.niveau_rapidite<len(TABLE_TOUR_RAPIDITE)-1:
-                            prix = TABLE_TOUR_RAPIDITE_PRIX[t.niveau_rapidite] + prixSuplementaire(t)
-                            if argent>=prix:
-                                if t.ameliore(TOUR_AMELIORATION_RAPIDITE):
-                                    argent-=prix
+                        argent-=t.ameliore(TOUR_AMELIORATION_RAPIDITE,argent)
                     # V
                     if event.key==118:
-                        if t.niveau_vitesse<len(TABLE_TOUR_VITESSE)-1:
-                            prix = TABLE_TOUR_VITESSE_PRIX[t.niveau_vitesse] + prixSuplementaire(t)
-                            if argent>=prix:
-                                if t.ameliore(TOUR_AMELIORATION_VITESSE):
-                                    argent-=prix
-
+                        argent-=t.ameliore(TOUR_AMELIORATION_VITESSE,argent)
                     # L
                     if event.key==108:
-                        if t.niveau_ralentire<len(TABLE_TOUR_RALENTI_DUREE)-1:
-                            prix = TABLE_TOUR_RALENTI_PRIX[t.niveau_ralentire] + prixSuplementaire(t)
-                            if argent>=prix:
-                                if t.ameliore(TOUR_AMELIORATION_RALENTI):
-                                    argent-=prix
+                        argent-=t.ameliore(TOUR_AMELIORATION_RALENTI,argent)
 
 
                 # N
@@ -352,12 +330,7 @@ if __name__=="__main__":
 
             # Gestion de la construction d'une nouvelle tour
             if tourBrouillon and grille.caseVide4(i,j):
-                if argent >= PRIX_TOUR:
-                    if grille.nouvelle_tour_complet(i,j,listeBestioles,tour_type):
-                        argent -= PRIX_TOUR
-                else:
-                    tourBrouillon = None
-
+                argent -= grille.nouvelle_tour_complet(i,j,listeBestioles,tour_type,argent)
 
         # les bestioles
         for bete in listeBestioles:

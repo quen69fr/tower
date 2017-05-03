@@ -15,14 +15,14 @@ from outils import *
 
 class Tir():
 
-    def __init__(self, bete, vitesse, force,force_ralentire,compte_a_rebour_ralentire, x = 100, y = 100):
+    def __init__(self, bete, vitesse,force, force_coeff,force_ralentire,compte_a_rebour_ralentire, x = 100, y = 100):
         self.x = x             # pixel abscisse
         self.y = y             # ordonnéee
         self.bete = bete       # cible du tir
         self.vitesse = vitesse
         self.impact = False    # le tir a-t-il atteint sa cible ?
-        self.force = force     # force du tir (diminution de vie de la bestiole touchee)
-        #print(self.force)
+        self.force = force_coeff     # force du tir (diminution de vie de la bestiole touchee)
+        self.force_niveau = force
 
         self.force_ralentire = force_ralentire
         self.compte_a_rebour_ralentire = compte_a_rebour_ralentire
@@ -30,23 +30,23 @@ class Tir():
     # ------------------------------------------------
     def affiche(self):
         couleur = BLANC
-        if self.vitesse == TABLE_TOUR_VITESSE[0]:
+        if self.vitesse == TABLE_NORMALE_TOUR_VITESSE[0]:
             couleur = BLANC
-        elif self.vitesse == TABLE_TOUR_VITESSE[0]+TABLE_TOUR_VITESSE[1]:
+        elif self.vitesse == TABLE_NORMALE_TOUR_VITESSE[0]+TABLE_NORMALE_TOUR_VITESSE[1]:
             couleur = JAUNE
-        elif self.vitesse == TABLE_TOUR_VITESSE[0]+TABLE_TOUR_VITESSE[1]+TABLE_TOUR_VITESSE[2]:
+        elif self.vitesse == TABLE_NORMALE_TOUR_VITESSE[0]+TABLE_NORMALE_TOUR_VITESSE[1]+TABLE_NORMALE_TOUR_VITESSE[2]:
             couleur = ORANGE
-        elif self.vitesse == TABLE_TOUR_VITESSE[0]+TABLE_TOUR_VITESSE[1]+TABLE_TOUR_VITESSE[2]+TABLE_TOUR_VITESSE[3]:
+        elif self.vitesse == TABLE_NORMALE_TOUR_VITESSE[0]+TABLE_NORMALE_TOUR_VITESSE[1]+TABLE_NORMALE_TOUR_VITESSE[2]+TABLE_NORMALE_TOUR_VITESSE[3]:
             couleur = ROUGE
 
         tail = 2
-        if self.force == TABLE_TOUR_FORCE[0]:
+        if self.force_niveau == TABLE_NORMALE_TOUR_FORCE[0]:
             tail = 1
-        elif self.force == TABLE_TOUR_FORCE[0]+TABLE_TOUR_FORCE[1]:
+        elif self.force_niveau == TABLE_NORMALE_TOUR_FORCE[0]+TABLE_NORMALE_TOUR_FORCE[1]:
             tail = 2
-        elif self.force == TABLE_TOUR_FORCE[0]+TABLE_TOUR_FORCE[1]+TABLE_TOUR_FORCE[2]:
+        elif self.force_niveau == TABLE_NORMALE_TOUR_FORCE[0]+TABLE_NORMALE_TOUR_FORCE[1]+TABLE_NORMALE_TOUR_FORCE[2]:
             tail = 3
-        elif self.force == TABLE_TOUR_FORCE[0]+TABLE_TOUR_FORCE[1]+TABLE_TOUR_FORCE[2]+TABLE_TOUR_FORCE[3]:
+        elif self.force_niveau == TABLE_NORMALE_TOUR_FORCE[0]+TABLE_NORMALE_TOUR_FORCE[1]+TABLE_NORMALE_TOUR_FORCE[2]+TABLE_NORMALE_TOUR_FORCE[3]:
             tail = 4
 
         pygame.draw.circle(SCREEN, couleur, [int(self.x), int(self.y)], tail, 0)

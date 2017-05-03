@@ -19,6 +19,21 @@ class Tour():
         self.type = type
 
         self.image = IMAGE_TOURELLE_NORMAL
+
+        self.prix_tour = PRIX_TOUR_NORMALE
+        self.table_tour_force = TABLE_NORMALE_TOUR_FORCE
+        self.table_tour_force_prix = TABLE_NORMALE_TOUR_FORCE_PRIX
+        self.table_tour_distance = TABLE_NORMALE_TOUR_DISTANCE
+        self.table_tour_distance_prix = TABLE_NORMALE_TOUR_DISTANCE_PRIX
+        self.table_tour_vitesse = TABLE_NORMALE_TOUR_VITESSE
+        self.table_tour_vitesse_prix = TABLE_NORMALE_TOUR_VITESSE_PRIX
+        self.table_tour_rapidite = TABLE_NORMALE_TOUR_RAPIDITE
+        self.table_tour_rapidite_prix = TABLE_NORMALE_TOUR_RAPIDITE_PRIX
+        self.table_tour_ralenti_force = TABLE_NORMALE_TOUR_RALENTI_FORCE
+        self.table_tour_ralenti_duree = TABLE_NORMALE_TOUR_RALENTI_DUREE
+        self.table_tour_ralenti_prix = TABLE_NORMALE_TOUR_RALENTI_PRIX
+
+
         if type == TOUR_TOUS:
             self.image = IMAGE_TOURELLE_TOUS
         elif type == TOUR_NORMAL:
@@ -44,23 +59,25 @@ class Tour():
         self.niveau_vitesse = 0
         self.niveau_ralentire = 0
 
-        self.force_tir = TABLE_TOUR_FORCE[0]
+        self.force_tir = self.table_tour_force[0]
 
-        self.distance_tir = TABLE_TOUR_DISTANCE[0]
+        self.distance_tir = self.table_tour_distance[0]
 
-        self.vitesse_tir = TABLE_TOUR_VITESSE[0]
+        self.vitesse_tir = self.table_tour_vitesse[0]
 
-        self.rapidite_tir = TABLE_TOUR_RAPIDITE[0]
+        self.rapidite_tir = self.table_tour_rapidite[0]
         self.delai_tir = 0
 
         self.delai = 0
 
-        self.force_ralentire = TABLE_TOUR_RALENTI_FORCE[0]
-        self.compte_a_rebour_ralentire = TABLE_TOUR_RALENTI_DUREE[0]
+        self.force_ralentire = self.table_tour_ralenti_force[0]
+        self.compte_a_rebour_ralentire = self.table_tour_ralenti_duree[0]
 
         self.cible_bete = None
         self.image_canon = IMAGE_TOURELLE_CANON_1
         self.image_tourelle_canon = self.image_canon
+
+        self.argent_depense = self.prix_tour
 
     # ------------------------------------------------
     def affiche(self,tour_selectionnee = False ):
@@ -102,8 +119,6 @@ class Tour():
                 SCREEN.blit(recttransparent, conversionCoordCasesVersPixels(self.x,self.y))
 
                 pygame.draw.circle(SCREEN, VERT, centreTour(self.x, self.y), self.distance_tir, 1)
-
-
 
     # ------------------------------------------------
     def gere_construction(self):
@@ -160,7 +175,7 @@ class Tour():
                     c = self.touve_bestiole_cible(b)
                     if c != False:
                         # return Tir(b,self.vitesse_tir,force_tir_plus_coeff,self.force_ralentire,self.compte_a_rebour_ralentire, c[0], c[1])
-                        return [Tir(b,self.vitesse_tir,force_tir_plus_coeff*2,self.force_ralentire,self.compte_a_rebour_ralentire, c[0], c[1])]
+                        return [Tir(b,self.vitesse_tir,self.force_tir,force_tir_plus_coeff*2,self.force_ralentire,self.compte_a_rebour_ralentire, c[0], c[1])]
 
         elif self.type == TOUR_VOLANT:
             for b in listeBestioles:
@@ -168,13 +183,13 @@ class Tour():
                     c = self.touve_bestiole_cible(b)
                     if c != False:
                         #return Tir(b,self.vitesse_tir,force_tir_plus_coeff,self.force_ralentire,self.compte_a_rebour_ralentire, c[0], c[1])
-                        return [Tir(b,self.vitesse_tir,force_tir_plus_coeff*2,self.force_ralentire,self.compte_a_rebour_ralentire, c[0], c[1])]
+                        return [Tir(b,self.vitesse_tir,self.force_tir,force_tir_plus_coeff*2,self.force_ralentire,self.compte_a_rebour_ralentire, c[0], c[1])]
 
         elif self.type == TOUR_TOUS:
             for b in listeBestioles:
                 c = self.touve_bestiole_cible(b)
                 if c != False:
-                    return [Tir(b,self.vitesse_tir,force_tir_plus_coeff,self.force_ralentire,self.compte_a_rebour_ralentire, c[0], c[1])]
+                    return [Tir(b,self.vitesse_tir,self.force_tir,force_tir_plus_coeff,self.force_ralentire,self.compte_a_rebour_ralentire, c[0], c[1])]
 
         elif self.type == TOUR_BOUM:
             listeTirsBoum = []
@@ -182,7 +197,7 @@ class Tour():
                 if b.type != 'volant' and b.type != 'boss_volant':
                     c = self.touve_bestiole_cible(b)
                     if c != False:
-                        listeTirsBoum.append(Tir(b,self.vitesse_tir,force_tir_plus_coeff,self.force_ralentire,self.compte_a_rebour_ralentire, c[0], c[1]))
+                        listeTirsBoum.append(Tir(b,self.vitesse_tir,self.force_tir,force_tir_plus_coeff,self.force_ralentire,self.compte_a_rebour_ralentire, c[0], c[1]))
             return listeTirsBoum
 
         elif self.type == TOUR_BOUM_VOLANT:
@@ -191,67 +206,77 @@ class Tour():
                 if b.type == 'volant' or b.type == 'boss_volant':
                     c = self.touve_bestiole_cible(b)
                     if c != False:
-                        listeTirsBoum.append(Tir(b,self.vitesse_tir,force_tir_plus_coeff,self.force_ralentire,self.compte_a_rebour_ralentire, c[0], c[1]))
+                        listeTirsBoum.append(Tir(b,self.vitesse_tir,self.force_tir,force_tir_plus_coeff,self.force_ralentire,self.compte_a_rebour_ralentire, c[0], c[1]))
             return listeTirsBoum
 
         return
 
     # ------------------------------------------------
-    def ameliore(self,type):
+    def ameliore(self,type,argent):
 
         if type == TOUR_AMELIORATION_FORCE:
-            if self.niveau_force<len(TABLE_TOUR_FORCE)-1:
-                self.niveau_force += 1
-                self.force_tir += TABLE_TOUR_FORCE[self.niveau_force]
-                return True
-            else:
-                return False
+            if self.niveau_force<len(self.table_tour_force)-1:
+                prix = self.table_tour_force_prix[self.niveau_force]+prixSuplementaire(self)
+                if argent>=prix:
+                    self.niveau_force += 1
+                    self.force_tir += self.table_tour_force[self.niveau_force]
+                    self.argent_depense += prix
+                    return prix
+            return 0
 
         elif type == TOUR_AMELIORATION_DISTANCE:
-            if self.niveau_distance<len(TABLE_TOUR_DISTANCE)-1:
-                self.niveau_distance += 1
-                self.distance_tir += TABLE_TOUR_DISTANCE[self.niveau_distance]
+            if self.niveau_distance<len(self.table_tour_distance)-1:
+                prix = self.table_tour_distance_prix[self.niveau_distance]+prixSuplementaire(self)
+                if argent>=prix:
+                    self.niveau_distance += 1
+                    self.distance_tir += self.table_tour_distance[self.niveau_distance]
+                    self.argent_depense += prix
 
-                if self.niveau_distance == 0:
-                    self.image_canon = IMAGE_TOURELLE_CANON_1
-                elif self.niveau_distance == 1:
-                    self.image_canon = IMAGE_TOURELLE_CANON_2
-                elif self.niveau_distance == 2:
-                    self.image_canon = IMAGE_TOURELLE_CANON_3
-                elif self.niveau_distance == 3:
-                    self.image_canon = IMAGE_TOURELLE_CANON_4
+                    if self.niveau_distance == 0:
+                        self.image_canon = IMAGE_TOURELLE_CANON_1
+                    elif self.niveau_distance == 1:
+                        self.image_canon = IMAGE_TOURELLE_CANON_2
+                    elif self.niveau_distance == 2:
+                        self.image_canon = IMAGE_TOURELLE_CANON_3
+                    elif self.niveau_distance == 3:
+                        self.image_canon = IMAGE_TOURELLE_CANON_4
 
-                return True
-            else:
-                return False
+                    return prix
+            return 0
 
         elif type == TOUR_AMELIORATION_RAPIDITE:
-            if self.niveau_rapidite<len(TABLE_TOUR_RAPIDITE)-1:
-                self.niveau_rapidite += 1
-                self.rapidite_tir += TABLE_TOUR_RAPIDITE[self.niveau_rapidite]
-                return True
-            else:
-                return False
+            if self.niveau_rapidite<len(self.table_tour_rapidite)-1:
+                prix = self.table_tour_rapidite_prix[self.niveau_rapidite]+prixSuplementaire(self)
+                if argent>=prix:
+                    self.niveau_rapidite += 1
+                    self.rapidite_tir += self.table_tour_rapidite[self.niveau_rapidite]
+                    self.argent_depense += prix
+                    return prix
+            return 0
 
         elif type == TOUR_AMELIORATION_VITESSE:
-            if self.niveau_vitesse<len(TABLE_TOUR_VITESSE)-1:
-                self.niveau_vitesse += 1
-                self.vitesse_tir += TABLE_TOUR_VITESSE[self.niveau_vitesse]
-                return True
-            else:
-                return False
+            if self.niveau_vitesse<len(self.table_tour_vitesse)-1:
+                prix = self.table_tour_vitesse_prix[self.niveau_vitesse]+prixSuplementaire(self)
+                if argent>=prix:
+                    self.niveau_vitesse += 1
+                    self.vitesse_tir += self.table_tour_vitesse[self.niveau_vitesse]
+                    self.argent_depense += prix
+                    return prix
+            return 0
 
         elif type == TOUR_AMELIORATION_RALENTI:
-            if self.niveau_ralentire<len(TABLE_TOUR_RALENTI_DUREE)-1:
-                self.niveau_ralentire += 1
-                self.force_ralentire = TABLE_TOUR_RALENTI_FORCE[self.niveau_ralentire]
-                self.compte_a_rebour_ralentire = TABLE_TOUR_RALENTI_DUREE[self.niveau_ralentire]
-                return True
-            else:
-                return False
+            if self.niveau_ralentire<len(self.table_tour_ralenti_duree)-1:
+                prix = self.table_tour_ralenti_prix[self.niveau_ralentire]+prixSuplementaire(self)
+                if argent>=prix:
+                    self.niveau_ralentire += 1
+                    self.force_ralentire = self.table_tour_ralenti_force[self.niveau_ralentire]
+                    self.compte_a_rebour_ralentire = self.table_tour_ralenti_duree[self.niveau_ralentire]
+                    self.argent_depense += prix
+                    return prix
+            return 0
 
         else:
-            return False
+            return 0
 
     # ------------------------------------------------
     def orinenteCanon(self):
