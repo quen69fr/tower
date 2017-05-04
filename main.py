@@ -8,6 +8,7 @@ from bestiole import *
 from tir import *
 from outils import *
 from bandeauActions import *
+from evenement import *
 
 # TODO BUG : le perimetre  de tir des tours a disparu quand on construit ; Phil - 26aout
 # TODO BUG : on aperçoit les bestioles avant la porte
@@ -38,6 +39,7 @@ if __name__=="__main__":
     bandeauAction = None
     premiere_vague = True
     tour_type = None
+    listeEvenements = []
 
 
     while True:
@@ -61,7 +63,7 @@ if __name__=="__main__":
             bandeauAction = BandeauAction()
             premiere_vague = True
             tour_type = None
-
+            listeEvenements = []
 
         bandeauAction.mise_jour_etat(etat_partie,grille.tour_selectionnee,bestiole_selectionnee,argent)
         #print ("Tours : {} ; Betes : {} ;  Tirs : {}".format(len(grille.listeTours), len(listeBestioles), len(listeTirs)))
@@ -234,7 +236,7 @@ if __name__=="__main__":
             # oui la vague est finie,
             # j'attends ?
             if premiere_vague == True:
-                delay_entre_vague = 1000000000000000
+                delay_entre_vague = 100000000000000000000000000000000000000000000000000000000000000000000000
 
             if vague_attente < delay_entre_vague:
                 # oui
@@ -340,6 +342,7 @@ if __name__=="__main__":
                 # une besstiole est sortie
                 listeBestioles.remove(bete)
                 nombre_vie -= 1
+                listeEvenements.append(Evenement(bete.x-5,bete.y-5,"- 1",ROUGE))
                 if nombre_vie == 0:
                     etat_partie = ETAT_PARTIE_PERDU
                 continue
@@ -349,7 +352,9 @@ if __name__=="__main__":
                 if bestiole_selectionnee == bete:
                     bestiole_selectionnee=None
                 #bestiole.affiche_vie(TABLE_BESTIOLE[bete.type]['gain']*TABLE_VAGUE[vague]['difficultee'])
+                listeEvenements.append(Evenement(bete.x-5,bete.y-5,"+ "+str(bete.gain)))
                 continue
+
 
         # gestion des tours
         for tour in grille.listeTours:
@@ -377,3 +382,11 @@ if __name__=="__main__":
                 else:
                     tourBrouillon.etat=tourBrouillon._ETAT_TOUR_BROUILLON_IMPOSSIBLE
                 tourBrouillon.affiche()
+
+        # affichage des événements
+        for evenement in listeEvenements:
+            if evenement.duree >0:
+                evenement.affiche()
+                evenement.duree = evenement.duree-1
+            else:
+                listeEvenements.remove(evenement)

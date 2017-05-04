@@ -16,6 +16,7 @@ class Bestiole():
         self.vitesse = TABLE_BESTIOLE[type]['vitesse']
         self.vie = TABLE_BESTIOLE[type]['vie']
         self.vague = vague
+        self.gain = TABLE_BESTIOLE[self.type]['gain']
 
         self.rayon = TABLE_BESTIOLE[type]['image_d'].get_width()/2
         # inutile : on ira chercher la/les images dans la TABLE
@@ -29,6 +30,7 @@ class Bestiole():
         self.selectionne = False
 
         self.vie = int(self.vie * self.difficultee * self.difficultee * self.difficultee*0.5)
+        self.gain = int(self.gain*self.difficultee)
         self.vie_max = self.vie
 
         if x!=-1 and y!=-1:

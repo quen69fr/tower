@@ -77,7 +77,6 @@ class BandeauAction():
                 self.afficheTourCoeff(tour)
                 self.afficheTourSuprimee(tour)
 
-
         elif self.bestiole_select != None:
 
             bestiole =self.bestiole_select
@@ -86,7 +85,7 @@ class BandeauAction():
             img = TABLE_BESTIOLE[bestiole.type]["image_d"]
             SCREEN.blit(img,(800,250))
 
-            texte="Vie : {}".format(bestiole.vie)
+            texte="Vie : {}".format(int(bestiole.vie))
             surface = FONT_4.render(texte, True, ROUGE)
             rect = surface.get_rect(topleft=(700, 300))
             SCREEN.blit(surface, rect)
@@ -105,18 +104,18 @@ class BandeauAction():
     def afficheTourForce(self,tour):
 
         texte="F-Force : {}".format(tour.force_tir)
-        surface = FONT_4.render(texte, True, ROUGE)
+        surface = FONT_4.render(texte, True, VERT)
         rect = surface.get_rect(topleft=(700, 250))
         SCREEN.blit(surface, rect)
 
-        if tour.niveau_force<len(TABLE_NORMALE_TOUR_FORCE)-1:
-            texte="+ {}".format(TABLE_NORMALE_TOUR_FORCE[tour.niveau_force + 1])
-            surface = FONT_4.render(texte, True, ROUGE)
+        if tour.niveau_force<len(tour.table_tour_force)-1:
+            texte="+ {}".format(tour.table_tour_force[tour.niveau_force + 1])
+            surface = FONT_4.render(texte, True, VERT)
             rect = surface.get_rect(topleft=(940, 250))
             SCREEN.blit(surface, rect)
 
-            texte="{} €".format(TABLE_NORMALE_TOUR_FORCE_PRIX[tour.niveau_force] + prixSuplementaire(tour))
-            if self.argent >= TABLE_NORMALE_TOUR_FORCE_PRIX[tour.niveau_force] + prixSuplementaire(tour):
+            texte="{} €".format(tour.table_tour_force_prix[tour.niveau_force] + prixSuplementaire(tour))
+            if self.argent >= tour.table_tour_force_prix[tour.niveau_force] + prixSuplementaire(tour):
                 surface = FONT_4.render(texte, True, JAUNE)
             else:
                 surface = FONT_4.render(texte, True, JAUNE2)
@@ -131,14 +130,14 @@ class BandeauAction():
         rect = surface.get_rect(topleft=(700, 300))
         SCREEN.blit(surface, rect)
 
-        if tour.niveau_distance<len(TABLE_NORMALE_TOUR_DISTANCE)-1:
-            texte="+ {}".format(TABLE_NORMALE_TOUR_DISTANCE[tour.niveau_distance + 1])
+        if tour.niveau_distance<len(tour.table_tour_distance)-1:
+            texte="+ {}".format(tour.table_tour_distance[tour.niveau_distance + 1])
             surface = FONT_4.render(texte, True, VERT)
             rect = surface.get_rect(topleft=(940, 300))
             SCREEN.blit(surface, rect)
 
-            texte="{} €".format(TABLE_NORMALE_TOUR_DISTANCE_PRIX[tour.niveau_distance] + prixSuplementaire(tour))
-            if self.argent >= TABLE_NORMALE_TOUR_DISTANCE_PRIX[tour.niveau_distance] + prixSuplementaire(tour):
+            texte="{} €".format(tour.table_tour_distance_prix[tour.niveau_distance] + prixSuplementaire(tour))
+            if self.argent >= tour.table_tour_distance_prix[tour.niveau_distance] + prixSuplementaire(tour):
                 surface = FONT_4.render(texte, True, JAUNE)
             else:
                 surface = FONT_4.render(texte, True, JAUNE2)
@@ -149,18 +148,18 @@ class BandeauAction():
     def afficheTourRapidité(self,tour):
 
         texte="R-Rapidité : {}".format(tour.rapidite_tir)
-        surface = FONT_4.render(texte, True, BLEU)
+        surface = FONT_4.render(texte, True, VERT)
         rect = surface.get_rect(topleft=(700, 350))
         SCREEN.blit(surface, rect)
 
-        if tour.niveau_rapidite<len(TABLE_NORMALE_TOUR_RAPIDITE)-1:
-            texte="+ {}".format(TABLE_NORMALE_TOUR_RAPIDITE[tour.niveau_rapidite + 1])
-            surface = FONT_4.render(texte, True, BLEU)
+        if tour.niveau_rapidite<len(tour.table_tour_rapidite)-1:
+            texte="+ {}".format(tour.table_tour_rapidite[tour.niveau_rapidite + 1])
+            surface = FONT_4.render(texte, True, VERT)
             rect = surface.get_rect(topleft=(940, 350))
             SCREEN.blit(surface, rect)
 
-            texte="{} €".format(TABLE_NORMALE_TOUR_RAPIDITE_PRIX[tour.niveau_rapidite] + prixSuplementaire(tour))
-            if self.argent >= TABLE_NORMALE_TOUR_RAPIDITE_PRIX[tour.niveau_rapidite] + prixSuplementaire(tour):
+            texte="{} €".format(tour.table_tour_rapidite_prix[tour.niveau_rapidite] + prixSuplementaire(tour))
+            if self.argent >= tour.table_tour_rapidite_prix[tour.niveau_rapidite] + prixSuplementaire(tour):
                 surface = FONT_4.render(texte, True, JAUNE)
             else:
                 surface = FONT_4.render(texte, True, JAUNE2)
@@ -171,18 +170,18 @@ class BandeauAction():
     def afficheTourVitesse(self,tour):
 
         texte="V-Vitesse : {}".format(tour.vitesse_tir)
-        surface = FONT_4.render(texte, True, GRIS)
+        surface = FONT_4.render(texte, True, VERT)
         rect = surface.get_rect(topleft=(700, 400))
         SCREEN.blit(surface, rect)
 
-        if tour.niveau_vitesse<len(TABLE_NORMALE_TOUR_VITESSE)-1:
-            texte="+ {}".format(TABLE_NORMALE_TOUR_VITESSE[tour.niveau_vitesse + 1])
-            surface = FONT_4.render(texte, True, GRIS)
+        if tour.niveau_vitesse<len(tour.table_tour_vitesse)-1:
+            texte="+ {}".format(tour.table_tour_vitesse[tour.niveau_vitesse + 1])
+            surface = FONT_4.render(texte, True, VERT)
             rect = surface.get_rect(topleft=(940, 400))
             SCREEN.blit(surface, rect)
 
-            texte="{} €".format(TABLE_NORMALE_TOUR_VITESSE_PRIX[tour.niveau_vitesse] + prixSuplementaire(tour))
-            if self.argent >= TABLE_NORMALE_TOUR_VITESSE_PRIX[tour.niveau_vitesse] + prixSuplementaire(tour):
+            texte="{} €".format(tour.table_tour_vitesse_prix[tour.niveau_vitesse] + prixSuplementaire(tour))
+            if self.argent >= tour.table_tour_vitesse_prix[tour.niveau_vitesse] + prixSuplementaire(tour):
                 surface = FONT_4.render(texte, True, JAUNE)
             else:
                 surface = FONT_4.render(texte, True, JAUNE2)
@@ -193,18 +192,18 @@ class BandeauAction():
     def afficheTourRalentir(self,tour):
 
         texte="L-Ralentire : {}".format(tour.compte_a_rebour_ralentire)
-        surface = FONT_4.render(texte, True, ORANGE)
+        surface = FONT_4.render(texte, True, VERT)
         rect = surface.get_rect(topleft=(700, 450))
         SCREEN.blit(surface, rect)
 
-        if tour.niveau_ralentire<len(TABLE_NORMALE_TOUR_RALENTI_DUREE)-1:
-            texte="+ {}".format(TABLE_NORMALE_TOUR_RALENTI_DUREE[tour.niveau_ralentire + 1])
-            surface = FONT_4.render(texte, True, ORANGE)
+        if tour.niveau_ralentire<len(tour.table_tour_ralenti_duree)-1:
+            texte="+ {}".format(tour.table_tour_ralenti_duree[tour.niveau_ralentire + 1])
+            surface = FONT_4.render(texte, True, VERT)
             rect = surface.get_rect(topleft=(940, 450))
             SCREEN.blit(surface, rect)
 
-            texte="{} €".format(TABLE_NORMALE_TOUR_RALENTI_PRIX[tour.niveau_ralentire] + prixSuplementaire(tour))
-            if self.argent >= TABLE_NORMALE_TOUR_RALENTI_PRIX[tour.niveau_ralentire] + prixSuplementaire(tour):
+            texte="{} €".format(tour.table_tour_ralenti_prix[tour.niveau_ralentire] + prixSuplementaire(tour))
+            if self.argent >= tour.table_tour_ralenti_prix[tour.niveau_ralentire] + prixSuplementaire(tour):
                 surface = FONT_4.render(texte, True, JAUNE)
             else:
                 surface = FONT_4.render(texte, True, JAUNE2)
@@ -214,9 +213,9 @@ class BandeauAction():
     # ------------------------------------------------
     def afficheTourCoeff(self,tour):
 
-        texte="Coeff : {}".format(round(tour.coeffPlus,2))
+        texte="Coeff : {} %".format(round((tour.coeffPlus-1)*100,2))
         surface = FONT_4.render(texte, True, JAUNE)
-        rect = surface.get_rect(topleft=(700, 200))
+        rect = surface.get_rect(topleft=(700, 170))
         SCREEN.blit(surface, rect)
 
     # ------------------------------------------------
@@ -229,7 +228,7 @@ class BandeauAction():
 
         texte="+ {} €".format(int(tour.argent_depense/2))
         surface = FONT_4.render(texte, True, JAUNE)
-        rect = surface.get_rect(topleft=(1020, 500))
+        rect = surface.get_rect(topleft=(1000, 500))
         SCREEN.blit(surface, rect)
 
     # ------------------------------------------------
