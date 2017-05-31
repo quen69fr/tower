@@ -19,9 +19,9 @@ class BandeauAction():
         self.argent = argent
 
     # ------------------------------------------------
-    def affiche(self):
+    def affiche(self,premiere_vague):
         self.afficheCadreHaut()
-        self.afficheCadreInfo()
+        self.afficheCadreInfo(premiere_vague)
 
     # ------------------------------------------------
     def afficheCadreHaut(self):
@@ -35,9 +35,12 @@ class BandeauAction():
             SCREEN.blit(IMAGE_NEXT,(X_START_NEXT,Y_START_NEXT))
 
             SCREEN.blit(IMAGE_TOURELLE_TOUS,(X_TOURELLE,Y_TOURELLE))
+            SCREEN.blit(IMAGE_TOURELLE_CANON_1,(X_TOURELLE,Y_TOURELLE))
             SCREEN.blit(IMAGE_TOURELLE_NORMAL,(X_TOURELLE+60,Y_TOURELLE))
+            SCREEN.blit(IMAGE_TOURELLE_CANON_1,(X_TOURELLE+60,Y_TOURELLE))
             SCREEN.blit(IMAGE_TOURELLE_BOUM,(X_TOURELLE+120,Y_TOURELLE))
             SCREEN.blit(IMAGE_TOURELLE_VOLANT,(X_TOURELLE+180,Y_TOURELLE))
+            SCREEN.blit(IMAGE_TOURELLE_CANON_1,(X_TOURELLE+180,Y_TOURELLE))
             SCREEN.blit(IMAGE_TOURELLE_BOUM_VOLANT,(X_TOURELLE+240,Y_TOURELLE))
             SCREEN.blit(IMAGE_TOURELLE_PLUS,(X_TOURELLE+300,Y_TOURELLE))
 
@@ -45,6 +48,9 @@ class BandeauAction():
 
             SCREEN.blit(IMAGE_BOUTON_PLUS,(900,Y_BOUTON_PLAY_PAUSE))
             SCREEN.blit(IMAGE_BOUTON_MOINS,(948,Y_BOUTON_PLAY_PAUSE))
+
+            SCREEN.blit(IMAGE_AIDE, (X_BOUTON_AIDE,Y_BOUTON_AIDE))
+
 
         elif self.etat_partie == ETAT_PARTIE_PAUSE:
             SCREEN.blit(IMAGE_NEXT,(X_START_NEXT,Y_START_NEXT))
@@ -59,7 +65,7 @@ class BandeauAction():
             SCREEN.blit(IMAGE_BOUTON_PLAY,(X_BOUTON_PLAY_PAUSE,Y_BOUTON_PLAY_PAUSE))
 
     # ------------------------------------------------
-    def afficheCadreInfo(self):
+    def afficheCadreInfo(self,premiere_vague):
 
         if self.tour_select != None:
             tour = self.tour_select
@@ -71,11 +77,11 @@ class BandeauAction():
             else:
                 self.afficheTourForce(tour)
                 self.afficheTourDistance(tour)
-                self.afficheTourRapidité(tour)
+                self.afficheTourCadence(tour)
                 self.afficheTourVitesse(tour)
                 self.afficheTourRalentir(tour)
                 self.afficheTourCoeff(tour)
-                self.afficheTourSuprimee(tour)
+                self.afficheTourSuprimee(tour,premiere_vague)
 
         elif self.bestiole_select != None:
 
@@ -90,7 +96,7 @@ class BandeauAction():
             rect = surface.get_rect(topleft=(700, 300))
             SCREEN.blit(surface, rect)
 
-            texte="Argent : {}".format(TABLE_BESTIOLE[bestiole.type]['gain']*TABLE_VAGUE[bestiole.vague]['difficultee'])
+            texte="Argent : {}".format(bestiole.gain)
             surface = FONT_4.render(texte, True, JAUNE)
             rect = surface.get_rect(topleft=(700, 350))
             SCREEN.blit(surface, rect)
@@ -101,9 +107,25 @@ class BandeauAction():
             SCREEN.blit(surface, rect)
 
     # ------------------------------------------------
+    def afficheExplication(self,pageAide):
+        if pageAide == 0:
+            SCREEN.blit(IMAGE_EXPLICATION_1,(120,60))
+        elif pageAide == 1:
+            SCREEN.blit(IMAGE_EXPLICATION_2,(120,60))
+        elif pageAide == 2:
+            SCREEN.blit(IMAGE_EXPLICATION_3,(120,60))
+        elif pageAide == 3:
+            SCREEN.blit(IMAGE_EXPLICATION_4,(120,60))
+
+        SCREEN.blit(IMAGE_AIDE_EXPLICATION,(90,30))
+        SCREEN.blit(IMAGE_BOUTON_FLECHE,(X_BOUTON_FLECHE,Y_BOUTON_FLECHE))
+
+    # ------------------------------------------------
     def afficheTourForce(self,tour):
 
-        texte="F-Force : {}".format(tour.force_tir)
+        SCREEN.blit(IMAGE_TOUCHE_AMELIORATION,(X_TOUCHE,Y_TOUCHE_F))
+
+        texte="F Force : {}".format(tour.force_tir)
         surface = FONT_4.render(texte, True, VERT)
         rect = surface.get_rect(topleft=(700, 250))
         SCREEN.blit(surface, rect)
@@ -125,7 +147,9 @@ class BandeauAction():
     # ------------------------------------------------
     def afficheTourDistance(self,tour):
 
-        texte="D-Distance : {}".format(tour.distance_tir)
+        SCREEN.blit(IMAGE_TOUCHE_AMELIORATION,(X_TOUCHE,Y_TOUCHE_D))
+
+        texte="D Distance : {}".format(tour.distance_tir)
         surface = FONT_4.render(texte, True, VERT)
         rect = surface.get_rect(topleft=(700, 300))
         SCREEN.blit(surface, rect)
@@ -145,21 +169,23 @@ class BandeauAction():
             SCREEN.blit(surface, rect)
 
     # ------------------------------------------------
-    def afficheTourRapidité(self,tour):
+    def afficheTourCadence(self,tour):
 
-        texte="R-Rapidité : {}".format(tour.rapidite_tir)
+        SCREEN.blit(IMAGE_TOUCHE_AMELIORATION,(X_TOUCHE,Y_TOUCHE_C))
+
+        texte="C Cadence : {}".format(tour.cadence_tir)
         surface = FONT_4.render(texte, True, VERT)
         rect = surface.get_rect(topleft=(700, 350))
         SCREEN.blit(surface, rect)
 
-        if tour.niveau_rapidite<len(tour.table_tour_rapidite)-1:
-            texte="+ {}".format(tour.table_tour_rapidite[tour.niveau_rapidite + 1])
+        if tour.niveau_cadence<len(tour.table_tour_cadence)-1:
+            texte="+ {}".format(tour.table_tour_cadence[tour.niveau_cadence + 1])
             surface = FONT_4.render(texte, True, VERT)
             rect = surface.get_rect(topleft=(940, 350))
             SCREEN.blit(surface, rect)
 
-            texte="{} €".format(tour.table_tour_rapidite_prix[tour.niveau_rapidite] + prixSuplementaire(tour))
-            if self.argent >= tour.table_tour_rapidite_prix[tour.niveau_rapidite] + prixSuplementaire(tour):
+            texte="{} €".format(tour.table_tour_cadence_prix[tour.niveau_cadence] + prixSuplementaire(tour))
+            if self.argent >= tour.table_tour_cadence_prix[tour.niveau_cadence] + prixSuplementaire(tour):
                 surface = FONT_4.render(texte, True, JAUNE)
             else:
                 surface = FONT_4.render(texte, True, JAUNE2)
@@ -169,7 +195,9 @@ class BandeauAction():
     # ------------------------------------------------
     def afficheTourVitesse(self,tour):
 
-        texte="V-Vitesse : {}".format(tour.vitesse_tir)
+        SCREEN.blit(IMAGE_TOUCHE_AMELIORATION,(X_TOUCHE,Y_TOUCHE_V))
+
+        texte="V Vitesse : {}".format(tour.vitesse_tir)
         surface = FONT_4.render(texte, True, VERT)
         rect = surface.get_rect(topleft=(700, 400))
         SCREEN.blit(surface, rect)
@@ -191,7 +219,9 @@ class BandeauAction():
     # ------------------------------------------------
     def afficheTourRalentir(self,tour):
 
-        texte="L-Ralentire : {}".format(tour.compte_a_rebour_ralentire)
+        SCREEN.blit(IMAGE_TOUCHE_AMELIORATION,(X_TOUCHE,Y_TOUCHE_R))
+
+        texte="R Ralentir : {}".format(tour.compte_a_rebour_ralentire)
         surface = FONT_4.render(texte, True, VERT)
         rect = surface.get_rect(topleft=(700, 450))
         SCREEN.blit(surface, rect)
@@ -219,14 +249,19 @@ class BandeauAction():
         SCREEN.blit(surface, rect)
 
     # ------------------------------------------------
-    def afficheTourSuprimee(self,tour):
+    def afficheTourSuprimee(self,tour,premiere_vague):
 
-        texte="S-Supression"
+        SCREEN.blit(IMAGE_TOUCHE_SUPRESSION,(X_TOUCHE,Y_TOUCHE_S))
+
+        texte="S Supression"
         surface = FONT_4.render(texte, True, ROUGE)
         rect = surface.get_rect(topleft=(700, 500))
         SCREEN.blit(surface, rect)
 
-        texte="+ {} €".format(int(tour.argent_depense/2))
+        if premiere_vague:
+            texte="+ {} €".format(int(tour.argent_depense))
+        else:
+            texte="+ {} €".format(int(tour.argent_depense/2))
         surface = FONT_4.render(texte, True, JAUNE)
         rect = surface.get_rect(topleft=(1000, 500))
         SCREEN.blit(surface, rect)
@@ -245,36 +280,55 @@ class BandeauAction():
             return BOUTON_PAUSE
 
         elif X_TOURELLE < x_souris < (X_TOURELLE+40) and Y_TOURELLE < y_souris < (Y_TOURELLE+40):
-            if self.etat_partie == ETAT_PARTIE_JEU:
-                return BOUTON_TOURELLE_TOUS
+            return BOUTON_TOURELLE_TOUS
 
         elif X_TOURELLE+60 < x_souris < (X_TOURELLE+40+60) and Y_TOURELLE < y_souris < (Y_TOURELLE+40):
-            if self.etat_partie == ETAT_PARTIE_JEU:
-                return BOUTON_TOURELLE_NORMAL
+            return BOUTON_TOURELLE_NORMAL
 
         elif X_TOURELLE+120 < x_souris < (X_TOURELLE+40+120) and Y_TOURELLE < y_souris < (Y_TOURELLE+40):
-            if self.etat_partie == ETAT_PARTIE_JEU:
-                return BOUTON_TOURELLE_BOUM
+            return BOUTON_TOURELLE_BOUM
 
         elif X_TOURELLE+180 < x_souris < (X_TOURELLE+40+180) and Y_TOURELLE < y_souris < (Y_TOURELLE+40):
-            if self.etat_partie == ETAT_PARTIE_JEU:
-                return BOUTON_TOURELLE_VOLANT
+            return BOUTON_TOURELLE_VOLANT
 
         elif X_TOURELLE+240 < x_souris < (X_TOURELLE+40+240) and Y_TOURELLE < y_souris < (Y_TOURELLE+40):
-            if self.etat_partie == ETAT_PARTIE_JEU:
-                return BOUTON_TOURELLE_BOUM_VOLANT
+            return BOUTON_TOURELLE_BOUM_VOLANT
 
         elif X_TOURELLE+300 < x_souris < (X_TOURELLE+40+300) and Y_TOURELLE < y_souris < (Y_TOURELLE+40):
-            if self.etat_partie == ETAT_PARTIE_JEU:
-                return BOUTON_TOURELLE_PLUS
+            return BOUTON_TOURELLE_PLUS
 
         elif math.sqrt((x_souris - (900+RAYON_BOUTON_PAUSE))**2 + (y_souris - (Y_BOUTON_PLAY_PAUSE+RAYON_BOUTON_PAUSE))**2 ) <= RAYON_BOUTON_PAUSE:
-            if self.etat_partie == ETAT_PARTIE_JEU:
-                return BOUTON_PLUS
+            return BOUTON_PLUS
 
         elif math.sqrt((x_souris - (948+RAYON_BOUTON_PAUSE))**2 + (y_souris - (Y_BOUTON_PLAY_PAUSE+RAYON_BOUTON_PAUSE))**2 ) <= RAYON_BOUTON_PAUSE:
-            if self.etat_partie == ETAT_PARTIE_JEU:
-                return BOUTON_MOINS
+            return BOUTON_MOINS
+
+        elif X_BOUTON_AIDE < x_souris < (X_BOUTON_AIDE+80) and Y_BOUTON_AIDE < y_souris < (Y_BOUTON_AIDE+81):
+            return BOUTON_AIDE
+
+        elif X_BOUTON_FLECHE < x_souris < (X_BOUTON_FLECHE+48) and Y_BOUTON_FLECHE < y_souris < (Y_BOUTON_FLECHE+48):
+            return BOUTON_FLECHE_GAUCHE
+
+        elif X_BOUTON_FLECHE+64 < x_souris < (X_BOUTON_FLECHE+64+48) and Y_BOUTON_FLECHE < y_souris < (Y_BOUTON_FLECHE+48):
+            return BOUTON_FLECHE_DROITE
+
+        elif X_TOUCHE < x_souris < (X_TOUCHE+35) and Y_TOUCHE_F < y_souris < (Y_TOUCHE_F+35):
+            return TOUCHE_F
+
+        elif X_TOUCHE < x_souris < (X_TOUCHE+35) and Y_TOUCHE_D < y_souris < (Y_TOUCHE_D+35):
+            return TOUCHE_D
+
+        elif X_TOUCHE < x_souris < (X_TOUCHE+35) and Y_TOUCHE_C < y_souris < (Y_TOUCHE_C+35):
+            return TOUCHE_C
+
+        elif X_TOUCHE < x_souris < (X_TOUCHE+35) and Y_TOUCHE_V < y_souris < (Y_TOUCHE_V+35):
+            return TOUCHE_V
+
+        elif X_TOUCHE < x_souris < (X_TOUCHE+35) and Y_TOUCHE_R < y_souris < (Y_TOUCHE_R+35):
+            return TOUCHE_R
+
+        elif X_TOUCHE < x_souris < (X_TOUCHE+35) and Y_TOUCHE_S < y_souris < (Y_TOUCHE_S+35):
+            return TOUCHE_S
 
         else:
             return None

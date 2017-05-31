@@ -15,7 +15,7 @@ HAUTEUR = 650
 
 pygame.init()
 SCREEN = pygame.display.set_mode((LARGEUR, HAUTEUR))
-pygame.display.set_caption("tower !")
+pygame.display.set_caption("Tower by Quentin PALAZON !                                        T O W E R")
 
 FPS = 60                # nombre d'image par seconde
 
@@ -26,17 +26,20 @@ MARGE_ECRAN = 40
 
 ARGENT_DEPART = 1000
 
-ETAT_PARTIE_ACCUEIL = 1   # on construit, pas de betes, on quitte quand on clic sur DEMARRER
-ETAT_PARTIE_JEU = 2       # les betes arrivent, on construit
-ETAT_PARTIE_PERDU = 4     # on fige le jeu ; on affiche la grille, les betes, et des boutons "ENCORE / QUITTER"
-ETAT_PARTIE_GAGNE = 5     # on fige le jeu ; on affiche la grille, les betes, et des boutons "ENCORE / QUITTER"
+ETAT_PARTIE_ACCUEIL = 1
+ETAT_PARTIE_JEU = 2
+ETAT_PARTIE_PERDU = 4
+ETAT_PARTIE_GAGNE = 5
 ETAT_PARTIE_PAUSE = 6
+ETAT_PARTIE_AIDE = 7
 
 # ----------------------------------------------------------------------------------------------------------------------------
 # ------------------------------------------------ IMAGES + POLICE + COULEURS ------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------------
 
 # ------------------ Images ------------------
+IMAGE_FONT = pygame.image.load("image/Font.png")
+
 IMAGE_TOURELLE_NORMAL = pygame.image.load("image/TourelleNormal.png")
 IMAGE_TOURELLE_VOLANT = pygame.image.load("image/TourelleVolant.png")
 IMAGE_TOURELLE_TOUS = pygame.image.load("image/TourelleTous.png")
@@ -53,6 +56,16 @@ IMAGE_BOUTON_PAUSE = pygame.image.load("image/BoutonPause.png")
 IMAGE_BOUTON_PLUS = pygame.image.load("image/Bouton+.png")
 IMAGE_BOUTON_MOINS = pygame.image.load("image/Bouton-.png")
 IMAGE_PENCARTE = pygame.image.load("image/Pencarte.png")
+IMAGE_BOUTON_FLECHE = pygame.image.load("image/BoutonFleches.png")
+IMAGE_AIDE = pygame.image.load("image/Aide.png")
+IMAGE_TOUCHE_AMELIORATION = pygame.image.load("image/ToucheAmelioration.png")
+IMAGE_TOUCHE_SUPRESSION = pygame.image.load("image/ToucheSupression.png")
+
+IMAGE_EXPLICATION_1 = pygame.image.load("image/Explication.png")
+IMAGE_EXPLICATION_2 = pygame.image.load("image/Explication2.png")
+IMAGE_EXPLICATION_3 = pygame.image.load("image/Explication3.png")
+IMAGE_EXPLICATION_4 = pygame.image.load("image/Explication4.png")
+IMAGE_AIDE_EXPLICATION = pygame.image.load("image/AideExplication.png")
 
 IMAGE_TOURELLE_CANON_1 = pygame.image.load("image/TourelleCanon1.png")
 IMAGE_TOURELLE_CANON_2 = pygame.image.load("image/TourelleCanon2.png")
@@ -76,7 +89,7 @@ VERT =   (52,175,0)
 ROUGE =  (255,0,0)
 ORANGE = (255,100,0)
 JAUNE =  (255,255,0)
-JAUNE2 =  (50,50,0)
+JAUNE2 =  (100,100,0)
 
 # -----------------------------------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------- BOUTONS ----------------------------------------------------------
@@ -95,11 +108,32 @@ BOUTON_TOURELLE_BOUM_VOLANT = "BOUTON_TOURELLE_BOUM_VOLANT"
 BOUTON_TOURELLE_PLUS = "BOUTON_TOURELLE_PLUS"
 BOUTON_PLUS = "BOUTON_PLUS"
 BOUTON_MOINS = "BOUTON_MOINS"
+BOUTON_AIDE = "BOUTON_AIDE"
+BOUTON_FLECHE_DROITE = "BOUTON_FLECHE -->"
+BOUTON_FLECHE_GAUCHE = "BOUTON_FLECHE <--"
+TOUCHE_F = "TOUCHE_F"
+TOUCHE_D = "TOUCHE_D"
+TOUCHE_C = "TOUCHE_C"
+TOUCHE_V = "TOUCHE_V"
+TOUCHE_R = "TOUCHE_R"
+TOUCHE_S = "TOUCHE_S"
+
 
 X_START_NEXT = 700
 Y_START_NEXT = 20
 X_BOUTON_PLAY_PAUSE = 1030
 Y_BOUTON_PLAY_PAUSE = 21
+X_BOUTON_AIDE = 960
+Y_BOUTON_AIDE = 155
+X_BOUTON_FLECHE = 480
+Y_BOUTON_FLECHE = 548
+X_TOUCHE = 690
+Y_TOUCHE_F = 245
+Y_TOUCHE_D = 295
+Y_TOUCHE_C = 345
+Y_TOUCHE_V = 395
+Y_TOUCHE_R = 445
+Y_TOUCHE_S = 495
 
 X_TOURELLE = 700
 Y_TOURELLE = 100
@@ -129,7 +163,7 @@ TABLE_BESTIOLE['fort']         = {'image':"image/BestioleFort.png"        , 'vie
 TABLE_BESTIOLE['boss_fort']    = {'image':"image/BestioleFortBoss.png"    , 'vie':350  , 'gain': 60 , 'vitesse':0.5}
 
 TABLE_BESTIOLE['volant']       = {'image':"image/BestioleVolant.png"      , 'vie':7    , 'gain': 1  , 'vitesse':1.0}
-TABLE_BESTIOLE['boss_volant']  = {'image':"image/BestioleVolantBoss.png"  , 'vie':360  , 'gain': 65 , 'vitesse':1.0}
+TABLE_BESTIOLE['boss_volant']  = {'image':"image/BestioleVolantBoss.png"  , 'vie':200  , 'gain': 65 , 'vitesse':1.0}
 
 TABLE_BESTIOLE['boss_final']   = {'image':"image/BestioleBossFinal.png"   , 'vie':1000 , 'gain':100 , 'vitesse':1.0}
 
@@ -270,6 +304,103 @@ TABLE_VAGUE =  ({'type':'départ','quantite':0, 'difficultee':1},
                 {'type':'boss_volant','quantite':1, 'difficultee':12},
                 {'type':'boss_final','quantite':1, 'difficultee':13})
 
+TABLE_VAGUE_SANS_VOLANT =  ({'type':'départ','quantite':0, 'difficultee':1},
+
+                {'type':'normale', 'quantite':10, 'difficultee':1},
+                {'type':'rapide','quantite':10, 'difficultee':1},
+                {'type':'groupe','quantite':10, 'difficultee':1},
+                {'type':'imune','quantite':10, 'difficultee':1},
+                {'type':'fort','quantite':10, 'difficultee':1},
+
+                {'type':'boss_normale','quantite':1, 'difficultee':1},
+
+                {'type':'normale', 'quantite':10, 'difficultee':2},
+                {'type':'rapide','quantite':10, 'difficultee':2},
+                {'type':'groupe','quantite':10, 'difficultee':2},
+                {'type':'imune','quantite':10, 'difficultee':2},
+                {'type':'fort','quantite':10, 'difficultee':2},
+
+                {'type':'boss_rapide','quantite':1, 'difficultee':2},
+
+                {'type':'normale', 'quantite':10, 'difficultee':3},
+                {'type':'rapide','quantite':10, 'difficultee':3},
+                {'type':'groupe','quantite':10, 'difficultee':3},
+                {'type':'imune','quantite':10, 'difficultee':3},
+                {'type':'fort','quantite':10, 'difficultee':3},
+
+                {'type':'boss_groupe','quantite':3, 'difficultee':3},
+
+                {'type':'normale', 'quantite':10, 'difficultee':4},
+                {'type':'rapide','quantite':10, 'difficultee':4},
+                {'type':'groupe','quantite':10, 'difficultee':4},
+                {'type':'imune','quantite':10, 'difficultee':4},
+                {'type':'fort','quantite':10, 'difficultee':4},
+
+                {'type':'boss_imune','quantite':1, 'difficultee':4},
+
+                {'type':'normale', 'quantite':10, 'difficultee':5},
+                {'type':'rapide','quantite':10, 'difficultee':5},
+                {'type':'groupe','quantite':10, 'difficultee':5},
+                {'type':'imune','quantite':10, 'difficultee':5},
+                {'type':'fort','quantite':10, 'difficultee':5},
+
+                {'type':'boss_fort','quantite':1, 'difficultee':5},
+
+                {'type':'normale', 'quantite':10, 'difficultee':6},
+                {'type':'rapide','quantite':10, 'difficultee':6},
+                {'type':'groupe','quantite':10, 'difficultee':6},
+                {'type':'imune','quantite':10, 'difficultee':6},
+                {'type':'fort','quantite':10, 'difficultee':6},
+
+                {'type':'normale', 'quantite':10, 'difficultee':7},
+                {'type':'rapide','quantite':10, 'difficultee':7},
+                {'type':'groupe','quantite':10, 'difficultee':7},
+                {'type':'imune','quantite':10, 'difficultee':7},
+                {'type':'fort','quantite':10, 'difficultee':7},
+
+                {'type':'boss_normale','quantite':1, 'difficultee':7},
+
+                {'type':'normale', 'quantite':10, 'difficultee':8},
+                {'type':'rapide','quantite':10, 'difficultee':8},
+                {'type':'groupe','quantite':10, 'difficultee':8},
+                {'type':'imune','quantite':10, 'difficultee':8},
+                {'type':'fort','quantite':10, 'difficultee':8},
+
+                {'type':'boss_rapide','quantite':1, 'difficultee':8},
+
+                {'type':'normale', 'quantite':10, 'difficultee':9},
+                {'type':'rapide','quantite':10, 'difficultee':9},
+                {'type':'groupe','quantite':10, 'difficultee':9},
+                {'type':'imune','quantite':10, 'difficultee':9},
+                {'type':'fort','quantite':10, 'difficultee':9},
+
+                {'type':'boss_groupe','quantite':3, 'difficultee':9},
+
+                {'type':'normale', 'quantite':10, 'difficultee':10},
+                {'type':'rapide','quantite':10, 'difficultee':10},
+                {'type':'groupe','quantite':10, 'difficultee':10},
+                {'type':'imune','quantite':10, 'difficultee':10},
+                {'type':'fort','quantite':10, 'difficultee':10},
+
+                {'type':'boss_imune','quantite':1, 'difficultee':10},
+
+                {'type':'normale', 'quantite':10, 'difficultee':11},
+                {'type':'rapide','quantite':10, 'difficultee':11},
+                {'type':'groupe','quantite':10, 'difficultee':11},
+                {'type':'imune','quantite':10, 'difficultee':11},
+                {'type':'fort','quantite':10, 'difficultee':11},
+
+                {'type':'boss_fort','quantite':1, 'difficultee':11},
+
+                {'type':'normale', 'quantite':10, 'difficultee':12},
+                {'type':'rapide','quantite':10, 'difficultee':12},
+                {'type':'groupe','quantite':10, 'difficultee':12},
+                {'type':'imune','quantite':10, 'difficultee':12},
+                {'type':'fort','quantite':10, 'difficultee':12},
+
+                {'type':'boss_final','quantite':1, 'difficultee':13})    # Sans volant
+
+
 # ---------------------------------------------------------------------------------------------------------------------------
 # ------------------------------------------------------ TOURS(GRILLE) ------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------------------------------
@@ -354,18 +485,18 @@ TABLE_BOUM_TOUR_VITESSE_PRIX = [5, 10, 20]
 TABLE_BOUM_VOLANT_TOUR_VITESSE_PRIX = [5, 10, 20]
 
 
-TOUR_AMELIORATION_RAPIDITE = "TOUR_AMELIORATION_RAPIDITE"
-TABLE_NORMALE_TOUR_RAPIDITE = [1, 1, 1, 1]
-TABLE_VOLANT_TOUR_RAPIDITE = [1, 1, 1, 1]
-TABLE_TOUS_TOUR_RAPIDITE = [1, 1, 1, 1]
-TABLE_BOUM_TOUR_RAPIDITE = [1, 1, 1, 1]
-TABLE_BOUM_VOLANT_TOUR_RAPIDITE = [1, 1, 1, 1]
+TOUR_AMELIORATION_CADENCE = "TOUR_AMELIORATION_CADENCE"
+TABLE_NORMALE_TOUR_CADENCE = [1, 1, 1, 1]
+TABLE_VOLANT_TOUR_CADENCE = [1, 1, 1, 1]
+TABLE_TOUS_TOUR_CADENCE = [1, 1, 1, 1]
+TABLE_BOUM_TOUR_CADENCE = [1, 1, 1, 1]
+TABLE_BOUM_VOLANT_TOUR_CADENCE = [1, 1, 1, 1]
 
-TABLE_NORMALE_TOUR_RAPIDITE_PRIX = [20,25,30]
-TABLE_VOLANT_TOUR_RAPIDITE_PRIX = [20,25,30]
-TABLE_TOUS_TOUR_RAPIDITE_PRIX = [20,25,30]
-TABLE_BOUM_TOUR_RAPIDITE_PRIX = [20,25,30]
-TABLE_BOUM_VOLANT_TOUR_RAPIDITE_PRIX = [20,25,30]
+TABLE_NORMALE_TOUR_CADENCE_PRIX = [20,25,30]
+TABLE_VOLANT_TOUR_CADENCE_PRIX = [20,25,30]
+TABLE_TOUS_TOUR_CADENCE_PRIX = [20,25,30]
+TABLE_BOUM_TOUR_CADENCE_PRIX = [20,25,30]
+TABLE_BOUM_VOLANT_TOUR_CADENCE_PRIX = [20,25,30]
 
 
 TOUR_AMELIORATION_RALENTI = "TOUR_AMELIORATION_RALENTI"
@@ -460,7 +591,7 @@ def depasseDroit(x,y,r):
 
 # ------------------------------------------------
 def prixSuplementaire(t):
-    suplement = (t.niveau_distance + t.niveau_force + t.niveau_ralentire + t.niveau_rapidite + t.niveau_vitesse)
+    suplement = (t.niveau_distance + t.niveau_force + t.niveau_ralentire + t.niveau_cadence + t.niveau_vitesse)
     suplement = int(suplement * suplement)
     return suplement
 

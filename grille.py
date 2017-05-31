@@ -113,9 +113,10 @@ class Grille():
         prix = t.prix_tour
         if argent >= prix:
             return prix
+        return 0
 
     # ------------------------------------------------
-    def enleve_tour_selectionnee(self):
+    def enleve_tour_selectionnee(self,première_vague):
 
         if self.tour_selectionnee == None:
             return 0
@@ -136,7 +137,12 @@ class Grille():
             self.grille[t.x][t.y+1]=BLOC_INCONNU
             self.grille[t.x+1][t.y+1]=BLOC_INCONNU
 
-            return int(prix/2)
+            self.tour_selectionnee = None
+
+            if première_vague:
+                return prix
+            else:
+                return int(prix/2)
 
     # ------------------------------------------------
     def enleve_tour(self,x,y):
@@ -195,7 +201,8 @@ class Grille():
                     c=BLEU
 
                 if v == BLOC_BORD_NOIR:
-                    c=NOIR
+                    c=JAUNE
+                    continue       # On ne la dessine pas
 
                 #if v == BLOC_ENTREE:
                 #    c=BLANC

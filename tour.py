@@ -27,8 +27,8 @@ class Tour():
         self.table_tour_distance_prix = TABLE_NORMALE_TOUR_DISTANCE_PRIX
         self.table_tour_vitesse = TABLE_NORMALE_TOUR_VITESSE
         self.table_tour_vitesse_prix = TABLE_NORMALE_TOUR_VITESSE_PRIX
-        self.table_tour_rapidite = TABLE_NORMALE_TOUR_RAPIDITE
-        self.table_tour_rapidite_prix = TABLE_NORMALE_TOUR_RAPIDITE_PRIX
+        self.table_tour_cadence = TABLE_NORMALE_TOUR_CADENCE
+        self.table_tour_cadence_prix = TABLE_NORMALE_TOUR_CADENCE_PRIX
         self.table_tour_ralenti_force = TABLE_NORMALE_TOUR_RALENTI_FORCE
         self.table_tour_ralenti_duree = TABLE_NORMALE_TOUR_RALENTI_DUREE
         self.table_tour_ralenti_prix = TABLE_NORMALE_TOUR_RALENTI_PRIX
@@ -46,8 +46,8 @@ class Tour():
             self.table_tour_distance_prix = TABLE_TOUS_TOUR_DISTANCE_PRIX
             self.table_tour_vitesse = TABLE_TOUS_TOUR_VITESSE
             self.table_tour_vitesse_prix = TABLE_TOUS_TOUR_VITESSE_PRIX
-            self.table_tour_rapidite = TABLE_TOUS_TOUR_RAPIDITE
-            self.table_tour_rapidite_prix = TABLE_TOUS_TOUR_RAPIDITE_PRIX
+            self.table_tour_cadence = TABLE_TOUS_TOUR_CADENCE
+            self.table_tour_cadence_prix = TABLE_TOUS_TOUR_CADENCE_PRIX
             self.table_tour_ralenti_force = TABLE_TOUS_TOUR_RALENTI_FORCE
             self.table_tour_ralenti_duree = TABLE_TOUS_TOUR_RALENTI_DUREE
             self.table_tour_ralenti_prix = TABLE_TOUS_TOUR_RALENTI_PRIX
@@ -62,8 +62,8 @@ class Tour():
             self.table_tour_distance_prix = TABLE_BOUM_TOUR_DISTANCE_PRIX
             self.table_tour_vitesse = TABLE_BOUM_TOUR_VITESSE
             self.table_tour_vitesse_prix = TABLE_BOUM_TOUR_VITESSE_PRIX
-            self.table_tour_rapidite = TABLE_BOUM_TOUR_RAPIDITE
-            self.table_tour_rapidite_prix = TABLE_BOUM_TOUR_RAPIDITE_PRIX
+            self.table_tour_cadence = TABLE_BOUM_TOUR_CADENCE
+            self.table_tour_cadence_prix = TABLE_BOUM_TOUR_CADENCE_PRIX
             self.table_tour_ralenti_force = TABLE_BOUM_TOUR_RALENTI_FORCE
             self.table_tour_ralenti_duree = TABLE_BOUM_TOUR_RALENTI_DUREE
             self.table_tour_ralenti_prix = TABLE_BOUM_TOUR_RALENTI_PRIX
@@ -78,8 +78,8 @@ class Tour():
             self.table_tour_distance_prix = TABLE_VOLANT_TOUR_DISTANCE_PRIX
             self.table_tour_vitesse = TABLE_VOLANT_TOUR_VITESSE
             self.table_tour_vitesse_prix = TABLE_VOLANT_TOUR_VITESSE_PRIX
-            self.table_tour_rapidite = TABLE_VOLANT_TOUR_RAPIDITE
-            self.table_tour_rapidite_prix = TABLE_VOLANT_TOUR_RAPIDITE_PRIX
+            self.table_tour_cadence = TABLE_VOLANT_TOUR_CADENCE
+            self.table_tour_cadence_prix = TABLE_VOLANT_TOUR_CADENCE_PRIX
             self.table_tour_ralenti_force = TABLE_VOLANT_TOUR_RALENTI_FORCE
             self.table_tour_ralenti_duree = TABLE_VOLANT_TOUR_RALENTI_DUREE
             self.table_tour_ralenti_prix = TABLE_VOLANT_TOUR_RALENTI_PRIX
@@ -94,8 +94,8 @@ class Tour():
             self.table_tour_distance_prix = TABLE_BOUM_VOLANT_TOUR_DISTANCE_PRIX
             self.table_tour_vitesse = TABLE_BOUM_VOLANT_TOUR_VITESSE
             self.table_tour_vitesse_prix = TABLE_BOUM_VOLANT_TOUR_VITESSE_PRIX
-            self.table_tour_rapidite = TABLE_BOUM_VOLANT_TOUR_RAPIDITE
-            self.table_tour_rapidite_prix = TABLE_BOUM_VOLANT_TOUR_RAPIDITE_PRIX
+            self.table_tour_cadence = TABLE_BOUM_VOLANT_TOUR_CADENCE
+            self.table_tour_cadence_prix = TABLE_BOUM_VOLANT_TOUR_CADENCE_PRIX
             self.table_tour_ralenti_force = TABLE_BOUM_VOLANT_TOUR_RALENTI_FORCE
             self.table_tour_ralenti_duree = TABLE_BOUM_VOLANT_TOUR_RALENTI_DUREE
             self.table_tour_ralenti_prix = TABLE_BOUM_VOLANT_TOUR_RALENTI_PRIX
@@ -111,7 +111,7 @@ class Tour():
 
         self.niveau_force=0
         self.niveau_distance=0
-        self.niveau_rapidite = 0
+        self.niveau_cadence = 0
         self.niveau_vitesse = 0
         self.niveau_ralentire = 0
 
@@ -121,7 +121,7 @@ class Tour():
 
         self.vitesse_tir = self.table_tour_vitesse[0]
 
-        self.rapidite_tir = self.table_tour_rapidite[0]
+        self.cadence_tir = self.table_tour_cadence[0]
         self.delai_tir = 0
 
         self.delai = 0
@@ -174,7 +174,8 @@ class Tour():
                 recttransparent.fill((255,255,255, 150))
                 SCREEN.blit(recttransparent, conversionCoordCasesVersPixels(self.x,self.y))
 
-                pygame.draw.circle(SCREEN, VERT, centreTour(self.x, self.y), self.distance_tir, 1)
+                if self.type != TOUR_PLUS:
+                    pygame.draw.circle(SCREEN, VERT, centreTour(self.x, self.y), self.distance_tir, 1)
 
     # ------------------------------------------------
     def gere_construction(self):
@@ -212,7 +213,7 @@ class Tour():
 
         force_tir_plus_coeff = self.force_tir*self.coeffPlus
 
-        self.delai_tir = 70 - (15*(self.rapidite_tir-1))
+        self.delai_tir = 70 - (15*(self.cadence_tir-1))
 
         # delai de tir OK ? (autre stratégie : nombre de tirs simultanés maxi)
         if self.delai != 0:
@@ -267,6 +268,9 @@ class Tour():
     # ------------------------------------------------
     def ameliore(self,type,argent):
 
+        if self.type == TOUR_PLUS:
+            return 0
+
         if type == TOUR_AMELIORATION_FORCE:
             if self.niveau_force<len(self.table_tour_force)-1:
                 prix = self.table_tour_force_prix[self.niveau_force]+prixSuplementaire(self)
@@ -297,12 +301,12 @@ class Tour():
                     return prix
             return 0
 
-        elif type == TOUR_AMELIORATION_RAPIDITE:
-            if self.niveau_rapidite<len(self.table_tour_rapidite)-1:
-                prix = self.table_tour_rapidite_prix[self.niveau_rapidite]+prixSuplementaire(self)
+        elif type == TOUR_AMELIORATION_CADENCE:
+            if self.niveau_cadence<len(self.table_tour_cadence)-1:
+                prix = self.table_tour_cadence_prix[self.niveau_cadence]+prixSuplementaire(self)
                 if argent>=prix:
-                    self.niveau_rapidite += 1
-                    self.rapidite_tir += self.table_tour_rapidite[self.niveau_rapidite]
+                    self.niveau_cadence += 1
+                    self.cadence_tir += self.table_tour_cadence[self.niveau_cadence]
                     self.argent_depense += prix
                     return prix
             return 0

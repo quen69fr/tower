@@ -40,6 +40,7 @@ if __name__=="__main__":
     premiere_vague = True
     tour_type = None
     listeEvenements = []
+    pageAide = 0
 
 
     while True:
@@ -64,6 +65,7 @@ if __name__=="__main__":
             premiere_vague = True
             tour_type = None
             listeEvenements = []
+            pageAide = 0
 
         bandeauAction.mise_jour_etat(etat_partie,grille.tour_selectionnee,bestiole_selectionnee,argent)
         #print ("Tours : {} ; Betes : {} ;  Tirs : {}".format(len(grille.listeTours), len(listeBestioles), len(listeTirs)))
@@ -89,16 +91,11 @@ if __name__=="__main__":
                     exit(0)
 
             if event.type==pygame.KEYDOWN:
-                #print(event.key)
+                print(event.key)
                 # Q
                 if event.key==97:
                     pygame.quit()
                     exit(0)
-
-                # S
-                if event.key==115:
-                    argent += grille.enleve_tour_selectionnee()
-                    grille.calcule_distance_grille()
 
                 if grille.tour_selectionnee!=None:
                     t = grille.tour_selectionnee
@@ -108,15 +105,19 @@ if __name__=="__main__":
                     # D
                     if event.key==100:
                         argent-=t.ameliore(TOUR_AMELIORATION_DISTANCE,argent)
-                    # R
-                    if event.key==114:
-                        argent-=t.ameliore(TOUR_AMELIORATION_RAPIDITE,argent)
+                    # C
+                    if event.key==99:
+                        argent-=t.ameliore(TOUR_AMELIORATION_CADENCE,argent)
                     # V
                     if event.key==118:
                         argent-=t.ameliore(TOUR_AMELIORATION_VITESSE,argent)
-                    # L
-                    if event.key==108:
+                    # R
+                    if event.key==114:
                         argent-=t.ameliore(TOUR_AMELIORATION_RALENTI,argent)
+                    # S
+                    if event.key==115:
+                        argent += grille.enleve_tour_selectionnee(premiere_vague)
+                        grille.calcule_distance_grille()
 
 
                 # N
@@ -149,11 +150,11 @@ if __name__=="__main__":
                 ev_clic_droit = True
                 continue
 
-        SCREEN.fill(0)
+        SCREEN.blit(IMAGE_FONT,(0,0))
         grille.dessine_grille()
         grille.affiche_score(argent, premiere_vague, nombre_vie, int((DELAI_ENTRE_VAGUE - vague_attente)/20))
         grille.dessine_portes()
-        bandeauAction.affiche()
+        bandeauAction.affiche(premiere_vague)
         for bete in listeBestioles:
             bete.affiche()
         for tir in listeTirs:
@@ -202,6 +203,26 @@ if __name__=="__main__":
             SCREEN.blit(surface, rect)
 
             continue
+
+        # -----------------------------
+        if etat_partie == ETAT_PARTIE_AIDE:
+            if ev_clicgauche:
+                if bandeauAction.clic(x_souris,y_souris)==BOUTON_FLECHE_DROITE:
+                    pageAide = pageAide + 1
+                    #print("toto")
+
+                if bandeauAction.clic(x_souris,y_souris)==BOUTON_FLECHE_GAUCHE:
+                    pageAide = pageAide - 1
+
+            if pageAide >= 4:
+                etat_partie = ETAT_PARTIE_JEU
+            elif pageAide < 0:
+                etat_partie = ETAT_PARTIE_JEU
+
+            bandeauAction.afficheExplication(pageAide)
+
+            continue
+
         # -----------------------------
         # etat_partie_JEU
         # -----------------------------
@@ -236,7 +257,7 @@ if __name__=="__main__":
             # oui la vague est finie,
             # j'attends ?
             if premiere_vague == True:
-                delay_entre_vague = 100000000000000000000000000000000000000000000000000000000000000000000000
+                delay_entre_vague = 10000000000000000000000000000000000000000000000000
 
             if vague_attente < delay_entre_vague:
                 # oui
@@ -253,24 +274,49 @@ if __name__=="__main__":
         # clic-gauche - handle MOUSEBUTTONUP
         if ev_clicgauche:
 
-            bestiole_selectionnee=None
-            grille.tour_selectionnee=None
+            ResultatBandeauActionClic = bandeauAction.clic(x_souris,y_souris)
 
-            if bandeauAction.clic(x_souris,y_souris)==BOUTON_PLUS:
+            # Gestion des ameliorations (et supression) de la tour selctionnee
+            if grille.tour_selectionnee!=None:
+                t = grille.tour_selectionnee
+                if ResultatBandeauActionClic==TOUCHE_F:
+                    argent-=t.ameliore(TOUR_AMELIORATION_FORCE,argent)
+                    continue
+                elif ResultatBandeauActionClic==TOUCHE_D:
+                    argent-=t.ameliore(TOUR_AMELIORATION_DISTANCE,argent)
+                    continue
+                elif ResultatBandeauActionClic==TOUCHE_C:
+                    argent-=t.ameliore(TOUR_AMELIORATION_CADENCE,argent)
+                    continue
+                elif ResultatBandeauActionClic==TOUCHE_V:
+                    argent-=t.ameliore(TOUR_AMELIORATION_VITESSE,argent)
+                    continue
+                elif ResultatBandeauActionClic==TOUCHE_R:
+                    argent-=t.ameliore(TOUR_AMELIORATION_RALENTI,argent)
+                    continue
+                elif ResultatBandeauActionClic==TOUCHE_S:
+                    argent += grille.enleve_tour_selectionnee(premiere_vague)
+                    grille.calcule_distance_grille()
+                    continue
+                else :
+                    grille.tour_selectionnee=None
+                    bestiole_selectionnee=None
+
+            # Gestion de la vitesse du jeu
+            elif ResultatBandeauActionClic==BOUTON_PLUS:
                 if FPS != 1560:
                     FPS = FPS + 500
-
-            if bandeauAction.clic(x_souris,y_souris)==BOUTON_MOINS:
+            elif ResultatBandeauActionClic==BOUTON_MOINS:
                 if FPS != 60:
                     FPS = FPS - 500
 
             # Gestion du bouton pause
-            if bandeauAction.clic(x_souris,y_souris)==BOUTON_PAUSE:
+            elif ResultatBandeauActionClic==BOUTON_PAUSE:
                 etat_partie = ETAT_PARTIE_PAUSE
                 continue
 
             # Gestion du bouton next
-            if bandeauAction.clic(x_souris,y_souris)==BOUTON_START_NEXT:
+            if ResultatBandeauActionClic==BOUTON_START_NEXT:
                 # TODO : gerer la dernière vague
                 if vague_compteur >= TABLE_VAGUE[vague]['quantite']:
                     vague += 1
@@ -282,37 +328,42 @@ if __name__=="__main__":
                 tourBrouillon=None
                 continue
 
+
+            elif ResultatBandeauActionClic==BOUTON_AIDE:
+                etat_partie = ETAT_PARTIE_AIDE
+                pageAide = 0
+                continue
+
             # Gestion du bouton tourelle
-            if bandeauAction.clic(x_souris,y_souris)==BOUTON_TOURELLE_NORMAL:
+            elif ResultatBandeauActionClic==BOUTON_TOURELLE_NORMAL:
                 tour_type = TOUR_NORMAL
                 tourBrouillon = Tour(2,2, Tour._ETAT_TOUR_BROUILLON)
                 continue
 
-            elif bandeauAction.clic(x_souris,y_souris)==BOUTON_TOURELLE_VOLANT:
+            elif ResultatBandeauActionClic==BOUTON_TOURELLE_VOLANT:
                 tour_type = TOUR_VOLANT
                 tourBrouillon = Tour(2,2, Tour._ETAT_TOUR_BROUILLON)
                 continue
 
-            elif bandeauAction.clic(x_souris,y_souris)==BOUTON_TOURELLE_TOUS:
+            elif ResultatBandeauActionClic==BOUTON_TOURELLE_TOUS:
                 tour_type = TOUR_TOUS
                 tourBrouillon = Tour(2,2, Tour._ETAT_TOUR_BROUILLON)
                 continue
 
-            elif bandeauAction.clic(x_souris,y_souris)==BOUTON_TOURELLE_BOUM:
+            elif ResultatBandeauActionClic==BOUTON_TOURELLE_BOUM:
                 tour_type = TOUR_BOUM
                 tourBrouillon = Tour(2,2, Tour._ETAT_TOUR_BROUILLON)
                 continue
 
-            elif bandeauAction.clic(x_souris,y_souris)==BOUTON_TOURELLE_BOUM_VOLANT:
+            elif ResultatBandeauActionClic==BOUTON_TOURELLE_BOUM_VOLANT:
                 tour_type = TOUR_BOUM_VOLANT
                 tourBrouillon = Tour(2,2, Tour._ETAT_TOUR_BROUILLON)
                 continue
 
-            elif bandeauAction.clic(x_souris,y_souris)==BOUTON_TOURELLE_PLUS:
+            elif ResultatBandeauActionClic==BOUTON_TOURELLE_PLUS:
                 tour_type = TOUR_PLUS
                 tourBrouillon = Tour(2,2, Tour._ETAT_TOUR_BROUILLON)
                 continue
-
 
 
             # Gestion du clic sur une bestiole
@@ -332,7 +383,7 @@ if __name__=="__main__":
 
             # Gestion de la construction d'une nouvelle tour
             if tourBrouillon and grille.caseVide4(i,j):
-                argent -= int(grille.nouvelle_tour_complet(i,j,listeBestioles,tour_type,argent))
+                argent = argent - int(grille.nouvelle_tour_complet(i,j,listeBestioles,tour_type,argent))
 
         # les bestioles
         for bete in listeBestioles:
