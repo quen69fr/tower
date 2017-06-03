@@ -38,7 +38,7 @@ ETAT_PARTIE_AIDE = 7
 # ----------------------------------------------------------------------------------------------------------------------------
 
 # ------------------ Images ------------------
-IMAGE_FONT = pygame.image.load("image/Font.png")
+IMAGE_FOND = pygame.image.load("image/Fond2.png")
 
 IMAGE_TOURELLE_NORMAL = pygame.image.load("image/TourelleNormal.png")
 IMAGE_TOURELLE_VOLANT = pygame.image.load("image/TourelleVolant.png")

@@ -58,7 +58,7 @@ if __name__=="__main__":
             listeTirs = []
             grille.charge_csv()
             grille.calcule_distance_grille()
-            grille.dessine_grille()
+            #grille.dessine_grille()
             tourBrouillon = None
             bestiole_selectionnee = None
             bandeauAction = BandeauAction()
@@ -150,15 +150,9 @@ if __name__=="__main__":
                 ev_clic_droit = True
                 continue
 
-        SCREEN.blit(IMAGE_FONT,(0,0))
-        grille.dessine_grille()
+        SCREEN.blit(IMAGE_FOND, (0, 0))
         grille.affiche_score(argent, premiere_vague, nombre_vie, int((DELAI_ENTRE_VAGUE - vague_attente)/20))
-        grille.dessine_portes()
         bandeauAction.affiche(premiere_vague)
-        for bete in listeBestioles:
-            bete.affiche()
-        for tir in listeTirs:
-            tir.affiche()
 
         # -----------------------------
         if etat_partie == ETAT_PARTIE_ACCUEIL:
@@ -166,6 +160,14 @@ if __name__=="__main__":
                 if bandeauAction.clic(x_souris,y_souris)==BOUTON_START_NEXT:
                     etat_partie = ETAT_PARTIE_JEU
             continue
+
+        grille.dessine_grille()
+        grille.dessine_portes()
+        for bete in listeBestioles:
+            bete.affiche()
+        for tir in listeTirs:
+            tir.affiche()
+
 
         # -----------------------------
         if etat_partie == ETAT_PARTIE_PERDU or etat_partie == ETAT_PARTIE_GAGNE:
