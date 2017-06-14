@@ -19,12 +19,12 @@ class BandeauAction():
         self.argent = argent
 
     # ------------------------------------------------
-    def affiche(self,premiere_vague):
-        self.afficheCadreHaut()
+    def affiche(self,premiere_vague,boutonInfoGrille):
+        self.afficheCadreHaut(boutonInfoGrille)
         self.afficheCadreInfo(premiere_vague)
 
     # ------------------------------------------------
-    def afficheCadreHaut(self):
+    def afficheCadreHaut(self,boutonInfoGrille):
         if self.etat_partie == ETAT_PARTIE_ACCUEIL:
             SCREEN.blit(IMAGE_START,(X_START_NEXT,Y_START_NEXT))
 
@@ -45,9 +45,12 @@ class BandeauAction():
             SCREEN.blit(IMAGE_TOURELLE_PLUS,(X_TOURELLE+300,Y_TOURELLE))
 
             SCREEN.blit(IMAGE_BOUTON_PAUSE,(X_BOUTON_PLAY_PAUSE,Y_BOUTON_PLAY_PAUSE))
-
             SCREEN.blit(IMAGE_BOUTON_PLUS,(900,Y_BOUTON_PLAY_PAUSE))
             SCREEN.blit(IMAGE_BOUTON_MOINS,(948,Y_BOUTON_PLAY_PAUSE))
+            if boutonInfoGrille:
+                SCREEN.blit(IMAGE_BOUTON_INFO_GRILLE2,(X_BOUTON_INFO_GRILLE,Y_BOUTON_INFO_GRILLE))
+            else:
+                SCREEN.blit(IMAGE_BOUTON_INFO_GRILLE,(X_BOUTON_INFO_GRILLE,Y_BOUTON_INFO_GRILLE))
 
             SCREEN.blit(IMAGE_AIDE, (X_BOUTON_AIDE,Y_BOUTON_AIDE))
 
@@ -330,5 +333,41 @@ class BandeauAction():
         elif X_TOUCHE < x_souris < (X_TOUCHE+35) and Y_TOUCHE_S < y_souris < (Y_TOUCHE_S+35):
             return TOUCHE_S
 
+        elif X_BOUTON_INFO_GRILLE < x_souris < (X_BOUTON_INFO_GRILLE+100) and Y_BOUTON_INFO_GRILLE < y_souris < (Y_BOUTON_INFO_GRILLE+50):
+            return BOUTON_INFO_GRILLE
+
         else:
             return None
+
+    # ------------------------------------------------
+    def affiche_vagues(self,vague):
+
+        for i in range(1,6):
+            image = IMAGE_VAGUE_N
+            if vague+i>len(TABLE_VAGUE)-1:
+                continue
+            if TABLE_VAGUE[vague+i]['type']=='rapide':
+                image = IMAGE_VAGUE_R
+            if TABLE_VAGUE[vague+i]['type']=='groupe':
+                image = IMAGE_VAGUE_G
+            if TABLE_VAGUE[vague+i]['type']=='imune':
+                image = IMAGE_VAGUE_I
+            if TABLE_VAGUE[vague+i]['type']=='fort':
+                image = IMAGE_VAGUE_L
+            if TABLE_VAGUE[vague+i]['type']=='volant':
+                image = IMAGE_VAGUE_V
+
+            if TABLE_VAGUE[vague+i]['type']=='boss_normale':
+                image = IMAGE_VAGUE_BN
+            if TABLE_VAGUE[vague+i]['type']=='boss_rapide':
+                image = IMAGE_VAGUE_BR
+            if TABLE_VAGUE[vague+i]['type']=='boss_groupe':
+                image = IMAGE_VAGUE_BG
+            if TABLE_VAGUE[vague+i]['type']=='boss_imune':
+                image = IMAGE_VAGUE_BI
+            if TABLE_VAGUE[vague+i]['type']=='boss_fort':
+                image = IMAGE_VAGUE_BL
+            if TABLE_VAGUE[vague+i]['type']=='boss_volant':
+                image = IMAGE_VAGUE_BV
+
+            SCREEN.blit(image,(75+(100*i),550))

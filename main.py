@@ -41,6 +41,7 @@ if __name__=="__main__":
     tour_type = None
     listeEvenements = []
     pageAide = 0
+    boutonInfoGrille = False
 
 
     while True:
@@ -66,6 +67,7 @@ if __name__=="__main__":
             tour_type = None
             listeEvenements = []
             pageAide = 0
+            boutonInfoGrille = False
 
         bandeauAction.mise_jour_etat(etat_partie,grille.tour_selectionnee,bestiole_selectionnee,argent)
         #print ("Tours : {} ; Betes : {} ;  Tirs : {}".format(len(grille.listeTours), len(listeBestioles), len(listeTirs)))
@@ -91,7 +93,7 @@ if __name__=="__main__":
                     exit(0)
 
             if event.type==pygame.KEYDOWN:
-                print(event.key)
+                #print(event.key)
                 # Q
                 if event.key==97:
                     pygame.quit()
@@ -151,8 +153,7 @@ if __name__=="__main__":
                 continue
 
         SCREEN.blit(IMAGE_FOND, (0, 0))
-        grille.affiche_score(argent, premiere_vague, nombre_vie, int((DELAI_ENTRE_VAGUE - vague_attente)/20))
-        bandeauAction.affiche(premiere_vague)
+        bandeauAction.affiche(premiere_vague, boutonInfoGrille)
 
         # -----------------------------
         if etat_partie == ETAT_PARTIE_ACCUEIL:
@@ -161,8 +162,9 @@ if __name__=="__main__":
                     etat_partie = ETAT_PARTIE_JEU
             continue
 
-        grille.dessine_grille()
-        grille.dessine_portes()
+        grille.affiche_score(argent, premiere_vague, nombre_vie, int((DELAI_ENTRE_VAGUE - vague_attente)/20))
+        grille.dessine_grille(boutonInfoGrille)
+        #grille.dessine_portes()
         for bete in listeBestioles:
             bete.affiche()
         for tir in listeTirs:
@@ -235,6 +237,9 @@ if __name__=="__main__":
         # et on passe à la vague d'apres s'il en reste
 
         # print ('Vague {} ; compteur {} ; attente {}'.format(vague,vague_compteur, vague_attente))
+
+
+        bandeauAction.affiche_vagues(vague)
 
         # vague en cours finie ?
         if vague == len(TABLE_VAGUE)-1:
@@ -334,6 +339,13 @@ if __name__=="__main__":
             elif ResultatBandeauActionClic==BOUTON_AIDE:
                 etat_partie = ETAT_PARTIE_AIDE
                 pageAide = 0
+                continue
+
+            elif ResultatBandeauActionClic==BOUTON_INFO_GRILLE:
+                if boutonInfoGrille == False:
+                    boutonInfoGrille = True
+                else:
+                    boutonInfoGrille = False
                 continue
 
             # Gestion du bouton tourelle

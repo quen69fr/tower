@@ -38,7 +38,7 @@ ETAT_PARTIE_AIDE = 7
 # ----------------------------------------------------------------------------------------------------------------------------
 
 # ------------------ Images ------------------
-IMAGE_FOND = pygame.image.load("image/Fond2.png")
+IMAGE_FOND = pygame.image.load("image/Fond-Sim.png")
 
 IMAGE_TOURELLE_NORMAL = pygame.image.load("image/TourelleNormal.png")
 IMAGE_TOURELLE_VOLANT = pygame.image.load("image/TourelleVolant.png")
@@ -60,6 +60,8 @@ IMAGE_BOUTON_FLECHE = pygame.image.load("image/BoutonFleches.png")
 IMAGE_AIDE = pygame.image.load("image/Aide.png")
 IMAGE_TOUCHE_AMELIORATION = pygame.image.load("image/ToucheAmelioration.png")
 IMAGE_TOUCHE_SUPRESSION = pygame.image.load("image/ToucheSupression.png")
+IMAGE_BOUTON_INFO_GRILLE = pygame.image.load("image/BoutonInfoGrille.png")
+IMAGE_BOUTON_INFO_GRILLE2 = pygame.image.load("image/BoutonInfoGrille2.png")
 
 IMAGE_EXPLICATION_1 = pygame.image.load("image/Explication.png")
 IMAGE_EXPLICATION_2 = pygame.image.load("image/Explication2.png")
@@ -72,6 +74,19 @@ IMAGE_TOURELLE_CANON_2 = pygame.image.load("image/TourelleCanon2.png")
 IMAGE_TOURELLE_CANON_3 = pygame.image.load("image/TourelleCanon3.png")
 IMAGE_TOURELLE_CANON_4 = pygame.image.load("image/TourelleCanon4.png")
 
+IMAGE_VAGUE_N = pygame.image.load("image/Vague_N.png")
+IMAGE_VAGUE_R = pygame.image.load("image/Vague_R.png")
+IMAGE_VAGUE_G = pygame.image.load("image/Vague_G.png")
+IMAGE_VAGUE_I = pygame.image.load("image/Vague_I.png")
+IMAGE_VAGUE_L = pygame.image.load("image/Vague_L.png")
+IMAGE_VAGUE_V = pygame.image.load("image/Vague_V.png")
+IMAGE_VAGUE_BN = pygame.image.load("image/Vague_BN.png")
+IMAGE_VAGUE_BR = pygame.image.load("image/Vague_BR.png")
+IMAGE_VAGUE_BG = pygame.image.load("image/Vague_BG.png")
+IMAGE_VAGUE_BI = pygame.image.load("image/Vague_BI.png")
+IMAGE_VAGUE_BL = pygame.image.load("image/Vague_BL.png")
+IMAGE_VAGUE_BV = pygame.image.load("image/Vague_BV.png")
+
 
 # ------------------ Polices ------------------
 FONT = pygame.font.Font(None,30)
@@ -81,15 +96,16 @@ FONT_4 = pygame.font.Font(None,40)
 
 
 # ------------------ Couleur ------------------
-NOIR =   (0,0,0)
-GRIS =   (100,100,100)
-BLANC =  (255,255,255)
-BLEU =   (0,0,255)
-VERT =   (52,175,0)
-ROUGE =  (255,0,0)
-ORANGE = (255,100,0)
-JAUNE =  (255,255,0)
-JAUNE2 =  (100,100,0)
+NOIR =       (0,0,0)
+GRIS =       (100,100,100)
+BLANC_GRIS = (150,150,150)
+BLANC =      (255,255,255)
+BLEU =       (0,0,255)
+VERT =       (52,175,0)
+ROUGE =      (255,0,0)
+ORANGE =     (255,100,0)
+JAUNE =      (255,255,0)
+JAUNE2 =      (100,100,0)
 
 # -----------------------------------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------- BOUTONS ----------------------------------------------------------
@@ -111,6 +127,7 @@ BOUTON_MOINS = "BOUTON_MOINS"
 BOUTON_AIDE = "BOUTON_AIDE"
 BOUTON_FLECHE_DROITE = "BOUTON_FLECHE -->"
 BOUTON_FLECHE_GAUCHE = "BOUTON_FLECHE <--"
+BOUTON_INFO_GRILLE = "BOUTON_INFO_GRILLE"
 TOUCHE_F = "TOUCHE_F"
 TOUCHE_D = "TOUCHE_D"
 TOUCHE_C = "TOUCHE_C"
@@ -127,6 +144,8 @@ X_BOUTON_AIDE = 960
 Y_BOUTON_AIDE = 155
 X_BOUTON_FLECHE = 480
 Y_BOUTON_FLECHE = 548
+X_BOUTON_INFO_GRILLE = 60
+Y_BOUTON_INFO_GRILLE = 550
 X_TOUCHE = 690
 Y_TOUCHE_F = 245
 Y_TOUCHE_D = 295
@@ -151,19 +170,19 @@ TABLE_BESTIOLE['normale']      = {'image':"image/BestioleNormale.png"     , 'vie
 TABLE_BESTIOLE['boss_normale'] = {'image':"image/BestioleNormaleBoss.png" , 'vie':150  , 'gain': 40 , 'vitesse':1.0}
 
 TABLE_BESTIOLE['rapide']       = {'image':"image/BestioleRapide.png"      , 'vie':10   , 'gain': 1  , 'vitesse':1.5}
-TABLE_BESTIOLE['boss_rapide']  = {'image':"image/BestioleRapideBoss.png"  , 'vie':200  , 'gain': 45 , 'vitesse':1.5}
+TABLE_BESTIOLE['boss_rapide']  = {'image':"image/BestioleRapideBoss.png"  , 'vie':150  , 'gain': 45 , 'vitesse':1.5}
 
 TABLE_BESTIOLE['groupe']       = {'image':"image/BestioleGroupe.png"      , 'vie':10   , 'gain': 1  , 'vitesse':1.0}
 TABLE_BESTIOLE['boss_groupe']  = {'image':"image/BestioleGroupeBoss.png"  , 'vie':80   , 'gain': 17 , 'vitesse':1.0}
 
 TABLE_BESTIOLE['imune']        = {'image':"image/BestioleImune.png"      , 'vie':10   , 'gain': 1  , 'vitesse':1.0}
-TABLE_BESTIOLE['boss_imune']   = {'image':"image/BestioleImuneBoss.png"  , 'vie':300  , 'gain': 55 , 'vitesse':1.0}
+TABLE_BESTIOLE['boss_imune']   = {'image':"image/BestioleImuneBoss.png"  , 'vie':150  , 'gain': 55 , 'vitesse':1.0}
 
-TABLE_BESTIOLE['fort']         = {'image':"image/BestioleFort.png"        , 'vie':13   , 'gain': 1  , 'vitesse':0.5}
-TABLE_BESTIOLE['boss_fort']    = {'image':"image/BestioleFortBoss.png"    , 'vie':350  , 'gain': 60 , 'vitesse':0.5}
+TABLE_BESTIOLE['fort']         = {'image':"image/BestioleFort.png"        , 'vie':15   , 'gain': 1  , 'vitesse':0.5}
+TABLE_BESTIOLE['boss_fort']    = {'image':"image/BestioleFortBoss.png"    , 'vie':225  , 'gain': 60 , 'vitesse':0.5}
 
 TABLE_BESTIOLE['volant']       = {'image':"image/BestioleVolant.png"      , 'vie':7    , 'gain': 1  , 'vitesse':1.0}
-TABLE_BESTIOLE['boss_volant']  = {'image':"image/BestioleVolantBoss.png"  , 'vie':200  , 'gain': 65 , 'vitesse':1.0}
+TABLE_BESTIOLE['boss_volant']  = {'image':"image/BestioleVolantBoss.png"  , 'vie':80  , 'gain': 65 , 'vitesse':1.0}
 
 TABLE_BESTIOLE['boss_final']   = {'image':"image/BestioleBossFinal.png"   , 'vie':1000 , 'gain':100 , 'vitesse':1.0}
 
@@ -304,6 +323,7 @@ TABLE_VAGUE =  ({'type':'départ','quantite':0, 'difficultee':1},
                 {'type':'boss_volant','quantite':1, 'difficultee':12},
                 {'type':'boss_final','quantite':1, 'difficultee':13})
 
+
 TABLE_VAGUE_SANS_VOLANT =  ({'type':'départ','quantite':0, 'difficultee':1},
 
                 {'type':'normale', 'quantite':10, 'difficultee':1},
@@ -398,7 +418,7 @@ TABLE_VAGUE_SANS_VOLANT =  ({'type':'départ','quantite':0, 'difficultee':1},
                 {'type':'imune','quantite':10, 'difficultee':12},
                 {'type':'fort','quantite':10, 'difficultee':12},
 
-                {'type':'boss_final','quantite':1, 'difficultee':13})    # Sans volant
+                {'type':'boss_final','quantite':1, 'difficultee':13})
 
 
 # ---------------------------------------------------------------------------------------------------------------------------

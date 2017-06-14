@@ -187,7 +187,7 @@ class Grille():
         pass
 
     # ------------------------------------------------
-    def dessine_grille(self):
+    def dessine_grille(self,boutonInfoGrille):
         # SCREEN.fill(0)
 
         # les cases distances
@@ -196,26 +196,38 @@ class Grille():
                 v=self.grille[i][j]
                 # dessiner un rectangle en x,y de couleur v
                 c=NOIR
+                t=0
 
                 if v == BLOC_BORD:
-                    c=BLEU
+                    if boutonInfoGrille:
+                        c=BLEU
+                    else:
+                        c=BLANC_GRIS
+                        t=100
+                    #continue
 
                 if v == BLOC_BORD_NOIR:
                     c=JAUNE
                     continue       # On ne la dessine pas
 
-                #if v == BLOC_ENTREE:
-                #    c=BLANC
+                if v == BLOC_ENTREE:
+                    c=BLANC
+                    continue
+
                 if v == BLOC_INCONNU:
                     c=ROUGE
+                    if boutonInfoGrille == False:
+                        continue
 
                 if v > 0:
                     nuance = v*3
                     if nuance > 255:
                         nuance = 255
                     c = (nuance,nuance,nuance)
+                    if boutonInfoGrille == False:
+                        continue
                 (x,y) = conversionCoordCasesVersPixels(i,j)
-                # pygame.draw.rect(SCREEN, c, (x,y,TAILLE_BLOC,TAILLE_BLOC),0)
+
                 pygame.draw.rect(SCREEN, c, (x, y, TAILLE_BLOC, TAILLE_BLOC), 0)
 
         # les tours
